@@ -161,7 +161,7 @@ const ChatRoom = () => {
       .eq("id", sessionId);
   }, [sessionId]);
 
-  const isSeeker2 = session?.seeker_id === userId; // kept for JSX below
+  // isSeeker already defined above
   const isWaiting = session?.status === "waiting";
   const isEnded = session?.status === "ended";
 
