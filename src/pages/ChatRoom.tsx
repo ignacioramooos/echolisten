@@ -3,12 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages, useRealtimeSession } from "@/hooks/use-realtime-chat";
 import { detectCrisisKeywords } from "@/lib/crisis-detector";
+import { moderateContent, applyStrike } from "@/lib/moderate";
 import { CrisisBanner } from "@/components/echo/chat/CrisisBanner";
 import { SessionEndScreen } from "@/components/echo/chat/SessionEndScreen";
 import { ChatHeader } from "@/components/echo/chat/ChatHeader";
 import { ChatMessages } from "@/components/echo/chat/ChatMessages";
 import { ChatInput } from "@/components/echo/chat/ChatInput";
 import { ChatTimer } from "@/components/echo/chat/ChatTimer";
+import { toast } from "sonner";
 
 const GRACEFUL_EXIT_MSG =
   "I've valued our 10 minutes, but I need to step away to recharge now. You did great sharing today.";
