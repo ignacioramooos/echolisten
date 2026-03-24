@@ -15,27 +15,22 @@ export function useRealtimeMessages(sessionId: string | undefined) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load existing messages
   useEffect(() => {
     if (!sessionId) return;
-
     const load = async () => {
       const { data } = await supabase
         .from("messages")
         .select("*")
         .eq("session_id", sessionId)
         .order("sent_at", { ascending: true });
-
       if (data) setMessages(data as Message[]);
       setLoading(false);
     };
     load();
   }, [sessionId]);
 
-  // Subscribe to new messages
   useEffect(() => {
     if (!sessionId) return;
-
     const channel = supabase
       .channel(`messages:${sessionId}`)
       .on(
@@ -49,7 +44,6 @@ export function useRealtimeMessages(sessionId: string | undefined) {
         (payload: RealtimePostgresChangesPayload<Message>) => {
           const newMsg = payload.new as Message;
           setMessages((prev) => {
-            // Avoid duplicates
             if (prev.some((m) => m.id === newMsg.id)) return prev;
             return [...prev, newMsg];
           });
@@ -57,9 +51,7 @@ export function useRealtimeMessages(sessionId: string | undefined) {
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [sessionId]);
 
   return { messages, loading };
@@ -72,6 +64,9 @@ interface Session {
   status: string;
   topic_snippet: string | null;
   created_at: string;
+  timer_end_at: string | null;
+  extensions_used: number;
+  extend_votes: string[];
 }
 
 export function useRealtimeSession(sessionId: string | undefined) {
@@ -80,24 +75,20 @@ export function useRealtimeSession(sessionId: string | undefined) {
 
   useEffect(() => {
     if (!sessionId) return;
-
     const load = async () => {
       const { data } = await supabase
         .from("sessions")
         .select("*")
         .eq("id", sessionId)
         .maybeSingle();
-
-      if (data) setSession(data as Session);
+      if (data) setSession(data as unknown as Session);
       setLoading(false);
     };
     load();
   }, [sessionId]);
 
-  // Subscribe to session updates (status changes)
   useEffect(() => {
     if (!sessionId) return;
-
     const channel = supabase
       .channel(`session:${sessionId}`)
       .on(
@@ -109,14 +100,12 @@ export function useRealtimeSession(sessionId: string | undefined) {
           filter: `id=eq.${sessionId}`,
         },
         (payload: RealtimePostgresChangesPayload<Session>) => {
-          setSession(payload.new as Session);
+          setSession(payload.new as unknown as Session);
         }
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [sessionId]);
 
   return { session, loading };
