@@ -1,20 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { EchoButton } from "@/components/echo/EchoButton";
 
-const HeroSection = () => (
-  <section className="flex min-h-screen flex-col items-center justify-center px-2">
-    <h1 className="font-display text-[72px] leading-none text-foreground text-center md:text-[80px]">
-      Someone will listen.
-    </h1>
-    <p className="mt-2 font-body text-[14px] text-muted-foreground text-center max-w-[480px]">
-      Echo connects you with trained peer listeners — anonymously, for free.
-    </p>
-    <div className="mt-4 flex gap-1">
-      <EchoButton variant="solid" size="md">Find a Listener</EchoButton>
-      <EchoButton variant="outline" size="md">Become a Listener</EchoButton>
-    </div>
-  </section>
-);
+const HeroSection = () => {
+  const navigate = useNavigate();
+  return (
+    <section className="flex min-h-screen flex-col items-center justify-center px-2">
+      <h1 className="font-display text-[72px] leading-none text-foreground text-center md:text-[80px]">
+        Someone will listen.
+      </h1>
+      <p className="mt-2 font-body text-[14px] text-muted-foreground text-center max-w-[480px]">
+        Echo connects you with trained peer listeners — anonymously, for free.
+      </p>
+      <div className="mt-4 flex gap-1">
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/chat/new")}>Find a Listener</EchoButton>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/formation")}>Become a Listener</EchoButton>
+      </div>
+    </section>
+  );
+};
 
 const steps = [
   { num: "01", heading: "Write what's on your mind.", desc: "Share as much or as little as you need. No forms, no intake." },
