@@ -44,6 +44,103 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          content: string
+          flagged: boolean
+          id: string
+          sender_id: string
+          sent_at: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          flagged?: boolean
+          id?: string
+          sender_id: string
+          sent_at?: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          flagged?: boolean
+          id?: string
+          sender_id?: string
+          sent_at?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_ratings: {
+        Row: {
+          created_at: string
+          feedback: string | null
+          id: string
+          rating: number | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_ratings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          id: string
+          listener_id: string | null
+          seeker_id: string
+          status: Database["public"]["Enums"]["session_status"]
+          topic_snippet: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listener_id?: string | null
+          seeker_id: string
+          status?: Database["public"]["Enums"]["session_status"]
+          topic_snippet?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listener_id?: string | null
+          seeker_id?: string
+          status?: Database["public"]["Enums"]["session_status"]
+          topic_snippet?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -52,7 +149,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      session_status: "waiting" | "active" | "ended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +276,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      session_status: ["waiting", "active", "ended"],
+    },
   },
 } as const
