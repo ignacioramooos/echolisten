@@ -1,5 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { MoreVertical } from "lucide-react";
 import { EchoButton } from "@/components/echo/EchoButton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -54,43 +61,43 @@ const formationSteps = [
   { num: "4", label: "Bot Simulation ●", gate: true },
 ];
 
-const FormationSection = () => (
-  <section className="py-6 border-t border-foreground">
-    <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-      For Listeners
-    </p>
-    <h2 className="font-display text-[36px] leading-tight">Not everyone becomes a Listener.</h2>
-    <p className="font-body text-[13px] text-muted-foreground mt-1 max-w-[600px]">
-      Echo Listeners complete a rigorous training called The Formation — a multi-step program
-      including readings, quizzes, and a live simulation with an AI test conversation.
-    </p>
+const FormationSection = () => {
+  const navigate = useNavigate();
+  return (
+    <section className="py-6 border-t border-foreground">
+      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+        For Listeners
+      </p>
+      <h2 className="font-display text-[36px] leading-tight">Not everyone becomes a Listener.</h2>
+      <p className="font-body text-[13px] text-muted-foreground mt-1 max-w-[600px]">
+        Echo Listeners complete a rigorous training called The Formation — a multi-step program
+        including readings, quizzes, and a live simulation with an AI test conversation.
+      </p>
 
-    {/* Formation Roadmap */}
-    <div className="mt-4 flex flex-col md:flex-row items-stretch">
-      {formationSteps.map((step, i) => (
-        <div key={step.num} className="flex items-center">
-          {i > 0 && (
-            <div className="hidden md:block w-3 h-px bg-foreground" />
-          )}
-          {i > 0 && (
-            <div className="block md:hidden h-2 w-px bg-foreground mx-auto" />
-          )}
-          <div
-            className={`border border-foreground px-2 py-1 font-body text-[12px] text-foreground whitespace-nowrap ${
-              step.gate ? "font-medium" : ""
-            }`}
-          >
-            {step.num}. {step.label}
+      <div className="mt-4 flex flex-col md:flex-row items-stretch">
+        {formationSteps.map((step, i) => (
+          <div key={step.num} className="flex items-center">
+            {i > 0 && <div className="hidden md:block w-3 h-px bg-foreground" />}
+            {i > 0 && <div className="block md:hidden h-2 w-px bg-foreground mx-auto" />}
+            <div
+              className={`border border-foreground px-2 py-1 font-body text-[12px] text-foreground whitespace-nowrap ${
+                step.gate ? "font-medium" : ""
+              }`}
+            >
+              {step.num}. {step.label}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
 
-    <div className="mt-3">
-      <EchoButton variant="outline" size="md">Begin Formation</EchoButton>
-    </div>
-  </section>
-);
+      <div className="mt-3">
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/formation")}>
+          Begin Formation
+        </EchoButton>
+      </div>
+    </section>
+  );
+};
 
 const trustItems = [
   "Not a crisis line. For emergencies, call your local services.",
@@ -99,7 +106,7 @@ const trustItems = [
 ];
 
 const TrustSection = () => (
-  <section className="py-6 border-t border-foreground">
+  <section id="safety" className="py-6 border-t border-foreground">
     <h2 className="font-display text-[36px] leading-tight">What Echo is not.</h2>
     <ul className="mt-2 flex flex-col gap-1">
       {trustItems.map((item) => (
@@ -117,24 +124,49 @@ const Index = () => {
       {/* Nav */}
       <header className="fixed top-0 left-0 right-0 z-10 border-b border-foreground bg-background">
         <div className="mx-auto flex w-full max-w-echo items-center justify-between px-2 py-1">
-          <span className="font-display italic text-[24px] text-foreground select-none">
+          <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
             <span className="mr-0.5">●</span> Echo
-          </span>
-          <nav className="flex gap-2">
-            <a href="#" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade">About</a>
-            <a href="#" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade">Safety</a>
+          </Link>
+          <nav className="flex items-center gap-2">
+            <Link to="/about" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
+              About
+            </Link>
+            <Link to="/login" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
+              Log In
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="echo-fade outline-none" aria-label="More options">
+                  <MoreVertical size={18} strokeWidth={1.5} className="text-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="border border-foreground bg-background rounded-none min-w-[180px]">
+                <DropdownMenuItem asChild className="font-body text-[12px] text-foreground cursor-pointer rounded-none">
+                  <a href="#safety">Safety &amp; Disclaimers</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="font-body text-[12px] text-muted-foreground cursor-default rounded-none">
+                  Privacy (coming soon)
+                </DropdownMenuItem>
+                <DropdownMenuItem className="font-body text-[12px] text-muted-foreground cursor-default rounded-none">
+                  Terms (coming soon)
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="font-body text-[12px] text-foreground cursor-pointer rounded-none">
+                  <Link to="/about">Contact</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
       </header>
 
-      {/* Hero - full viewport */}
+      {/* Hero */}
       <div className="mx-auto w-full max-w-echo px-2">
         <HeroSection />
       </div>
 
       <div className="w-full border-t border-foreground" />
 
-      {/* Content sections */}
+      {/* Content */}
       <div className="mx-auto w-full max-w-echo px-2">
         <HowItWorksSection />
         <FormationSection />
@@ -148,9 +180,9 @@ const Index = () => {
             ● Echo — Peer support. No noise.
           </p>
           <nav className="flex gap-2">
-            <a href="#" className="font-body text-[11px] text-foreground echo-fade">About</a>
-            <a href="#" className="font-body text-[11px] text-foreground echo-fade">Safety</a>
-            <a href="#" className="font-body text-[11px] text-foreground echo-fade">Become a Listener</a>
+            <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">About</Link>
+            <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">Safety</Link>
+            <Link to="/formation" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
           </nav>
         </div>
       </footer>

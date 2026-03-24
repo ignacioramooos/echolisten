@@ -13,6 +13,7 @@ import ChatNew from "./pages/ChatNew.tsx";
 import ChatRoom from "./pages/ChatRoom.tsx";
 import ListenQueue from "./pages/ListenQueue.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import About from "./pages/About.tsx";
 
 const queryClient = new QueryClient();
 
