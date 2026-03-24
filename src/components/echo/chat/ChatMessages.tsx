@@ -41,10 +41,35 @@ export const ChatMessages = ({ messages, userId, isWaiting }: ChatMessagesProps)
     >
       <div className="mx-auto w-full max-w-echo flex flex-col gap-3">
         {isWaiting && (
-          <div className="flex-1 flex items-center justify-center py-20">
-            <p className="font-body text-[14px] text-foreground">
-              <span className="echo-pulse">●</span> Waiting for a Listener...
-            </p>
+          <div className="flex-1 flex flex-col items-center justify-center py-12 gap-6">
+            <div className="text-center">
+              <p className="font-body text-[16px] text-foreground">
+                <span className="echo-pulse">●</span> Finding an Echo...
+              </p>
+              <p className="font-body text-[11px] text-muted-foreground mt-1">
+                A trained Listener will be with you shortly.
+              </p>
+            </div>
+
+            <div className="w-full max-w-[360px] border border-foreground p-3">
+              <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                Community Guidelines
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                <li className="font-body text-[12px] text-foreground">
+                  — Be honest, but kind. This is a safe space.
+                </li>
+                <li className="font-body text-[12px] text-foreground">
+                  — Listeners don't give advice. They listen.
+                </li>
+                <li className="font-body text-[12px] text-foreground">
+                  — Sessions are private and not stored.
+                </li>
+                <li className="font-body text-[12px] text-foreground">
+                  — Echo is not a crisis service. For emergencies, contact local services.
+                </li>
+              </ul>
+            </div>
           </div>
         )}
 
