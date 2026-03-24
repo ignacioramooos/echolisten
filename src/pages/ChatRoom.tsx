@@ -3,12 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages, useRealtimeSession } from "@/hooks/use-realtime-chat";
 import { detectCrisisKeywords } from "@/lib/crisis-detector";
+import { moderateContent, applyStrike } from "@/lib/moderate";
 import { CrisisBanner } from "@/components/echo/chat/CrisisBanner";
 import { SessionEndScreen } from "@/components/echo/chat/SessionEndScreen";
 import { ChatHeader } from "@/components/echo/chat/ChatHeader";
 import { ChatMessages } from "@/components/echo/chat/ChatMessages";
 import { ChatInput } from "@/components/echo/chat/ChatInput";
 import { ChatTimer } from "@/components/echo/chat/ChatTimer";
+import { toast } from "sonner";
+import { EchoButton } from "@/components/echo/EchoButton";
 
 const GRACEFUL_EXIT_MSG =
   "I've valued our 10 minutes, but I need to step away to recharge now. You did great sharing today.";
@@ -25,6 +28,9 @@ const ChatRoom = () => {
   const [showCrisisBanner, setShowCrisisBanner] = useState(false);
   const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
+  const [kicked, setKicked] = useState(false);
+
+  const isSeeker = session?.seeker_id === userId;
 
   useEffect(() => {
     const getUser = async () => {
@@ -83,17 +89,51 @@ const ChatRoom = () => {
   }, [messages]);
 
   const handleSend = useCallback(async () => {
-    if (!input.trim() || sending || !sessionId || !userId) return;
+    if (!input.trim() || sending || !sessionId || !userId || kicked) return;
     const content = input.trim();
     setInput("");
     setSending(true);
+
+    // Run moderation in parallel — fail open
+    const modResult = await moderateContent(content, isSeeker ? "seeker" : "room");
+
+    if (modResult.flagged) {
+      if (modResult.action === "crisis_alert") {
+        // Seeker self-harm: show crisis banner, let message through
+        setShowCrisisBanner(true);
+        setCrisisDismissed(false);
+      } else if (modResult.action === "kick") {
+        const strikeAction = applyStrike(userId);
+        if (strikeAction === "warn_silent") {
+          console.warn("Strike 1 for user", userId, modResult.triggeredCategories);
+        } else if (strikeAction === "warn_visible") {
+          toast.warning("Your message may violate community guidelines. Please be respectful.");
+        } else if (strikeAction === "kick") {
+          setKicked(true);
+          // End session and notify
+          await supabase.from("messages").insert({
+            session_id: sessionId,
+            sender_id: userId,
+            content: "[System] A user was removed for violating community guidelines.",
+          });
+          await supabase
+            .from("sessions")
+            .update({ status: "ended" as const })
+            .eq("id", sessionId);
+          setSending(false);
+          return;
+        }
+      }
+    }
+
+    // Send the message (always goes through for seekers, blocked only on 3rd strike for room)
     await supabase.from("messages").insert({
       session_id: sessionId,
       sender_id: userId,
       content,
     });
     setSending(false);
-  }, [input, sending, sessionId, userId]);
+  }, [input, sending, sessionId, userId, kicked, isSeeker]);
 
   const handleEndSession = async () => {
     if (!sessionId || !userId) return;
@@ -122,7 +162,7 @@ const ChatRoom = () => {
       .eq("id", sessionId);
   }, [sessionId]);
 
-  const isSeeker = session?.seeker_id === userId;
+  // isSeeker already defined above
   const isWaiting = session?.status === "waiting";
   const isEnded = session?.status === "ended";
 
@@ -138,6 +178,22 @@ const ChatRoom = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="font-body text-[13px] text-foreground">Session not found.</p>
+      </div>
+    );
+  }
+
+  if (kicked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <p className="font-display text-[28px] text-foreground">Session Ended</p>
+          <p className="font-body text-[13px] text-muted-foreground mt-2">
+            You've been removed from this room for violating community guidelines.
+          </p>
+          <EchoButton variant="outline" size="sm" className="mt-4" onClick={() => navigate("/")}>
+            Return Home
+          </EchoButton>
+        </div>
       </div>
     );
   }
