@@ -11,6 +11,7 @@ import { ChatMessages } from "@/components/echo/chat/ChatMessages";
 import { ChatInput } from "@/components/echo/chat/ChatInput";
 import { ChatTimer } from "@/components/echo/chat/ChatTimer";
 import { toast } from "sonner";
+import { EchoButton } from "@/components/echo/EchoButton";
 
 const GRACEFUL_EXIT_MSG =
   "I've valued our 10 minutes, but I need to step away to recharge now. You did great sharing today.";
