@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      formation_progress: {
+        Row: {
+          badge_earned_at: string | null
+          bot_passed: boolean
+          created_at: string
+          id: string
+          steps_completed: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_earned_at?: string | null
+          bot_passed?: boolean
+          created_at?: string
+          id?: string
+          steps_completed?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_earned_at?: string | null
+          bot_passed?: boolean
+          created_at?: string
+          id?: string
+          steps_completed?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
