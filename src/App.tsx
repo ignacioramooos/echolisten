@@ -9,6 +9,9 @@ import Login from "./pages/Login.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Formation from "./pages/Formation.tsx";
+import ChatNew from "./pages/ChatNew.tsx";
+import ChatRoom from "./pages/ChatRoom.tsx";
+import ListenQueue from "./pages/ListenQueue.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +29,9 @@ const App = () => (
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/formation" element={<Formation />} />
+          <Route path="/chat/new" element={<ChatNew />} />
+          <Route path="/chat/:sessionId" element={<ChatRoom />} />
+          <Route path="/listen" element={<ListenQueue />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
