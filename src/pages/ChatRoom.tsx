@@ -27,6 +27,7 @@ const ChatRoom = () => {
   const [showCrisisBanner, setShowCrisisBanner] = useState(false);
   const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
+  const [kicked, setKicked] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
