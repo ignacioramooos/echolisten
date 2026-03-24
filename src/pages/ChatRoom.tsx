@@ -29,6 +29,8 @@ const ChatRoom = () => {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [kicked, setKicked] = useState(false);
 
+  const isSeeker = session?.seeker_id === userId;
+
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
