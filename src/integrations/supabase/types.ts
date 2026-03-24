@@ -117,26 +117,35 @@ export type Database = {
       sessions: {
         Row: {
           created_at: string
+          extend_votes: string[]
+          extensions_used: number
           id: string
           listener_id: string | null
           seeker_id: string
           status: Database["public"]["Enums"]["session_status"]
+          timer_end_at: string | null
           topic_snippet: string | null
         }
         Insert: {
           created_at?: string
+          extend_votes?: string[]
+          extensions_used?: number
           id?: string
           listener_id?: string | null
           seeker_id: string
           status?: Database["public"]["Enums"]["session_status"]
+          timer_end_at?: string | null
           topic_snippet?: string | null
         }
         Update: {
           created_at?: string
+          extend_votes?: string[]
+          extensions_used?: number
           id?: string
           listener_id?: string | null
           seeker_id?: string
           status?: Database["public"]["Enums"]["session_status"]
+          timer_end_at?: string | null
           topic_snippet?: string | null
         }
         Relationships: []
