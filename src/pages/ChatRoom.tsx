@@ -86,17 +86,51 @@ const ChatRoom = () => {
   }, [messages]);
 
   const handleSend = useCallback(async () => {
-    if (!input.trim() || sending || !sessionId || !userId) return;
+    if (!input.trim() || sending || !sessionId || !userId || kicked) return;
     const content = input.trim();
     setInput("");
     setSending(true);
+
+    // Run moderation in parallel — fail open
+    const modResult = await moderateContent(content, isSeeker ? "seeker" : "room");
+
+    if (modResult.flagged) {
+      if (modResult.action === "crisis_alert") {
+        // Seeker self-harm: show crisis banner, let message through
+        setShowCrisisBanner(true);
+        setCrisisDismissed(false);
+      } else if (modResult.action === "kick") {
+        const strikeAction = applyStrike(userId);
+        if (strikeAction === "warn_silent") {
+          console.warn("Strike 1 for user", userId, modResult.triggeredCategories);
+        } else if (strikeAction === "warn_visible") {
+          toast.warning("Your message may violate community guidelines. Please be respectful.");
+        } else if (strikeAction === "kick") {
+          setKicked(true);
+          // End session and notify
+          await supabase.from("messages").insert({
+            session_id: sessionId,
+            sender_id: userId,
+            content: "[System] A user was removed for violating community guidelines.",
+          });
+          await supabase
+            .from("sessions")
+            .update({ status: "ended" as const })
+            .eq("id", sessionId);
+          setSending(false);
+          return;
+        }
+      }
+    }
+
+    // Send the message (always goes through for seekers, blocked only on 3rd strike for room)
     await supabase.from("messages").insert({
       session_id: sessionId,
       sender_id: userId,
       content,
     });
     setSending(false);
-  }, [input, sending, sessionId, userId]);
+  }, [input, sending, sessionId, userId, kicked, isSeeker]);
 
   const handleEndSession = async () => {
     if (!sessionId || !userId) return;
