@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/echo/PageShell";
+import { useNavigate } from "react-router-dom";
 import { EchoButton } from "@/components/echo/EchoButton";
 
 const HeroSection = () => (
