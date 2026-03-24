@@ -181,6 +181,22 @@ const ChatRoom = () => {
     );
   }
 
+  if (kicked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <p className="font-display text-[28px] text-foreground">Session Ended</p>
+          <p className="font-body text-[13px] text-muted-foreground mt-2">
+            You've been removed from this room for violating community guidelines.
+          </p>
+          <EchoButton variant="outline" size="sm" className="mt-4" onClick={() => navigate("/")}>
+            Return Home
+          </EchoButton>
+        </div>
+      </div>
+    );
+  }
+
   if (isEnded) {
     return <SessionEndScreen isSeeker={isSeeker} sessionId={sessionId!} userId={userId} />;
   }
