@@ -20,7 +20,7 @@ const HeroSection = () => {
       </p>
       <div className="mt-4 flex gap-1">
         <EchoButton variant="solid" size="md" onClick={() => navigate("/chat/new")}>Find a Listener</EchoButton>
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/formation")}>Become a Listener</EchoButton>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>Become a Listener</EchoButton>
       </div>
     </section>
   );
