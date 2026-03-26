@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { CrisisBanner } from "@/components/echo/chat/CrisisBanner";
@@ -17,6 +18,7 @@ const SESSION_MINUTES = 30;
 
 const AuraChat = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [userId, setUserId] = useState<string | null>(null);
   const [accepted, setAccepted] = useState(false);
   const [messages, setMessages] = useState<AuraMessage[]>([]);
@@ -42,7 +44,6 @@ const AuraChat = () => {
     bottomRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages]);
 
-  // Check session limits
   useEffect(() => {
     if (!startedAt) return;
     const timer = setInterval(() => {
@@ -92,17 +93,15 @@ const AuraChat = () => {
       });
 
       if (error || !data?.content) {
-        setMessages([...updated, { role: "assistant", content: "I'm having trouble responding right now. Please try again." }]);
+        setMessages([...updated, { role: "assistant", content: t("aura.errorResponse") }]);
         setSending(false);
         return;
       }
 
       const auraContent: string = data.content;
 
-      // Crisis detection
       if (auraContent.includes("[CRISIS_DETECTED]")) {
         setCrisisDetected(true);
-        // Flag in DB
         if (sessionId) {
           await supabase
             .from("aura_sessions")
@@ -116,7 +115,6 @@ const AuraChat = () => {
       const allMessages = [...updated, { role: "assistant" as const, content: auraContent }];
       setMessages(allMessages);
 
-      // Persist to DB
       if (sessionId) {
         await supabase
           .from("aura_sessions")
@@ -124,10 +122,10 @@ const AuraChat = () => {
           .eq("id", sessionId);
       }
     } catch {
-      setMessages([...updated, { role: "assistant", content: "Something went wrong. Please try again." }]);
+      setMessages([...updated, { role: "assistant", content: t("common.error") }]);
     }
     setSending(false);
-  }, [input, sending, messages, sessionId, crisisDetected]);
+  }, [input, sending, messages, sessionId, crisisDetected, t]);
 
   const insertFormat = useCallback((prefix: string, suffix: string) => {
     const ta = textareaRef.current;
@@ -153,32 +151,22 @@ const AuraChat = () => {
     return <span dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
-  const formatTime = (index: number) => {
-    // Simple time display based on message position
-    return "";
-  };
-
-  // Disclaimer screen
   if (!accepted) {
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col">
         <header className="border-b border-foreground px-3 py-1.5">
-          <span className="font-display italic text-[16px]">● Aura — AI Listener</span>
+          <span className="font-display italic text-[16px]">{t("aura.header")}</span>
         </header>
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="w-full max-w-[440px] border border-foreground p-6">
-            <h1 className="font-display text-[28px] leading-tight mb-4">Before we begin.</h1>
+            <h1 className="font-display text-[28px] leading-tight mb-4">{t("aura.disclaimerHeading")}</h1>
             <div className="flex flex-col gap-3">
-              <p className="font-body text-[13px] leading-relaxed">
-                Aura is an AI assistant, not a human, not a therapist, and not a crisis service.
-              </p>
-              <p className="font-body text-[13px] leading-relaxed">
-                Aura can listen and reflect — nothing more. If you are in danger, call emergency services now.
-              </p>
+              <p className="font-body text-[13px] leading-relaxed">{t("aura.disclaimer1")}</p>
+              <p className="font-body text-[13px] leading-relaxed">{t("aura.disclaimer2")}</p>
             </div>
             <div className="mt-6">
               <EchoButton variant="solid" size="md" onClick={startSession}>
-                I understand — continue
+                {t("aura.understand")}
               </EchoButton>
             </div>
           </div>
@@ -189,9 +177,8 @@ const AuraChat = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Header */}
       <div className="bg-foreground text-background px-3 py-1.5 flex items-center justify-between flex-shrink-0">
-        <span className="font-display italic text-[16px]">● Aura — AI Listener</span>
+        <span className="font-display italic text-[16px]">{t("aura.header")}</span>
         <EchoButton
           variant="outline"
           size="sm"
@@ -206,11 +193,10 @@ const AuraChat = () => {
           }}
           className="border-background text-background hover:bg-background hover:text-foreground"
         >
-          End
+          {t("aura.end")}
         </EchoButton>
       </div>
 
-      {/* Messages */}
       <div
         className="flex-1 overflow-y-auto px-3 py-4"
         style={{ maxHeight: "calc(100vh - 180px)", overscrollBehavior: "contain" }}
@@ -234,21 +220,18 @@ const AuraChat = () => {
           {sending && (
             <div className="flex flex-col items-start">
               <div className="font-body text-[13px] text-muted-foreground border-l border-foreground pl-3">
-                <span className="echo-pulse">●</span> Aura is thinking...
+                <span className="echo-pulse">●</span> {t("aura.thinking")}
               </div>
             </div>
           )}
 
-          {/* Connect prompt */}
           {showConnectPrompt && !crisisDetected && (
             <div className="border border-foreground p-3 mt-2">
-              <p className="font-body text-[13px] text-foreground">
-                We've talked for a while. Would you like to connect with a human Echo Listener? Sometimes talking to another person makes all the difference.
-              </p>
+              <p className="font-body text-[13px] text-foreground">{t("aura.connectPrompt")}</p>
               <div className="mt-2">
                 <Link to="/chat/new">
                   <EchoButton variant="solid" size="sm">
-                    Connect with Listener →
+                    {t("aura.connectListener")}
                   </EchoButton>
                 </Link>
               </div>
@@ -259,19 +242,15 @@ const AuraChat = () => {
         </div>
       </div>
 
-      {/* Crisis banner */}
       {crisisDetected && (
         <>
           <CrisisBanner />
           <div className="border-t border-foreground px-3 py-3 flex-shrink-0">
-            <p className="font-body text-[13px] text-foreground text-center">
-              Aura has paused this conversation. Please contact a crisis service.
-            </p>
+            <p className="font-body text-[13px] text-foreground text-center">{t("aura.crisisPaused")}</p>
           </div>
         </>
       )}
 
-      {/* Input */}
       {!crisisDetected && (
         <div className="border-t border-foreground flex-shrink-0">
           <div className="mx-auto w-full max-w-echo flex items-center justify-between px-3 pt-2">
@@ -311,7 +290,7 @@ const AuraChat = () => {
                   handleSend();
                 }
               }}
-              placeholder="Type a message..."
+              placeholder={t("chat.typeMessage")}
               rows={3}
               className="flex-1 py-2 font-body text-[13px] leading-relaxed tracking-wide text-foreground bg-background outline-none resize-none placeholder:text-muted-foreground"
             />
@@ -322,7 +301,7 @@ const AuraChat = () => {
               disabled={sending || !input.trim()}
               className={`flex-shrink-0 ml-2 mb-1 ${sending || !input.trim() ? "opacity-40" : ""}`}
             >
-              Send
+              {t("chat.send")}
             </EchoButton>
           </div>
         </div>
