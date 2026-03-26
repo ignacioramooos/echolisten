@@ -264,8 +264,8 @@ const Moderation = () => {
   /* ── Listener Profile View ── */
 
   const viewListenerProfile = async (listenerId: string) => {
-    const { data: profile } = await supabase
-      .from("profiles")
+    const { data: profile } = await (supabase as any)
+      .from("listener_profiles")
       .select("user_id, username, bio, created_at")
       .eq("user_id", listenerId)
       .maybeSingle();

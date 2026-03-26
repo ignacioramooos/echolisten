@@ -21,8 +21,12 @@ const HeroSection = () => {
         {t("landing.heroSub")}
       </p>
       <div className="mt-4 flex gap-1">
-        <EchoButton variant="solid" size="md" onClick={() => navigate("/chat/new")}>{t("landing.findListener")}</EchoButton>
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>{t("landing.becomeListener")}</EchoButton>
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")}>
+          {t("landing.findListener")}
+        </EchoButton>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/signup/listener")}>
+          {t("landing.becomeListener")}
+        </EchoButton>
       </div>
     </section>
   );
@@ -95,7 +99,7 @@ const FormationSection = () => {
       </div>
 
       <div className="mt-3">
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/signup/listener")}>
           {t("landing.beginFormation")}
         </EchoButton>
       </div>
@@ -128,7 +132,6 @@ const Index = () => {
   const { t } = useTranslation();
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      {/* Nav */}
       <header className="fixed top-0 left-0 right-0 z-10 border-b border-foreground bg-background">
         <div className="mx-auto flex w-full max-w-echo items-center justify-between px-2 py-1">
           <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
@@ -186,7 +189,7 @@ const Index = () => {
           <nav className="flex gap-2">
             <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.about")}</Link>
             <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.safety")}</Link>
-            <Link to="/listener-signup" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("landing.becomeListener")}</Link>
+            <Link to="/signup/listener" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("landing.becomeListener")}</Link>
           </nav>
         </div>
       </footer>
