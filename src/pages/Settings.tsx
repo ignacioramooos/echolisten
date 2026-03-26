@@ -6,7 +6,7 @@ import { EchoLogo } from "@/components/echo/EchoLogo";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
 import { LANGUAGE_OPTIONS, changeLanguage } from "@/lib/i18n";
-import { TOPICS } from "@/data/topics";
+
 import { toast } from "sonner";
 
 /*
