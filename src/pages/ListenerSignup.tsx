@@ -80,7 +80,7 @@ const ListenerSignup = () => {
 
     if (profileErr) { setError(profileErr.message); setLoading(false); return; }
 
-    // 3. Init formation progress
+    // 4. Init formation progress
     await supabase.from("formation_progress").insert({
       user_id: userId,
       steps_completed: [],
