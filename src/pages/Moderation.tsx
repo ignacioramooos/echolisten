@@ -89,8 +89,8 @@ const Moderation = () => {
       if (!user) { navigate("/login"); return; }
       setUserId(user.id);
 
-      const { data: profile } = await supabase
-        .from("profiles")
+      const { data: profile } = await (supabase as any)
+        .from("listener_profiles")
         .select("role")
         .eq("user_id", user.id)
         .maybeSingle();
