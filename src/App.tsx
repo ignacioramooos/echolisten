@@ -20,9 +20,13 @@ import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
 
+import { useThemeInit } from "@/hooks/use-theme-init";
+
 const queryClient = new QueryClient();
 
-const App = () => (
+const AppInner = () => {
+  useThemeInit();
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
