@@ -145,12 +145,13 @@ const Simulation = ({ onComplete }: SimulationProps) => {
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Evaluation failed");
-      // Fail open — accept the response
       const resp: TurnResponse = { turnIndex: currentTurn, response: freeTextInput.trim(), correct: true, feedback: "Response accepted." };
       setResponses(prev => [...prev, resp]);
       setFreeTextInput("");
       setCurrentFeedback({ correct: true, text: "Response accepted." });
       setPhase("showing-feedback");
+    } finally {
+      isSubmitting.current = false;
     }
   };
 
