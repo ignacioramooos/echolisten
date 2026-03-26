@@ -41,6 +41,41 @@ export type Database = {
         }
         Relationships: []
       }
+      evaluations: {
+        Row: {
+          flags_checked: string[]
+          id: string
+          moderator_id: string
+          notes: string | null
+          session_id: string
+          submitted_at: string
+        }
+        Insert: {
+          flags_checked?: string[]
+          id?: string
+          moderator_id: string
+          notes?: string | null
+          session_id: string
+          submitted_at?: string
+        }
+        Update: {
+          flags_checked?: string[]
+          id?: string
+          moderator_id?: string
+          notes?: string | null
+          session_id?: string
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       formation_progress: {
         Row: {
           badge_earned_at: string | null
@@ -267,6 +302,7 @@ export type Database = {
         Args: { desired_username: string }
         Returns: boolean
       }
+      is_moderator: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       session_status: "waiting" | "active" | "ended"
