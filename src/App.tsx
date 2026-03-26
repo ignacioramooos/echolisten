@@ -15,6 +15,7 @@ import ListenQueue from "./pages/ListenQueue.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import About from "./pages/About.tsx";
 import ListenerSignup from "./pages/ListenerSignup.tsx";
+import AuraChat from "./pages/AuraChat.tsx";
 
 const queryClient = new QueryClient();
 
