@@ -20,6 +20,8 @@ export type Database = {
           bot_passed: boolean
           created_at: string
           id: string
+          quiz_answers: Json | null
+          score: number | null
           steps_completed: string[]
           updated_at: string
           user_id: string
@@ -29,6 +31,8 @@ export type Database = {
           bot_passed?: boolean
           created_at?: string
           id?: string
+          quiz_answers?: Json | null
+          score?: number | null
           steps_completed?: string[]
           updated_at?: string
           user_id: string
@@ -38,6 +42,8 @@ export type Database = {
           bot_passed?: boolean
           created_at?: string
           id?: string
+          quiz_answers?: Json | null
+          score?: number | null
           steps_completed?: string[]
           updated_at?: string
           user_id?: string
