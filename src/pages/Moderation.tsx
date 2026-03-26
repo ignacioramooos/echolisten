@@ -200,8 +200,8 @@ const Moderation = () => {
   /* ── Listener Overview ── */
 
   const loadListeners = useCallback(async () => {
-    const { data: listenerProfiles } = await supabase
-      .from("profiles")
+    const { data: listenerProfiles } = await (supabase as any)
+      .from("listener_profiles")
       .select("user_id, username")
       .eq("role", "listener");
 
