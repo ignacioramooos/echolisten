@@ -8,6 +8,7 @@ import { EchoInput } from "@/components/echo/EchoInput";
 import { LANGUAGE_OPTIONS, changeLanguage } from "@/lib/i18n";
 
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 /*
  * Justification for personalization: Research suggests environment customization
