@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoLogo } from "@/components/echo/EchoLogo";
@@ -12,6 +13,7 @@ interface WaitingSession {
 
 const ListenQueue = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<WaitingSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [picking, setPicking] = useState<string | null>(null);
@@ -39,7 +41,6 @@ const ListenQueue = () => {
       )
       .subscribe();
 
-    // Update "now" every second for live wait times
     const timer = setInterval(() => setNow(Date.now()), 1000);
 
     return () => {
@@ -85,29 +86,31 @@ const ListenQueue = () => {
       <header className="border-b border-foreground px-2 py-1 flex items-center justify-between">
         <EchoLogo />
         <span className="font-body text-[11px] uppercase tracking-widest text-muted-foreground">
-          Listener Queue
+          {t("queue.title")}
         </span>
       </header>
 
       <div className="flex-1 px-2 py-3 mx-auto w-full max-w-echo">
         <h1 className="font-display text-[32px] leading-tight text-foreground">
-          Someone needs you.
+          {t("queue.heading")}
         </h1>
 
         {!loading && sessions.length > 0 && (
           <p className="font-body text-[11px] text-muted-foreground mt-1">
-            ● {sessions.length} {sessions.length === 1 ? "person" : "people"} waiting. Select from the top for priority.
+            {sessions.length === 1
+              ? t("queue.waitingCountSingle")
+              : t("queue.waitingCount", { count: sessions.length })}
           </p>
         )}
 
         <div className="mt-3 flex flex-col gap-1">
           {loading && (
-            <p className="font-body text-[13px] text-muted-foreground">Loading...</p>
+            <p className="font-body text-[13px] text-muted-foreground">{t("queue.loading")}</p>
           )}
 
           {!loading && sessions.length === 0 && (
             <p className="font-body text-[13px] text-muted-foreground">
-              No one is waiting right now. Check back soon.
+              {t("queue.noOneWaiting")}
             </p>
           )}
 
@@ -119,11 +122,11 @@ const ListenQueue = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="font-body text-[11px] bg-foreground text-background px-1.5 py-0.5 inline-block">
-                    Waiting {getWaitTime(s.created_at)}
+                    {t("queue.waiting", { time: getWaitTime(s.created_at) })}
                   </span>
                 </div>
                 <p className="font-body text-[13px] text-foreground truncate italic">
-                  {s.topic_snippet ? s.topic_snippet.slice(0, 80) : "No preview available"}
+                  {s.topic_snippet ? s.topic_snippet.slice(0, 80) : t("queue.noPreview")}
                 </p>
               </div>
               <EchoButton
@@ -133,7 +136,7 @@ const ListenQueue = () => {
                 disabled={picking === s.id}
                 className={picking === s.id ? "opacity-40" : ""}
               >
-                {picking === s.id ? "Joining..." : "Accept Session"}
+                {picking === s.id ? t("queue.joining") : t("queue.acceptSession")}
               </EchoButton>
             </div>
           ))}

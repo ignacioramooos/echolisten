@@ -1,4 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { MoreVertical } from "lucide-react";
 import { EchoButton } from "@/components/echo/EchoButton";
 import {
@@ -10,49 +11,52 @@ import {
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <section className="flex min-h-screen flex-col items-center justify-center px-2">
       <h1 className="font-display text-[72px] leading-none text-foreground text-center md:text-[80px]">
-        Someone will listen.
+        {t("landing.hero")}
       </h1>
       <p className="mt-2 font-body text-[14px] text-muted-foreground text-center max-w-[480px]">
-        Echo connects you with trained peer listeners — anonymously, for free.
+        {t("landing.heroSub")}
       </p>
       <div className="mt-4 flex gap-1">
-        <EchoButton variant="solid" size="md" onClick={() => navigate("/chat/new")}>Find a Listener</EchoButton>
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>Become a Listener</EchoButton>
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/chat/new")}>{t("landing.findListener")}</EchoButton>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>{t("landing.becomeListener")}</EchoButton>
       </div>
     </section>
   );
 };
 
-const steps = [
-  { num: "01", heading: "Write what's on your mind.", desc: "Share as much or as little as you need. No forms, no intake." },
-  { num: "02", heading: "Get matched with a trained Listener.", desc: "Echo pairs you based on availability and training level." },
-  { num: "03", heading: "Talk. No advice. Just presence.", desc: "Your Listener is there to hear you — nothing more, nothing less." },
-];
-
-const HowItWorksSection = () => (
-  <section className="py-6">
-    <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
-      For Seekers
-    </p>
-    <div className="grid grid-cols-1 md:grid-cols-3">
-      {steps.map((step, i) => (
-        <div
-          key={step.num}
-          className={`py-2 md:py-0 md:px-2 ${
-            i > 0 ? "border-t md:border-t-0 md:border-l border-foreground" : ""
-          } ${i === 0 ? "md:pl-0" : ""}`}
-        >
-          <span className="font-body text-[12px] text-muted-foreground">{step.num}</span>
-          <h3 className="font-display text-[24px] leading-tight mt-0.5">{step.heading}</h3>
-          <p className="font-body text-[12px] text-muted-foreground mt-0.5">{step.desc}</p>
-        </div>
-      ))}
-    </div>
-  </section>
-);
+const HowItWorksSection = () => {
+  const { t } = useTranslation();
+  const steps = [
+    { num: "01", heading: t("landing.step01"), desc: t("landing.step01Desc") },
+    { num: "02", heading: t("landing.step02"), desc: t("landing.step02Desc") },
+    { num: "03", heading: t("landing.step03"), desc: t("landing.step03Desc") },
+  ];
+  return (
+    <section className="py-6">
+      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+        {t("landing.forSeekers")}
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-3">
+        {steps.map((step, i) => (
+          <div
+            key={step.num}
+            className={`py-2 md:py-0 md:px-2 ${
+              i > 0 ? "border-t md:border-t-0 md:border-l border-foreground" : ""
+            } ${i === 0 ? "md:pl-0" : ""}`}
+          >
+            <span className="font-body text-[12px] text-muted-foreground">{step.num}</span>
+            <h3 className="font-display text-[24px] leading-tight mt-0.5">{step.heading}</h3>
+            <p className="font-body text-[12px] text-muted-foreground mt-0.5">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 const formationSteps = [
   { num: "1", label: "Foundations" },
@@ -63,15 +67,15 @@ const formationSteps = [
 
 const FormationSection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <section className="py-6 border-t border-foreground">
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-        For Listeners
+        {t("landing.forListeners")}
       </p>
-      <h2 className="font-display text-[36px] leading-tight">Not everyone becomes a Listener.</h2>
+      <h2 className="font-display text-[36px] leading-tight">{t("landing.formationHeading")}</h2>
       <p className="font-body text-[13px] text-muted-foreground mt-1 max-w-[600px]">
-        Echo Listeners complete a rigorous training called The Formation — a multi-step program
-        including readings, quizzes, and a live simulation with an AI test conversation.
+        {t("landing.formationDesc")}
       </p>
 
       <div className="mt-4 flex flex-col md:flex-row items-stretch">
@@ -92,33 +96,36 @@ const FormationSection = () => {
 
       <div className="mt-3">
         <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>
-          Begin Formation
+          {t("landing.beginFormation")}
         </EchoButton>
       </div>
     </section>
   );
 };
 
-const trustItems = [
-  "Not a crisis line. For emergencies, call your local services.",
-  "Not therapy. Listeners are trained volunteers, not clinicians.",
-  "Not a social network. Sessions are private and do not persist.",
-];
-
-const TrustSection = () => (
-  <section id="safety" className="py-6 border-t border-foreground">
-    <h2 className="font-display text-[36px] leading-tight">What Echo is not.</h2>
-    <ul className="mt-2 flex flex-col gap-1">
-      {trustItems.map((item) => (
-        <li key={item} className="font-body text-[13px] text-foreground">
-          — {item}
-        </li>
-      ))}
-    </ul>
-  </section>
-);
+const TrustSection = () => {
+  const { t } = useTranslation();
+  const trustItems = [
+    t("landing.trust1"),
+    t("landing.trust2"),
+    t("landing.trust3"),
+  ];
+  return (
+    <section id="safety" className="py-6 border-t border-foreground">
+      <h2 className="font-display text-[36px] leading-tight">{t("landing.trustHeading")}</h2>
+      <ul className="mt-2 flex flex-col gap-1">
+        {trustItems.map((item) => (
+          <li key={item} className="font-body text-[13px] text-foreground">
+            — {item}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
 
 const Index = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Nav */}
@@ -129,10 +136,10 @@ const Index = () => {
           </Link>
           <nav className="flex items-center gap-2">
             <Link to="/about" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
-              About
+              {t("nav.about")}
             </Link>
             <Link to="/login" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
-              Log In
+              {t("nav.login")}
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -142,16 +149,16 @@ const Index = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="border border-foreground bg-background rounded-none min-w-[180px]">
                 <DropdownMenuItem asChild className="font-body text-[12px] text-foreground cursor-pointer rounded-none">
-                  <a href="#safety">Safety &amp; Disclaimers</a>
+                  <a href="#safety">{t("nav.safety")}</a>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="font-body text-[12px] text-muted-foreground cursor-default rounded-none">
-                  Privacy (coming soon)
+                  {t("nav.privacy")}
                 </DropdownMenuItem>
                 <DropdownMenuItem className="font-body text-[12px] text-muted-foreground cursor-default rounded-none">
-                  Terms (coming soon)
+                  {t("nav.terms")}
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="font-body text-[12px] text-foreground cursor-pointer rounded-none">
-                  <Link to="/about">Contact</Link>
+                  <Link to="/about">{t("nav.contact")}</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -159,30 +166,27 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero */}
       <div className="mx-auto w-full max-w-echo px-2">
         <HeroSection />
       </div>
 
       <div className="w-full border-t border-foreground" />
 
-      {/* Content */}
       <div className="mx-auto w-full max-w-echo px-2">
         <HowItWorksSection />
         <FormationSection />
         <TrustSection />
       </div>
 
-      {/* Footer */}
       <footer className="mt-auto border-t border-foreground">
         <div className="mx-auto w-full max-w-echo flex items-center justify-between px-2 py-1">
           <p className="font-body text-[11px] text-muted-foreground">
-            ● Echo — Peer support. No noise.
+            {t("landing.footer")}
           </p>
           <nav className="flex gap-2">
-            <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">About</Link>
-            <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">Safety</Link>
-            <Link to="/listener-signup" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
+            <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.about")}</Link>
+            <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.safety")}</Link>
+            <Link to="/listener-signup" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("landing.becomeListener")}</Link>
           </nav>
         </div>
       </footer>

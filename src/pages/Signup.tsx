@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/echo/AuthShell";
@@ -10,6 +11,7 @@ type Role = "listener" | "seeker";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,11 +53,11 @@ const Signup = () => {
   return (
     <AuthShell>
       <form onSubmit={handleSubmit}>
-        <h1 className="font-display text-[36px] leading-tight text-foreground">Join Echo.</h1>
+        <h1 className="font-display text-[36px] leading-tight text-foreground">{t("auth.joinEcho")}</h1>
 
         <div className="mt-3 flex flex-col gap-2">
           <EchoInput
-            label="Email address"
+            label={t("auth.email")}
             type="email"
             placeholder="you@email.com"
             value={email}
@@ -63,10 +65,9 @@ const Signup = () => {
             required
           />
 
-          {/* Password with toggle */}
           <div className="flex flex-col gap-0.5">
             <label className="font-body text-[12px] uppercase tracking-widest text-foreground">
-              Password
+              {t("auth.password")}
             </label>
             <div className="relative">
               <input
@@ -93,10 +94,9 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* Role selector tiles */}
           <div className="flex flex-col gap-0.5">
             <span className="font-body text-[12px] uppercase tracking-widest text-foreground">
-              I want to...
+              {t("auth.selectRole")}
             </span>
             <div className="grid grid-cols-2 gap-1">
               <button
@@ -108,9 +108,9 @@ const Signup = () => {
                     : "bg-background text-foreground"
                 }`}
               >
-                <span className="font-display text-[18px] leading-tight block">I want to listen.</span>
+                <span className="font-display text-[18px] leading-tight block">{t("auth.roleListener")}</span>
                 <span className="font-body text-[10px] mt-0.5 block opacity-80">
-                  You will complete The Formation before your first session.
+                  {t("auth.roleListenerDesc")}
                 </span>
               </button>
               <button
@@ -122,15 +122,14 @@ const Signup = () => {
                     : "bg-background text-foreground"
                 }`}
               >
-                <span className="font-display text-[18px] leading-tight block">I need to talk.</span>
+                <span className="font-display text-[18px] leading-tight block">{t("auth.roleSeeker")}</span>
                 <span className="font-body text-[10px] mt-0.5 block opacity-80">
-                  No training required. Jump in immediately.
+                  {t("auth.roleSeekerDesc")}
                 </span>
               </button>
             </div>
           </div>
 
-          {/* Disclaimer checkbox */}
           <label className="flex items-start gap-1 cursor-pointer mt-1">
             <input
               type="checkbox"
@@ -139,7 +138,7 @@ const Signup = () => {
               className="mt-[3px] accent-foreground"
             />
             <span className="font-body text-[11px] text-foreground leading-tight">
-              I understand Echo is peer support, not therapy or a crisis service.
+              {t("signup.step5.checkPeerSupport")}
             </span>
           </label>
 
@@ -154,13 +153,13 @@ const Signup = () => {
             disabled={!canSubmit}
             className={!canSubmit ? "opacity-40 cursor-not-allowed" : ""}
           >
-            {loading ? "Creating..." : "Create Account"}
+            {loading ? t("auth.signingUp") : t("auth.signUp")}
           </EchoButton>
 
           <p className="font-body text-[11px] text-muted-foreground text-center mt-1">
-            Already have an account?{" "}
+            {t("auth.alreadyHave")}{" "}
             <Link to="/login" className="text-foreground underline echo-fade">
-              Sign in →
+              {t("auth.signIn")}
             </Link>
           </p>
         </div>
