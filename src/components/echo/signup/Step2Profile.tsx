@@ -48,9 +48,9 @@ const Step2Profile = ({ data, onChange, onNext, onBack }: Props) => {
           {uploading ? "Uploading..." : t("signup.step2.avatarUpload")}
         </button>
 
-        {data.avatarUrl && !data.selectedAvatar && data.selectedAvatar !== 0 && (
+        {previewUrl && (data.selectedAvatar === null || data.selectedAvatar === undefined) && (
           <div className="w-8 h-8 border border-foreground overflow-hidden">
-            <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+            <img src={previewUrl} alt="Avatar" className="w-full h-full object-cover" />
           </div>
         )}
 
