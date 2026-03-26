@@ -1,13 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useThemeInit } from "@/hooks/use-theme-init";
 import Index from "./pages/Index.tsx";
-import Signup from "./pages/Signup.tsx";
 import Login from "./pages/Login.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
+import SeekerDashboard from "./pages/SeekerDashboard.tsx";
+import ListenerDashboard from "./pages/ListenerDashboard.tsx";
 import Formation from "./pages/Formation.tsx";
 import ChatNew from "./pages/ChatNew.tsx";
 import ChatRoom from "./pages/ChatRoom.tsx";
@@ -15,12 +16,11 @@ import ListenQueue from "./pages/ListenQueue.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import About from "./pages/About.tsx";
 import ListenerSignup from "./pages/ListenerSignup.tsx";
+import SeekerSignup from "./pages/SeekerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
-
-import { useThemeInit } from "@/hooks/use-theme-init";
 
 const queryClient = new QueryClient();
 
@@ -34,19 +34,32 @@ const AppInner = () => {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/listener-signup" element={<ListenerSignup />} />
+
+          {/* Auth */}
+          <Route path="/signup/seeker" element={<SeekerSignup />} />
+          <Route path="/signup/listener" element={<ListenerSignup />} />
+          <Route path="/signup" element={<Navigate to="/signup/seeker" replace />} />
+          <Route path="/listener-signup" element={<Navigate to="/signup/listener" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* Dashboards */}
+          <Route path="/dashboard/seeker" element={<SeekerDashboard />} />
+          <Route path="/dashboard/listener" element={<ListenerDashboard />} />
+          <Route path="/dashboard" element={<Navigate to="/dashboard/seeker" replace />} />
+
+          {/* Listener-only */}
           <Route path="/formation" element={<Formation />} />
+          <Route path="/listen" element={<ListenQueue />} />
+
+          {/* Shared */}
           <Route path="/chat/new" element={<ChatNew />} />
           <Route path="/chat/:sessionId" element={<ChatRoom />} />
-          <Route path="/listen" element={<ListenQueue />} />
           <Route path="/aura" element={<AuraChat />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/mod" element={<Moderation />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

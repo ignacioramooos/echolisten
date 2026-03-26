@@ -9,11 +9,21 @@ const EchoLogo = () => {
   useEffect(() => {
     const check = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setHref(session ? "/dashboard" : "/");
+      if (session) {
+        const role = session.user?.user_metadata?.role;
+        setHref(role === "listener" ? "/dashboard/listener" : "/dashboard/seeker");
+      } else {
+        setHref("/");
+      }
     };
     check();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setHref(session ? "/dashboard" : "/");
+      if (session) {
+        const role = session.user?.user_metadata?.role;
+        setHref(role === "listener" ? "/dashboard/listener" : "/dashboard/seeker");
+      } else {
+        setHref("/");
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
