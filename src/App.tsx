@@ -39,6 +39,7 @@ const App = () => (
           <Route path="/chat/:sessionId" element={<ChatRoom />} />
           <Route path="/listen" element={<ListenQueue />} />
           <Route path="/aura" element={<AuraChat />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
