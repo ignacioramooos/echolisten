@@ -79,6 +79,69 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          country: string | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          gender: string | null
+          id: string
+          languages: string[] | null
+          last_name: string | null
+          role: string
+          topics_avoid: string[] | null
+          topics_comfortable: string[] | null
+          topics_lived_experience: string[] | null
+          updated_at: string | null
+          user_id: string
+          username: string | null
+          verified_agreements: boolean | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          gender?: string | null
+          id?: string
+          languages?: string[] | null
+          last_name?: string | null
+          role?: string
+          topics_avoid?: string[] | null
+          topics_comfortable?: string[] | null
+          topics_lived_experience?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          username?: string | null
+          verified_agreements?: boolean | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          gender?: string | null
+          id?: string
+          languages?: string[] | null
+          last_name?: string | null
+          role?: string
+          topics_avoid?: string[] | null
+          topics_comfortable?: string[] | null
+          topics_lived_experience?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string | null
+          verified_agreements?: boolean | null
+        }
+        Relationships: []
+      }
       session_ratings: {
         Row: {
           created_at: string
@@ -155,7 +218,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_username_available: {
+        Args: { desired_username: string }
+        Returns: boolean
+      }
     }
     Enums: {
       session_status: "waiting" | "active" | "ended"
