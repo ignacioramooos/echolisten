@@ -11,6 +11,7 @@ interface ChatMessagesProps {
   messages: Message[];
   userId: string;
   isWaiting: boolean;
+  isFocusMode?: boolean;
 }
 
 const formatTime = (ts: string) => {
@@ -19,7 +20,6 @@ const formatTime = (ts: string) => {
 };
 
 const renderContent = (content: string) => {
-  // Parse simple markdown-like formatting: **bold**, *italic*, __underline__
   let html = content
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
@@ -27,7 +27,7 @@ const renderContent = (content: string) => {
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
-export const ChatMessages = ({ messages, userId, isWaiting }: ChatMessagesProps) => {
+export const ChatMessages = ({ messages, userId, isWaiting, isFocusMode }: ChatMessagesProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,38 +36,36 @@ export const ChatMessages = ({ messages, userId, isWaiting }: ChatMessagesProps)
 
   return (
     <div
-      className="flex-1 overflow-y-auto px-3 py-4 flex flex-col"
+      className="overflow-y-auto px-3 py-4 flex flex-col h-full"
       style={{ overscrollBehavior: "contain" }}
     >
       <div className="mx-auto w-full max-w-echo flex flex-col gap-3">
         {isWaiting && (
           <div className="flex-1 flex flex-col items-center justify-center py-12 gap-6">
             <div className="text-center">
-              <p className="font-body text-[16px] text-foreground">
+              <p className={`font-body text-[16px] ${isFocusMode ? "text-background" : "text-foreground"}`}>
                 <span className="echo-pulse">●</span> Finding an Echo...
               </p>
-              <p className="font-body text-[11px] text-muted-foreground mt-1">
+              <p className={`font-body text-[11px] mt-1 ${isFocusMode ? "text-background/60" : "text-muted-foreground"}`}>
                 A trained Listener will be with you shortly.
               </p>
             </div>
 
-            <div className="w-full max-w-[360px] border border-foreground p-3">
-              <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            <div className={`w-full max-w-[360px] border p-3 ${isFocusMode ? "border-background/30" : "border-foreground"}`}>
+              <p className={`font-body text-[11px] uppercase tracking-[0.2em] mb-2 ${isFocusMode ? "text-background/60" : "text-muted-foreground"}`}>
                 Community Guidelines
               </p>
               <ul className="flex flex-col gap-1.5">
-                <li className="font-body text-[12px] text-foreground">
-                  — Be honest, but kind. This is a safe space.
-                </li>
-                <li className="font-body text-[12px] text-foreground">
-                  — Listeners don't give advice. They listen.
-                </li>
-                <li className="font-body text-[12px] text-foreground">
-                  — Sessions are private and not stored.
-                </li>
-                <li className="font-body text-[12px] text-foreground">
-                  — Echo is not a crisis service. For emergencies, contact local services.
-                </li>
+                {[
+                  "Be honest, but kind. This is a safe space.",
+                  "Listeners don't give advice. They listen.",
+                  "Sessions are private and not stored.",
+                  "Echo is not a crisis service. For emergencies, contact local services.",
+                ].map((g) => (
+                  <li key={g} className={`font-body text-[12px] ${isFocusMode ? "text-background" : "text-foreground"}`}>
+                    — {g}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -82,14 +80,18 @@ export const ChatMessages = ({ messages, userId, isWaiting }: ChatMessagesProps)
             >
               <div
                 className={`max-w-[75%] font-body text-[13px] leading-relaxed tracking-wide ${
-                  isMine
-                    ? "text-right"
-                    : "border-l border-foreground pl-3 text-left"
+                  isFocusMode
+                    ? isMine
+                      ? "text-right text-foreground bg-background px-2 py-1"
+                      : "border-l border-background/40 pl-3 text-left text-background"
+                    : isMine
+                      ? "text-right"
+                      : "border-l border-foreground pl-3 text-left"
                 }`}
               >
                 {renderContent(msg.content)}
               </div>
-              <span className="font-body text-[9px] text-muted-foreground mt-1">
+              <span className={`font-body text-[9px] mt-1 ${isFocusMode ? "text-background/40" : "text-muted-foreground"}`}>
                 {formatTime(msg.sent_at)}
               </span>
             </div>

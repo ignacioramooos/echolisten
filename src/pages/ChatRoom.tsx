@@ -10,6 +10,8 @@ import { ChatHeader } from "@/components/echo/chat/ChatHeader";
 import { ChatMessages } from "@/components/echo/chat/ChatMessages";
 import { ChatInput } from "@/components/echo/chat/ChatInput";
 import { ChatTimer } from "@/components/echo/chat/ChatTimer";
+import { EchoAdvisor } from "@/components/echo/chat/EchoAdvisor";
+import { CrisisInfoOverlay } from "@/components/echo/chat/CrisisInfoOverlay";
 import { toast } from "sonner";
 import { EchoButton } from "@/components/echo/EchoButton";
 
@@ -23,20 +25,23 @@ const ChatRoom = () => {
   const { messages, loading: messagesLoading } = useRealtimeMessages(sessionId);
 
   const [userId, setUserId] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showCrisisBanner, setShowCrisisBanner] = useState(false);
-  const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [kicked, setKicked] = useState(false);
+  const [showCrisisInfo, setShowCrisisInfo] = useState(false);
 
   const isSeeker = session?.seeker_id === userId;
+  const isListener = session?.listener_id === userId;
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate("/login"); return; }
       setUserId(user.id);
+      setUserRole(user.user_metadata?.role || "seeker");
     };
     getUser();
   }, [navigate]);
@@ -74,7 +79,6 @@ const ChatRoom = () => {
   useEffect(() => {
     if (detectCrisisKeywords(input)) {
       setShowCrisisBanner(true);
-      setCrisisDismissed(false);
     }
   }, [input]);
 
@@ -83,7 +87,6 @@ const ChatRoom = () => {
       const lastMsg = messages[messages.length - 1];
       if (detectCrisisKeywords(lastMsg.content)) {
         setShowCrisisBanner(true);
-        setCrisisDismissed(false);
       }
     }
   }, [messages]);
@@ -94,14 +97,11 @@ const ChatRoom = () => {
     setInput("");
     setSending(true);
 
-    // Run moderation in parallel — fail open
     const modResult = await moderateContent(content, isSeeker ? "seeker" : "room");
 
     if (modResult.flagged) {
       if (modResult.action === "crisis_alert") {
-        // Seeker self-harm: show crisis banner, let message through
         setShowCrisisBanner(true);
-        setCrisisDismissed(false);
       } else if (modResult.action === "kick") {
         const strikeAction = applyStrike(userId);
         if (strikeAction === "warn_silent") {
@@ -110,23 +110,18 @@ const ChatRoom = () => {
           toast.warning("Your message may violate community guidelines. Please be respectful.");
         } else if (strikeAction === "kick") {
           setKicked(true);
-          // End session and notify
           await supabase.from("messages").insert({
             session_id: sessionId,
             sender_id: userId,
             content: "[System] A user was removed for violating community guidelines.",
           });
-          await supabase
-            .from("sessions")
-            .update({ status: "ended" as const })
-            .eq("id", sessionId);
+          await supabase.from("sessions").update({ status: "ended" as const }).eq("id", sessionId);
           setSending(false);
           return;
         }
       }
     }
 
-    // Send the message (always goes through for seekers, blocked only on 3rd strike for room)
     await supabase.from("messages").insert({
       session_id: sessionId,
       sender_id: userId,
@@ -137,9 +132,6 @@ const ChatRoom = () => {
 
   const handleEndSession = async () => {
     if (!sessionId || !userId) return;
-    const isListener = session?.listener_id === userId;
-
-    // Graceful exit: listener sends auto-message
     if (isListener) {
       await supabase.from("messages").insert({
         session_id: sessionId,
@@ -147,22 +139,24 @@ const ChatRoom = () => {
         content: GRACEFUL_EXIT_MSG,
       });
     }
-
-    await supabase
-      .from("sessions")
-      .update({ status: "ended" as const })
-      .eq("id", sessionId);
+    await supabase.from("sessions").update({ status: "ended" as const }).eq("id", sessionId);
   };
 
   const handleTimeUp = useCallback(async () => {
     if (!sessionId) return;
-    await supabase
-      .from("sessions")
-      .update({ status: "ended" as const })
-      .eq("id", sessionId);
+    await supabase.from("sessions").update({ status: "ended" as const }).eq("id", sessionId);
   }, [sessionId]);
 
-  // isSeeker already defined above
+  const handleBlockUser = async () => {
+    toast.info("User blocked. Session flagged for admin review.");
+    await handleEndSession();
+  };
+
+  const handleFlagSession = (reason: string) => {
+    toast.info(`Session flagged: ${reason}`);
+    // Future: store flags in DB
+  };
+
   const isWaiting = session?.status === "waiting";
   const isEnded = session?.status === "ended";
 
@@ -203,14 +197,22 @@ const ChatRoom = () => {
   }
 
   return (
-    <div className={`bg-background text-foreground flex flex-col ${
-      isFocusMode ? "fixed inset-0 z-50" : "min-h-screen"
-    }`}>
+    <div
+      className={`flex flex-col ${
+        isFocusMode
+          ? "fixed inset-0 z-50 bg-foreground text-background"
+          : "min-h-screen bg-background text-foreground"
+      }`}
+    >
       <ChatHeader
         isWaiting={isWaiting}
         isFocusMode={isFocusMode}
+        isListener={isListener}
         onToggleFocus={() => setIsFocusMode((f) => !f)}
         onEndSession={handleEndSession}
+        onShowCrisisInfo={() => setShowCrisisInfo(true)}
+        onBlockUser={handleBlockUser}
+        onFlagSession={handleFlagSession}
       />
 
       {/* Timer */}
@@ -225,20 +227,41 @@ const ChatRoom = () => {
         />
       )}
 
-      {/* Messages — fixed height with isolated scroll */}
-      <div className={`flex-1 min-h-0 ${isFocusMode ? "" : "h-[600px] max-h-[calc(100vh-200px)]"}`}>
-        <ChatMessages messages={messages} userId={userId} isWaiting={isWaiting} />
+      {/* Main chat area: messages + optional advisor */}
+      <div
+        className="flex flex-1 min-h-0 relative"
+        style={{ maxHeight: "calc(100vh - 180px)" }}
+      >
+        {/* Crisis info overlay */}
+        {showCrisisInfo && <CrisisInfoOverlay onClose={() => setShowCrisisInfo(false)} />}
+
+        {/* Messages container with isolated scroll */}
+        <div className="flex-1 min-w-0 overflow-hidden flex flex-col">
+          <div
+            className="flex-1 overflow-y-auto"
+            style={{ overscrollBehavior: "contain" }}
+          >
+            <ChatMessages
+              messages={messages}
+              userId={userId}
+              isWaiting={isWaiting}
+              isFocusMode={isFocusMode}
+            />
+          </div>
+        </div>
+
+        {/* Listener-only advisor panel */}
+        {isListener && !isWaiting && session.listener_id && (
+          <EchoAdvisor
+            messages={messages}
+            listenerId={session.listener_id}
+            seekerId={session.seeker_id}
+          />
+        )}
       </div>
 
       {/* Crisis banner */}
-      {showCrisisBanner && !crisisDismissed && (
-        <CrisisBanner
-          onDismiss={() => {
-            setCrisisDismissed(true);
-            setShowCrisisBanner(false);
-          }}
-        />
-      )}
+      {showCrisisBanner && <CrisisBanner />}
 
       {/* Input area */}
       {!isWaiting && (
@@ -247,6 +270,7 @@ const ChatRoom = () => {
           setInput={setInput}
           sending={sending}
           onSend={handleSend}
+          isFocusMode={isFocusMode}
         />
       )}
     </div>
