@@ -47,6 +47,7 @@ const Simulation = ({ onComplete }: SimulationProps) => {
   const [retriesUsed, setRetriesUsed] = useState(0);
   const [freeTextInput, setFreeTextInput] = useState("");
   const [currentFeedback, setCurrentFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+  const isSubmitting = useRef(false);
   const [finalResult, setFinalResult] = useState<FinalEvalResult | null>(null);
   const [error, setError] = useState("");
   const [isFocusMode, setIsFocusMode] = useState(false);
@@ -112,7 +113,8 @@ const Simulation = ({ onComplete }: SimulationProps) => {
 
   // ─── HANDLE FREE TEXT ───
   const handleFreeTextSubmit = async () => {
-    if (!freeTextInput.trim()) return;
+    if (!freeTextInput.trim() || isSubmitting.current) return;
+    isSubmitting.current = true;
     const turn = turns[currentTurn];
     setPhase("evaluating-free-text");
 
@@ -143,12 +145,13 @@ const Simulation = ({ onComplete }: SimulationProps) => {
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Evaluation failed");
-      // Fail open — accept the response
       const resp: TurnResponse = { turnIndex: currentTurn, response: freeTextInput.trim(), correct: true, feedback: "Response accepted." };
       setResponses(prev => [...prev, resp]);
       setFreeTextInput("");
       setCurrentFeedback({ correct: true, text: "Response accepted." });
       setPhase("showing-feedback");
+    } finally {
+      isSubmitting.current = false;
     }
   };
 
@@ -364,9 +367,10 @@ const Simulation = ({ onComplete }: SimulationProps) => {
             }`}
             style={{ overscrollBehavior: "contain" }}
           >
-            {/* Previous turns */}
+            {/* Previous turns (exclude the most recent if we're showing its feedback separately) */}
             {responses.map((resp, i) => {
               const t = turns[resp.turnIndex];
+              const isLatest = i === responses.length - 1 && phase === "showing-feedback";
               return (
                 <div key={i} className="flex flex-col gap-1">
                   {/* Alex message */}
@@ -384,10 +388,12 @@ const Simulation = ({ onComplete }: SimulationProps) => {
                       <p className="font-body text-[13px]">{renderFormatted(resp.response)}</p>
                     </div>
                   </div>
-                  {/* Feedback */}
-                  <div className={`p-1 font-body text-[11px] ${resp.correct ? "border border-foreground text-foreground" : "bg-foreground text-background"}`}>
-                    {resp.correct ? "●" : "✕"} {resp.feedback}
-                  </div>
+                  {/* Feedback — skip for latest turn since it's shown below via currentFeedback */}
+                  {!isLatest && (
+                    <div className={`p-1 font-body text-[11px] ${resp.correct ? "border border-foreground text-foreground" : "bg-foreground text-background"}`}>
+                      {resp.correct ? "●" : "✕"} {resp.feedback}
+                    </div>
+                  )}
                 </div>
               );
             })}
