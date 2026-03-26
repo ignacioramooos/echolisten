@@ -14,6 +14,7 @@ import ChatRoom from "./pages/ChatRoom.tsx";
 import ListenQueue from "./pages/ListenQueue.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import About from "./pages/About.tsx";
+import ListenerSignup from "./pages/ListenerSignup.tsx";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/listener-signup" element={<ListenerSignup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />

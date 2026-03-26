@@ -20,7 +20,7 @@ const HeroSection = () => {
       </p>
       <div className="mt-4 flex gap-1">
         <EchoButton variant="solid" size="md" onClick={() => navigate("/chat/new")}>Find a Listener</EchoButton>
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/formation")}>Become a Listener</EchoButton>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>Become a Listener</EchoButton>
       </div>
     </section>
   );
@@ -91,7 +91,7 @@ const FormationSection = () => {
       </div>
 
       <div className="mt-3">
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/formation")}>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>
           Begin Formation
         </EchoButton>
       </div>
@@ -182,7 +182,7 @@ const Index = () => {
           <nav className="flex gap-2">
             <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">About</Link>
             <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">Safety</Link>
-            <Link to="/formation" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
+            <Link to="/listener-signup" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
           </nav>
         </div>
       </footer>
