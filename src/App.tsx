@@ -18,6 +18,7 @@ import ListenerSignup from "./pages/ListenerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
+import AuthCallback from "./pages/AuthCallback.tsx";
 
 const queryClient = new QueryClient();
 
