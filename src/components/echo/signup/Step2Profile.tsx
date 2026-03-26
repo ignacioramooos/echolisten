@@ -28,7 +28,7 @@ const Step2Profile = ({ data, onChange, onNext, onBack }: Props) => {
     onChange({ ...data, avatarFile: file, selectedAvatar: null, avatarPreview: url });
   };
 
-  const hasAvatar = previewUrl || data.selectedAvatar !== undefined && data.selectedAvatar !== null;
+  const hasAvatar = !!previewUrl || (data.selectedAvatar !== undefined && data.selectedAvatar !== null);
   const canContinue = hasAvatar && bio.trim().length > 0;
 
   return (
