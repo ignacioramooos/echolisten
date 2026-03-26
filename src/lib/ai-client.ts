@@ -13,6 +13,8 @@ export interface EvalResult {
     crisis_recognition: string;
     boundary_setting: string;
     tone: string;
+    advice_avoidance?: string;
+    [key: string]: string | undefined;
   };
 }
 
