@@ -53,6 +53,12 @@ const AppInner = () => {
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AppInner />
   </QueryClientProvider>
 );
 
