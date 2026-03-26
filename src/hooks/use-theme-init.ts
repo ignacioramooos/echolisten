@@ -6,8 +6,9 @@ export function useThemeInit() {
     const apply = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user?.id) {
+        // Theme is only stored on listener_profiles
         const { data } = await supabase
-          .from("profiles")
+          .from("listener_profiles" as any)
           .select("theme")
           .eq("user_id", session.user.id)
           .maybeSingle();
@@ -23,7 +24,7 @@ export function useThemeInit() {
         document.documentElement.setAttribute("data-theme", "light");
       } else {
         supabase
-          .from("profiles")
+          .from("listener_profiles" as any)
           .select("theme")
           .eq("user_id", session.user.id)
           .maybeSingle()

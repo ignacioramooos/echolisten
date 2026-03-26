@@ -9,6 +9,8 @@ interface WaitingSession {
   id: string;
   topic_snippet: string | null;
   created_at: string;
+  topics: string[];
+  requested_language: string | null;
 }
 
 const ListenQueue = () => {
@@ -26,19 +28,43 @@ const ListenQueue = () => {
       .eq("status", "waiting")
       .order("created_at", { ascending: true });
 
-    if (data) setSessions(data);
+    if (data) setSessions(data.map((s: any) => ({
+      ...s,
+      topics: s.topics || [],
+      requested_language: s.requested_language || null,
+    })));
     setLoading(false);
   };
 
   useEffect(() => {
-    loadSessions();
+    // Auth guard: must be authenticated listener with badge
+    const check = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { navigate("/login"); return; }
+
+      const { data: profile } = await (supabase as any)
+        .from("listener_profiles")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!profile) { navigate("/dashboard/seeker"); return; }
+
+      const { data: progress } = await supabase
+        .from("formation_progress")
+        .select("bot_passed")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!progress?.bot_passed) { navigate("/dashboard/listener"); return; }
+
+      loadSessions();
+    };
+    check();
+
     const channel = supabase
       .channel("waiting-sessions")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "sessions" },
-        () => loadSessions()
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "sessions" }, () => loadSessions())
       .subscribe();
 
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -47,7 +73,7 @@ const ListenQueue = () => {
       supabase.removeChannel(channel);
       clearInterval(timer);
     };
-  }, []);
+  }, [navigate]);
 
   const handlePickUp = async (sessionId: string) => {
     setPicking(sessionId);
@@ -97,9 +123,7 @@ const ListenQueue = () => {
 
         {!loading && sessions.length > 0 && (
           <p className="font-body text-[11px] text-muted-foreground mt-1">
-            {sessions.length === 1
-              ? t("queue.waitingCountSingle")
-              : t("queue.waitingCount", { count: sessions.length })}
+            ● {sessions.length} {sessions.length === 1 ? "person" : "people"} waiting. Select from the top for priority.
           </p>
         )}
 
@@ -122,11 +146,27 @@ const ListenQueue = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="font-body text-[11px] bg-foreground text-background px-1.5 py-0.5 inline-block">
-                    {t("queue.waiting", { time: getWaitTime(s.created_at) })}
+                    Waiting {getWaitTime(s.created_at)}
                   </span>
+                  {s.requested_language && (
+                    <span className="font-body text-[10px] text-muted-foreground">
+                      {s.requested_language}
+                    </span>
+                  )}
                 </div>
-                <p className="font-body text-[13px] text-foreground truncate italic">
-                  {s.topic_snippet ? s.topic_snippet.slice(0, 80) : t("queue.noPreview")}
+                {/* Topics as outlined labels */}
+                {s.topics.length > 0 && (
+                  <div className="flex flex-wrap gap-0.5 mb-0.5">
+                    {s.topics.map((topic) => (
+                      <span key={topic} className="font-body text-[10px] border border-foreground px-1 py-0">
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {/* Topic snippet — first message NOT shown until accepted */}
+                <p className="font-body text-[12px] text-muted-foreground truncate italic">
+                  {s.topic_snippet ? s.topic_snippet.slice(0, 80) : "No preview"}
                 </p>
               </div>
               <EchoButton
@@ -136,7 +176,7 @@ const ListenQueue = () => {
                 disabled={picking === s.id}
                 className={picking === s.id ? "opacity-40" : ""}
               >
-                {picking === s.id ? t("queue.joining") : t("queue.acceptSession")}
+                {picking === s.id ? "Joining..." : "Accept Session"}
               </EchoButton>
             </div>
           ))}

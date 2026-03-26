@@ -89,8 +89,8 @@ const Moderation = () => {
       if (!user) { navigate("/login"); return; }
       setUserId(user.id);
 
-      const { data: profile } = await supabase
-        .from("profiles")
+      const { data: profile } = await (supabase as any)
+        .from("listener_profiles")
         .select("role")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -200,8 +200,8 @@ const Moderation = () => {
   /* ── Listener Overview ── */
 
   const loadListeners = useCallback(async () => {
-    const { data: listenerProfiles } = await supabase
-      .from("profiles")
+    const { data: listenerProfiles } = await (supabase as any)
+      .from("listener_profiles")
       .select("user_id, username")
       .eq("role", "listener");
 
@@ -264,8 +264,8 @@ const Moderation = () => {
   /* ── Listener Profile View ── */
 
   const viewListenerProfile = async (listenerId: string) => {
-    const { data: profile } = await supabase
-      .from("profiles")
+    const { data: profile } = await (supabase as any)
+      .from("listener_profiles")
       .select("user_id, username, bio, created_at")
       .eq("user_id", listenerId)
       .maybeSingle();

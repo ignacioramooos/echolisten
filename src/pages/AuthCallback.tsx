@@ -31,7 +31,6 @@ const AuthCallback = () => {
           access_token: accessToken,
           refresh_token: refreshToken,
         });
-
         if (setSessionError) {
           console.error("Auth setSession error:", setSessionError);
           navigate("/login");
@@ -39,7 +38,6 @@ const AuthCallback = () => {
         }
       }
 
-      // If this is a recovery flow, tokens are now processed; go reset password.
       if (type === "recovery") {
         navigate("/reset-password");
         return;
@@ -59,55 +57,72 @@ const AuthCallback = () => {
       const meta = user.user_metadata || {};
       const role = meta.role;
 
-      // Check if profile already exists
-      const { data: existingProfile } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      if (role === "listener") {
+        // Check if listener profile already exists
+        const { data: existingProfile } = await (supabase as any)
+          .from("listener_profiles")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
 
-      if (!existingProfile) {
-        setStatus("Setting up your profile...");
+        if (!existingProfile) {
+          setStatus("Setting up your profile...");
 
-        // Create profile from user_metadata stored during signup
-        const { error: profileErr } = await supabase.from("profiles").insert({
-          user_id: user.id,
-          role: role || "seeker",
-          first_name: meta.first_name || null,
-          last_name: meta.last_name || null,
-          country: meta.country || null,
-          gender: meta.gender || null,
-          username: meta.username || null,
-          email: user.email,
-          bio: meta.bio || null,
-          topics_comfortable: meta.topics_comfortable || [],
-          topics_avoid: meta.topics_avoid || [],
-          topics_lived_experience: meta.topics_lived_experience || [],
-          languages: meta.languages || [],
-          verified_agreements: true,
-        });
+          const { error: profileErr } = await (supabase as any).from("listener_profiles").insert({
+            user_id: user.id,
+            role: "listener",
+            first_name: meta.first_name || null,
+            last_name: meta.last_name || null,
+            country: meta.country || null,
+            gender: meta.gender || null,
+            username: meta.username || null,
+            email: user.email,
+            bio: meta.bio || null,
+            topics_comfortable: meta.topics_comfortable || [],
+            topics_avoid: meta.topics_avoid || [],
+            topics_lived_experience: meta.topics_lived_experience || [],
+            languages: meta.languages || [],
+            verified_agreements: true,
+          });
 
-        if (profileErr) {
-          console.error("Profile creation error:", profileErr);
-          navigate("/login");
-          return;
-        }
+          if (profileErr) {
+            console.error("Listener profile creation error:", profileErr);
+            navigate("/login");
+            return;
+          }
 
-        // Init formation progress for listeners
-        if (role === "listener") {
+          // Init formation progress
           await supabase.from("formation_progress").insert({
             user_id: user.id,
             steps_completed: [],
             bot_passed: false,
           });
         }
-      }
-
-      // Redirect based on role
-      if (role === "listener") {
-        navigate("/formation");
+        navigate("/dashboard/listener");
       } else {
-        navigate("/dashboard");
+        // Seeker flow — check if seeker profile exists
+        const { data: existingSeeker } = await (supabase as any)
+          .from("seeker_profiles")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (!existingSeeker) {
+          setStatus("Setting up your profile...");
+
+          const { error: profileErr } = await (supabase as any).from("seeker_profiles").insert({
+            user_id: user.id,
+            username: meta.username || null,
+            email: user.email,
+          });
+
+          if (profileErr) {
+            console.error("Seeker profile creation error:", profileErr);
+            navigate("/login");
+            return;
+          }
+        }
+        navigate("/dashboard/seeker");
       }
     };
 

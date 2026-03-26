@@ -32,11 +32,44 @@ const Login = () => {
       return;
     }
 
+    // Smart routing: check which profile table has this user
+    const userId = data.user?.id;
+    if (!userId) {
+      setError("Authentication failed.");
+      setLoading(false);
+      return;
+    }
+
+    // Check listener_profiles first
+    const { data: listenerProfile } = await (supabase as any)
+      .from("listener_profiles")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (listenerProfile) {
+      navigate("/dashboard/listener");
+      return;
+    }
+
+    // Check seeker_profiles
+    const { data: seekerProfile } = await (supabase as any)
+      .from("seeker_profiles")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (seekerProfile) {
+      navigate("/dashboard/seeker");
+      return;
+    }
+
+    // Fallback: use metadata role
     const role = data.user?.user_metadata?.role;
     if (role === "listener") {
-      navigate("/formation");
+      navigate("/dashboard/listener");
     } else {
-      navigate("/dashboard");
+      navigate("/dashboard/seeker");
     }
   };
 
@@ -93,9 +126,15 @@ const Login = () => {
 
           <div className="flex flex-col items-center gap-0.5 mt-1">
             <p className="font-body text-[11px] text-muted-foreground">
-              {t("auth.newToEcho")}{" "}
-              <Link to="/signup" className="text-foreground underline echo-fade">
-                {t("auth.createAccount")}
+              Need support?{" "}
+              <Link to="/signup/seeker" className="text-foreground underline echo-fade">
+                Create Seeker account
+              </Link>
+            </p>
+            <p className="font-body text-[11px] text-muted-foreground">
+              Want to listen?{" "}
+              <Link to="/signup/listener" className="text-foreground underline echo-fade">
+                Become a Listener
               </Link>
             </p>
             <p className="font-body text-[11px] text-muted-foreground">
