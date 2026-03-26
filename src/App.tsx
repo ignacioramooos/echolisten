@@ -17,6 +17,7 @@ import About from "./pages/About.tsx";
 import ListenerSignup from "./pages/ListenerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
 import Settings from "./pages/Settings.tsx";
+import Moderation from "./pages/Moderation.tsx";
 
 const queryClient = new QueryClient();
 
