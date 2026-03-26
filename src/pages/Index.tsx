@@ -182,7 +182,7 @@ const Index = () => {
           <nav className="flex gap-2">
             <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">About</Link>
             <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">Safety</Link>
-            <Link to="/formation" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
+            <Link to="/listener-signup" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
           </nav>
         </div>
       </footer>
