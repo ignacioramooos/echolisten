@@ -15,6 +15,7 @@ const ListenQueue = () => {
   const [sessions, setSessions] = useState<WaitingSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [picking, setPicking] = useState<string | null>(null);
+  const [now, setNow] = useState(Date.now());
 
   const loadSessions = async () => {
     const { data } = await supabase
@@ -29,33 +30,28 @@ const ListenQueue = () => {
 
   useEffect(() => {
     loadSessions();
-
-    // Subscribe to new waiting sessions
     const channel = supabase
       .channel("waiting-sessions")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "sessions" },
-        () => {
-          loadSessions();
-        }
+        () => loadSessions()
       )
       .subscribe();
 
+    // Update "now" every second for live wait times
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(timer);
     };
   }, []);
 
   const handlePickUp = async (sessionId: string) => {
     setPicking(sessionId);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { navigate("/login"); return; }
 
     const { error } = await supabase
       .from("sessions")
@@ -63,17 +59,25 @@ const ListenQueue = () => {
       .eq("id", sessionId)
       .eq("status", "waiting");
 
-    if (error) {
-      setPicking(null);
-      return;
-    }
-
+    if (error) { setPicking(null); return; }
     navigate(`/chat/${sessionId}`);
   };
 
-  const formatTime = (ts: string) => {
-    const d = new Date(ts);
-    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const getWaitTime = (createdAt: string) => {
+    const diff = Math.max(0, Math.floor((now - new Date(createdAt).getTime()) / 1000));
+    const mins = Math.floor(diff / 60);
+    const secs = diff % 60;
+    return `${mins}m ${String(secs).padStart(2, "0")}s`;
+  };
+
+  const getWaitSeconds = (createdAt: string) =>
+    Math.floor((now - new Date(createdAt).getTime()) / 1000);
+
+  const getBorderWeight = (createdAt: string) => {
+    const secs = getWaitSeconds(createdAt);
+    if (secs > 900) return "border-[3px]";
+    if (secs > 300) return "border-2";
+    return "border";
   };
 
   return (
@@ -89,11 +93,14 @@ const ListenQueue = () => {
         <h1 className="font-display text-[32px] leading-tight text-foreground">
           Someone needs you.
         </h1>
-        <p className="font-body text-[13px] text-muted-foreground mt-1">
-          Pick up a session to begin listening.
-        </p>
 
-        <div className="mt-3 flex flex-col">
+        {!loading && sessions.length > 0 && (
+          <p className="font-body text-[11px] text-muted-foreground mt-1">
+            ● {sessions.length} {sessions.length === 1 ? "person" : "people"} waiting. Select from the top for priority.
+          </p>
+        )}
+
+        <div className="mt-3 flex flex-col gap-1">
           {loading && (
             <p className="font-body text-[13px] text-muted-foreground">Loading...</p>
           )}
@@ -107,14 +114,16 @@ const ListenQueue = () => {
           {sessions.map((s) => (
             <div
               key={s.id}
-              className="border-b border-foreground py-2 flex items-center justify-between gap-2"
+              className={`${getBorderWeight(s.created_at)} border-foreground py-2 px-2 flex items-center justify-between gap-2`}
             >
               <div className="flex-1 min-w-0">
-                <span className="font-body text-[11px] text-muted-foreground">
-                  {formatTime(s.created_at)}
-                </span>
-                <p className="font-body text-[13px] text-foreground truncate mt-0.5">
-                  {s.topic_snippet || "No preview available"}
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="font-body text-[11px] bg-foreground text-background px-1.5 py-0.5 inline-block">
+                    Waiting {getWaitTime(s.created_at)}
+                  </span>
+                </div>
+                <p className="font-body text-[13px] text-foreground truncate italic">
+                  {s.topic_snippet ? s.topic_snippet.slice(0, 80) : "No preview available"}
                 </p>
               </div>
               <EchoButton
@@ -124,7 +133,7 @@ const ListenQueue = () => {
                 disabled={picking === s.id}
                 className={picking === s.id ? "opacity-40" : ""}
               >
-                {picking === s.id ? "Joining..." : "Begin Session"}
+                {picking === s.id ? "Joining..." : "Accept Session"}
               </EchoButton>
             </div>
           ))}
