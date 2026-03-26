@@ -116,6 +116,8 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          chat_bg_intensity: number | null
+          chat_bg_url: string | null
           country: string | null
           created_at: string | null
           email: string | null
@@ -124,7 +126,9 @@ export type Database = {
           id: string
           languages: string[] | null
           last_name: string | null
+          preferred_language: string | null
           role: string
+          theme: string | null
           topics_avoid: string[] | null
           topics_comfortable: string[] | null
           topics_lived_experience: string[] | null
@@ -136,6 +140,8 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          chat_bg_intensity?: number | null
+          chat_bg_url?: string | null
           country?: string | null
           created_at?: string | null
           email?: string | null
@@ -144,7 +150,9 @@ export type Database = {
           id?: string
           languages?: string[] | null
           last_name?: string | null
+          preferred_language?: string | null
           role?: string
+          theme?: string | null
           topics_avoid?: string[] | null
           topics_comfortable?: string[] | null
           topics_lived_experience?: string[] | null
@@ -156,6 +164,8 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          chat_bg_intensity?: number | null
+          chat_bg_url?: string | null
           country?: string | null
           created_at?: string | null
           email?: string | null
@@ -164,7 +174,9 @@ export type Database = {
           id?: string
           languages?: string[] | null
           last_name?: string | null
+          preferred_language?: string | null
           role?: string
+          theme?: string | null
           topics_avoid?: string[] | null
           topics_comfortable?: string[] | null
           topics_lived_experience?: string[] | null
