@@ -11,7 +11,7 @@ interface Props {
   error: string;
 }
 
-const HCAPTCHA_SITE_KEY = "10000000-ffff-ffff-ffff-000000000000"; // Test key — replace with production key
+const HCAPTCHA_SITE_KEY = "b522d150-2c12-4678-bbc6-82bee8fce844";
 
 const Step5Verification = ({ data, onChange, onSubmit, onBack, loading, error }: Props) => {
   const { t } = useTranslation();
