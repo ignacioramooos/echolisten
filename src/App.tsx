@@ -41,6 +41,7 @@ const App = () => (
           <Route path="/listen" element={<ListenQueue />} />
           <Route path="/aura" element={<AuraChat />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/mod" element={<Moderation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
