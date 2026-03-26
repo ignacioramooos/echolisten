@@ -47,7 +47,19 @@ const ListenerSignup = () => {
     const userId = authData.user?.id;
     if (!userId) { setError("Registration failed."); setLoading(false); return; }
 
-    // 2. Create profile
+    // 2. Upload avatar if file was selected (now authenticated)
+    let avatarUrl = data.avatarUrl || null;
+    if (data.avatarFile && authData.session) {
+      const ext = data.avatarFile.name.split(".").pop();
+      const path = `${userId}/avatar.${ext}`;
+      const { error: upErr } = await supabase.storage.from("avatars").upload(path, data.avatarFile, { upsert: true });
+      if (!upErr) {
+        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+        avatarUrl = urlData.publicUrl;
+      }
+    }
+
+    // 3. Create profile
     const { error: profileErr } = await supabase.from("profiles").insert({
       user_id: userId,
       role: "listener",
@@ -57,7 +69,7 @@ const ListenerSignup = () => {
       gender: data.gender,
       username: data.username,
       email: data.email,
-      avatar_url: data.avatarUrl || null,
+      avatar_url: avatarUrl,
       bio: data.bio,
       topics_comfortable: data.comfortable || [],
       topics_avoid: data.avoid || [],
@@ -68,7 +80,7 @@ const ListenerSignup = () => {
 
     if (profileErr) { setError(profileErr.message); setLoading(false); return; }
 
-    // 3. Init formation progress
+    // 4. Init formation progress
     await supabase.from("formation_progress").insert({
       user_id: userId,
       steps_completed: [],

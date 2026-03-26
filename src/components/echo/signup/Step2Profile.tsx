@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Upload } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { defaultAvatars } from "./avatars";
 
 interface Props {
@@ -14,26 +13,23 @@ interface Props {
 const Step2Profile = ({ data, onChange, onNext, onBack }: Props) => {
   const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(data.avatarPreview || null);
   const set = (key: string, val: any) => onChange({ ...data, [key]: val });
   const bio: string = data.bio || "";
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("avatars").upload(path, file);
-    if (!error) {
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-      set("avatarUrl", urlData.publicUrl);
-      set("selectedAvatar", null);
-    }
-    setUploading(false);
+    // Store file for later upload after auth
+    set("avatarFile", file);
+    set("selectedAvatar", null);
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    onChange({ ...data, avatarFile: file, selectedAvatar: null, avatarPreview: url });
   };
 
-  const canContinue = (data.avatarUrl || data.selectedAvatar !== undefined) && bio.trim().length > 0;
+  const hasAvatar = previewUrl || data.selectedAvatar !== undefined && data.selectedAvatar !== null;
+  const canContinue = hasAvatar && bio.trim().length > 0;
 
   return (
     <div className="flex flex-col gap-2">
@@ -49,12 +45,12 @@ const Step2Profile = ({ data, onChange, onNext, onBack }: Props) => {
           className="flex items-center gap-1 border border-foreground bg-background px-2 py-1 font-body text-[12px] text-foreground echo-fade w-fit"
         >
           <Upload size={14} strokeWidth={1.5} />
-          {uploading ? "Uploading..." : t("signup.step2.avatarUpload")}
+          {t("signup.step2.avatarUpload")}
         </button>
 
-        {data.avatarUrl && !data.selectedAvatar && data.selectedAvatar !== 0 && (
+        {previewUrl && (data.selectedAvatar === null || data.selectedAvatar === undefined) && (
           <div className="w-8 h-8 border border-foreground overflow-hidden">
-            <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+            <img src={previewUrl} alt="Avatar" className="w-full h-full object-cover" />
           </div>
         )}
 
