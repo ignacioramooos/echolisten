@@ -367,9 +367,10 @@ const Simulation = ({ onComplete }: SimulationProps) => {
             }`}
             style={{ overscrollBehavior: "contain" }}
           >
-            {/* Previous turns */}
+            {/* Previous turns (exclude the most recent if we're showing its feedback separately) */}
             {responses.map((resp, i) => {
               const t = turns[resp.turnIndex];
+              const isLatest = i === responses.length - 1 && phase === "showing-feedback";
               return (
                 <div key={i} className="flex flex-col gap-1">
                   {/* Alex message */}
@@ -387,10 +388,12 @@ const Simulation = ({ onComplete }: SimulationProps) => {
                       <p className="font-body text-[13px]">{renderFormatted(resp.response)}</p>
                     </div>
                   </div>
-                  {/* Feedback */}
-                  <div className={`p-1 font-body text-[11px] ${resp.correct ? "border border-foreground text-foreground" : "bg-foreground text-background"}`}>
-                    {resp.correct ? "●" : "✕"} {resp.feedback}
-                  </div>
+                  {/* Feedback — skip for latest turn since it's shown below via currentFeedback */}
+                  {!isLatest && (
+                    <div className={`p-1 font-body text-[11px] ${resp.correct ? "border border-foreground text-foreground" : "bg-foreground text-background"}`}>
+                      {resp.correct ? "●" : "✕"} {resp.feedback}
+                    </div>
+                  )}
                 </div>
               );
             })}
