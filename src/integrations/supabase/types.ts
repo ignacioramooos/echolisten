@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      aura_sessions: {
+        Row: {
+          ended_at: string | null
+          flagged: boolean
+          id: string
+          messages: Json
+          seeker_id: string
+          started_at: string
+        }
+        Insert: {
+          ended_at?: string | null
+          flagged?: boolean
+          id?: string
+          messages?: Json
+          seeker_id: string
+          started_at?: string
+        }
+        Update: {
+          ended_at?: string | null
+          flagged?: boolean
+          id?: string
+          messages?: Json
+          seeker_id?: string
+          started_at?: string
+        }
+        Relationships: []
+      }
       formation_progress: {
         Row: {
           badge_earned_at: string | null
