@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 
 const NewSession = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,8 +44,6 @@ const NewSession = () => {
       return;
     }
 
-    // Navigate to chat room — first message will be sent once a listener joins
-    // Store the opening message in sessionStorage for now
     sessionStorage.setItem(`echo-opening-${session.id}`, message.trim());
     navigate(`/chat/${session.id}`);
   };
@@ -62,7 +62,7 @@ const NewSession = () => {
               onChange={(e) => {
                 if (e.target.value.length <= maxChars) setMessage(e.target.value);
               }}
-              placeholder="What's on your mind? Start here — your first message will match you with a Listener."
+              placeholder={t("chat.typeMessage")}
               className="w-full border border-foreground bg-background px-2 py-2 font-body text-[14px] text-foreground placeholder:text-muted-foreground placeholder:italic outline-none resize-none"
               rows={6}
             />
@@ -83,7 +83,7 @@ const NewSession = () => {
               disabled={!message.trim() || loading}
               className={!message.trim() || loading ? "opacity-40 cursor-not-allowed" : ""}
             >
-              {loading ? "Finding..." : "Find a Listener"}
+              {loading ? t("chat.findingEcho") : t("landing.findListener")}
             </EchoButton>
           </div>
         </div>

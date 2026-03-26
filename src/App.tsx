@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound.tsx";
 import About from "./pages/About.tsx";
 import ListenerSignup from "./pages/ListenerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
+import Settings from "./pages/Settings.tsx";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/chat/:sessionId" element={<ChatRoom />} />
           <Route path="/listen" element={<ListenQueue />} />
           <Route path="/aura" element={<AuraChat />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

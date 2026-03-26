@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { PageShell } from "@/components/echo/PageShell";
 
 const About = () => {
+  const { t } = useTranslation();
   return (
-    <PageShell navLinks={[{ label: "Home", href: "/" }]}>
-      <h1 className="font-display text-[48px] leading-tight text-foreground">About Echo.</h1>
+    <PageShell navLinks={[{ label: t("about.backHome"), href: "/" }]}>
+      <h1 className="font-display text-[48px] leading-tight text-foreground">{t("about.heading")}</h1>
 
       <section className="mt-4">
         <h2 className="font-display text-[28px] leading-tight text-foreground">What is Echo?</h2>
@@ -16,7 +18,7 @@ const About = () => {
       <section className="mt-4 border-t border-foreground pt-4">
         <h2 className="font-display text-[28px] leading-tight text-foreground">Our Mission</h2>
         <p className="font-body text-[13px] text-muted-foreground mt-1 max-w-[600px]">
-          Content coming soon.
+          {t("about.placeholder")}
         </p>
       </section>
 
@@ -39,7 +41,7 @@ const About = () => {
       <section className="mt-4 border-t border-foreground pt-4">
         <h2 className="font-display text-[28px] leading-tight text-foreground">Contact</h2>
         <p className="font-body text-[13px] text-muted-foreground mt-1 max-w-[600px]">
-          Content coming soon.
+          {t("about.placeholder")}
         </p>
       </section>
     </PageShell>

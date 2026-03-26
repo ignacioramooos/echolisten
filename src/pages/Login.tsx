@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/echo/AuthShell";
@@ -8,6 +9,7 @@ import { EchoInput } from "@/components/echo/EchoInput";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -41,11 +43,11 @@ const Login = () => {
   return (
     <AuthShell>
       <form onSubmit={handleSubmit}>
-        <h1 className="font-display text-[36px] leading-tight text-foreground">Welcome back.</h1>
+        <h1 className="font-display text-[36px] leading-tight text-foreground">{t("auth.welcomeBack")}</h1>
 
         <div className="mt-3 flex flex-col gap-2">
           <EchoInput
-            label="Email address"
+            label={t("auth.email")}
             type="email"
             placeholder="you@email.com"
             value={email}
@@ -55,7 +57,7 @@ const Login = () => {
 
           <div className="flex flex-col gap-0.5">
             <label className="font-body text-[12px] uppercase tracking-widest text-foreground">
-              Password
+              {t("auth.password")}
             </label>
             <div className="relative">
               <input
@@ -86,19 +88,19 @@ const Login = () => {
           )}
 
           <EchoButton type="submit" variant="solid" size="md">
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? t("auth.loggingIn") : t("auth.loginButton")}
           </EchoButton>
 
           <div className="flex flex-col items-center gap-0.5 mt-1">
             <p className="font-body text-[11px] text-muted-foreground">
-              New to Echo?{" "}
+              {t("auth.newToEcho")}{" "}
               <Link to="/signup" className="text-foreground underline echo-fade">
-                Create an account →
+                {t("auth.createAccount")}
               </Link>
             </p>
             <p className="font-body text-[11px] text-muted-foreground">
               <Link to="/reset-password" className="text-foreground underline echo-fade">
-                Forgot password →
+                {t("auth.forgotPassword")}
               </Link>
             </p>
           </div>
