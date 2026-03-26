@@ -113,7 +113,8 @@ const Simulation = ({ onComplete }: SimulationProps) => {
 
   // ─── HANDLE FREE TEXT ───
   const handleFreeTextSubmit = async () => {
-    if (!freeTextInput.trim()) return;
+    if (!freeTextInput.trim() || isSubmitting.current) return;
+    isSubmitting.current = true;
     const turn = turns[currentTurn];
     setPhase("evaluating-free-text");
 
