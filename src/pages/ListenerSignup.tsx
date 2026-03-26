@@ -33,59 +33,30 @@ const ListenerSignup = () => {
     setLoading(true);
     setError("");
 
-    // 1. Sign up
-    const { data: authData, error: authErr } = await supabase.auth.signUp({
+    // Store all profile data in user_metadata — profile will be created in AuthCallback after email confirmation
+    const { error: authErr } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
-        data: { role: "listener" },
+        data: {
+          role: "listener",
+          first_name: data.firstName,
+          last_name: data.lastName,
+          country: data.country,
+          gender: data.gender,
+          username: data.username,
+          bio: data.bio,
+          selected_avatar: data.selectedAvatar,
+          topics_comfortable: data.comfortable || [],
+          topics_avoid: data.avoid || [],
+          topics_lived_experience: data.lived || [],
+          languages: data.languages || [],
+        },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
     if (authErr) { setError(authErr.message); setLoading(false); return; }
-    const userId = authData.user?.id;
-    if (!userId) { setError("Registration failed."); setLoading(false); return; }
-
-    // 2. Upload avatar if file was selected (now authenticated)
-    let avatarUrl = data.avatarUrl || null;
-    if (data.avatarFile && authData.session) {
-      const ext = data.avatarFile.name.split(".").pop();
-      const path = `${userId}/avatar.${ext}`;
-      const { error: upErr } = await supabase.storage.from("avatars").upload(path, data.avatarFile, { upsert: true });
-      if (!upErr) {
-        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-        avatarUrl = urlData.publicUrl;
-      }
-    }
-
-    // 3. Create profile
-    const { error: profileErr } = await supabase.from("profiles").insert({
-      user_id: userId,
-      role: "listener",
-      first_name: data.firstName,
-      last_name: data.lastName,
-      country: data.country,
-      gender: data.gender,
-      username: data.username,
-      email: data.email,
-      avatar_url: avatarUrl,
-      bio: data.bio,
-      topics_comfortable: data.comfortable || [],
-      topics_avoid: data.avoid || [],
-      topics_lived_experience: data.lived || [],
-      languages: data.languages || [],
-      verified_agreements: true,
-    });
-
-    if (profileErr) { setError(profileErr.message); setLoading(false); return; }
-
-    // 4. Init formation progress
-    await supabase.from("formation_progress").insert({
-      user_id: userId,
-      steps_completed: [],
-      bot_passed: false,
-    });
 
     setLoading(false);
     setDone(true);
