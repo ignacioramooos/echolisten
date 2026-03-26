@@ -18,6 +18,7 @@ import ListenerSignup from "./pages/ListenerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
+import AuthCallback from "./pages/AuthCallback.tsx";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,8 @@ const App = () => (
           <Route path="/listener-signup" element={<ListenerSignup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/formation" element={<Formation />} />
           <Route path="/chat/new" element={<ChatNew />} />

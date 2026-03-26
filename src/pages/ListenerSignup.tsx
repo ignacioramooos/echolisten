@@ -39,7 +39,7 @@ const ListenerSignup = () => {
       password: data.password,
       options: {
         data: { role: "listener" },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
