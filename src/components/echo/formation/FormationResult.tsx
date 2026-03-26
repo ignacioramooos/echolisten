@@ -23,7 +23,7 @@ const FormationResult = ({ result, onRetry }: FormationResultProps) => {
       )}
 
       <p className="font-body text-[14px] text-muted-foreground mt-3">
-        Score: {result.score}/100
+        Simulation Score: {result.score}/100
       </p>
 
       <div className="mt-4 w-full max-w-[480px] flex flex-col gap-2">
@@ -38,7 +38,10 @@ const FormationResult = ({ result, onRetry }: FormationResultProps) => {
       </div>
 
       {!result.passed && (
-        <div className="mt-4">
+        <div className="mt-4 flex flex-col items-center gap-1">
+          <p className="font-body text-[12px] text-muted-foreground">
+            You need 60/100 to pass. Review the material and try again.
+          </p>
           <EchoButton variant="outline" size="md" onClick={onRetry}>
             Retry Simulation
           </EchoButton>
