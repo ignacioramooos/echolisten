@@ -33,7 +33,7 @@ const Signup = () => {
       password,
       options: {
         data: { role },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
