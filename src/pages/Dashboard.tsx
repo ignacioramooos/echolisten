@@ -221,10 +221,15 @@ function SeekerView({ pastSessions }: { pastSessions: SessionRow[] }) {
     <div className="flex flex-col gap-4">
       <h1 className="font-display text-[40px] leading-tight">How are you doing?</h1>
 
-      <div>
+      <div className="flex flex-col gap-1">
         <Link to="/chat/new">
           <EchoButton variant="solid" size="md">
             Talk to Someone
+          </EchoButton>
+        </Link>
+        <Link to="/aura">
+          <EchoButton variant="outline" size="sm">
+            Talk to Aura (AI Listener)
           </EchoButton>
         </Link>
       </div>
