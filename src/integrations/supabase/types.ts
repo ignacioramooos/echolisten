@@ -112,42 +112,7 @@ export type Database = {
         }
         Relationships: []
       }
-      messages: {
-        Row: {
-          content: string
-          flagged: boolean
-          id: string
-          sender_id: string
-          sent_at: string
-          session_id: string
-        }
-        Insert: {
-          content: string
-          flagged?: boolean
-          id?: string
-          sender_id: string
-          sent_at?: string
-          session_id: string
-        }
-        Update: {
-          content?: string
-          flagged?: boolean
-          id?: string
-          sender_id?: string
-          sent_at?: string
-          session_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
+      listener_profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
@@ -222,6 +187,65 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          content: string
+          flagged: boolean
+          id: string
+          sender_id: string
+          sent_at: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          flagged?: boolean
+          id?: string
+          sender_id: string
+          sent_at?: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          flagged?: boolean
+          id?: string
+          sender_id?: string
+          sent_at?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seeker_profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       session_ratings: {
         Row: {
           created_at: string
@@ -264,10 +288,12 @@ export type Database = {
           extensions_used: number
           id: string
           listener_id: string | null
+          requested_language: string | null
           seeker_id: string
           status: Database["public"]["Enums"]["session_status"]
           timer_end_at: string | null
           topic_snippet: string | null
+          topics: string[] | null
         }
         Insert: {
           created_at?: string
@@ -275,10 +301,12 @@ export type Database = {
           extensions_used?: number
           id?: string
           listener_id?: string | null
+          requested_language?: string | null
           seeker_id: string
           status?: Database["public"]["Enums"]["session_status"]
           timer_end_at?: string | null
           topic_snippet?: string | null
+          topics?: string[] | null
         }
         Update: {
           created_at?: string
@@ -286,10 +314,12 @@ export type Database = {
           extensions_used?: number
           id?: string
           listener_id?: string | null
+          requested_language?: string | null
           seeker_id?: string
           status?: Database["public"]["Enums"]["session_status"]
           timer_end_at?: string | null
           topic_snippet?: string | null
+          topics?: string[] | null
         }
         Relationships: []
       }
