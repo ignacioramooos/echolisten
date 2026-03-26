@@ -47,6 +47,7 @@ const Simulation = ({ onComplete }: SimulationProps) => {
   const [retriesUsed, setRetriesUsed] = useState(0);
   const [freeTextInput, setFreeTextInput] = useState("");
   const [currentFeedback, setCurrentFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+  const isSubmitting = useRef(false);
   const [finalResult, setFinalResult] = useState<FinalEvalResult | null>(null);
   const [error, setError] = useState("");
   const [isFocusMode, setIsFocusMode] = useState(false);
