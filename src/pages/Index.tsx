@@ -91,7 +91,7 @@ const FormationSection = () => {
       </div>
 
       <div className="mt-3">
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/formation")}>
+        <EchoButton variant="outline" size="md" onClick={() => navigate("/listener-signup")}>
           Begin Formation
         </EchoButton>
       </div>
