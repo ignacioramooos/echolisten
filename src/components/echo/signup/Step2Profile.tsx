@@ -45,7 +45,7 @@ const Step2Profile = ({ data, onChange, onNext, onBack }: Props) => {
           className="flex items-center gap-1 border border-foreground bg-background px-2 py-1 font-body text-[12px] text-foreground echo-fade w-fit"
         >
           <Upload size={14} strokeWidth={1.5} />
-          {uploading ? "Uploading..." : t("signup.step2.avatarUpload")}
+          {t("signup.step2.avatarUpload")}
         </button>
 
         {previewUrl && (data.selectedAvatar === null || data.selectedAvatar === undefined) && (
