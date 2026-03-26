@@ -43,10 +43,14 @@ const Signup = () => {
       return;
     }
 
+    // Show confirmation message — profile will be created in AuthCallback after email verification
+    setLoading(false);
+    setError("");
+    // Navigate to a simple "check your email" state
     if (role === "listener") {
-      navigate("/formation");
+      navigate("/listener-signup");
     } else {
-      navigate("/dashboard");
+      navigate("/login");
     }
   };
 
