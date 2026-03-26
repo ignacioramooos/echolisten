@@ -8,6 +8,7 @@ import { EchoInput } from "@/components/echo/EchoInput";
 import { LANGUAGE_OPTIONS, changeLanguage } from "@/lib/i18n";
 
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 /*
  * Justification for personalization: Research suggests environment customization
@@ -182,7 +183,16 @@ const Settings = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="border-b border-foreground">
         <div className="mx-auto w-full max-w-echo px-2 py-1 flex items-center justify-between">
-          <EchoLogo />
+          <div className="flex items-center gap-3">
+            <EchoLogo />
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="font-body text-[11px] inline-flex items-center gap-1 text-muted-foreground echo-fade bg-transparent border-none cursor-pointer p-0"
+            >
+              <ArrowLeft className="h-3 w-3" />
+              Dashboard
+            </button>
+          </div>
           <span className="font-body text-[11px] uppercase tracking-widest text-muted-foreground">
             {t("settings.title")}
           </span>

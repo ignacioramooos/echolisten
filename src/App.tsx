@@ -20,10 +20,13 @@ import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
 
+import { useThemeInit } from "@/hooks/use-theme-init";
+
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const AppInner = () => {
+  useThemeInit();
+  return (
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -36,7 +39,6 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
-
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/formation" element={<Formation />} />
           <Route path="/chat/new" element={<ChatNew />} />
@@ -49,6 +51,12 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AppInner />
   </QueryClientProvider>
 );
 
