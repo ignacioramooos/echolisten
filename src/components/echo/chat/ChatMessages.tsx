@@ -50,6 +50,9 @@ export const ChatMessages = ({ messages, userId, isWaiting, isFocusMode }: ChatM
               <p className={`font-body text-[11px] mt-1 ${isFocusMode ? "text-background/60" : "text-muted-foreground"}`}>
                 A trained Listener will be with you shortly.
               </p>
+              <Link to="/aura" className={`font-body text-[11px] mt-2 underline block ${isFocusMode ? "text-background/60" : "text-muted-foreground"}`}>
+                While you wait, you can talk to Aura.
+              </Link>
             </div>
 
             <div className={`w-full max-w-[360px] border p-3 ${isFocusMode ? "border-background/30" : "border-foreground"}`}>
