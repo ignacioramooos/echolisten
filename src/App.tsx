@@ -35,6 +35,8 @@ const App = () => (
           <Route path="/listener-signup" element={<ListenerSignup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/formation" element={<Formation />} />
           <Route path="/chat/new" element={<ChatNew />} />
