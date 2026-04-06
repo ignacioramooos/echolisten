@@ -1,58 +1,112 @@
 
+Diagnóstico
 
-## Problem
+Sí, ya sé cuál es el problema real. No es una sola falla, son tres que se combinan:
 
-Infinite redirect loop between `/dashboard/seeker` and `/dashboard/listener`:
-- `ListenerDashboard`: no listener_profiles row found → redirects to `/dashboard/seeker`
-- `SeekerDashboard`: no seeker_profiles row found → redirects to `/dashboard/listener`
-- Result: endless bounce
+1. El registro de Seeker está roto:
+   - `src/pages/SeekerSignup.tsx` usa hCaptcha con `size="invisible"`, pero no llama `execute()`.
+   - Resultado: nunca se genera `captchaToken`, `canSubmit` queda falso y el botón parece no hacer nada.
+   - Por eso no se crean cuentas nuevas y la base queda vacía.
 
-Additionally, there's a stale `Dashboard.tsx` (517 lines) that uses `user_metadata.role` and isn't part of the new architecture.
+2. La creación de perfiles depende de `/auth/callback`:
+   - `src/pages/AuthCallback.tsx` recién inserta en `listener_profiles` o `seeker_profiles` después de confirmar email y completar el callback.
+   - Si una cuenta quedó creada en auth pero nunca pasó bien por el callback, el usuario existe pero no tiene fila de perfil.
+   - Eso explica cuentas “rotas” y tablas vacías o incompletas.
 
-## Root Cause
+3. La app todavía mezcla varias fuentes de verdad para el rol:
+   - unas pantallas usan tablas de perfil,
+   - otras usan `user_metadata.role`,
+   - otras hacen redirects parciales.
+   - Eso deja cuentas en estado ambiguo y puede disparar redirecciones incorrectas.
 
-The dashboards cross-redirect to each other when a profile isn't found, instead of falling back to login or doing a proper role check in one place.
+Plan de implementación
 
-## Plan
+1. Reparar el signup de Seeker para que vuelva a funcionar
+   - Cambiar el captcha de Seeker a widget visible normal.
+   - Elegir tema `light`, porque encaja mejor con el look blanco/negro del sitio y es más confiable que el badge flotante/invisible.
+   - Mantener el submit bloqueado hasta tener token válido.
+   - Verificar el token en backend antes de crear la cuenta, usando el secreto ya configurado.
+   - Mostrar error visible si captcha falla o expira.
 
-### 1. Create a single auth-aware redirect component
+2. Unificar la resolución de rol en un solo helper
+   - Crear una utilidad compartida que consulte:
+     - `listener_profiles`
+     - `seeker_profiles`
+   - Esa utilidad debe devolver solo 4 estados:
+     - `listener`
+     - `seeker`
+     - `none`
+     - `both`
+   - Desde ese momento, la app dejará de usar `user_metadata.role` para navegación, guards y settings.
 
-Create `src/components/echo/RoleRedirect.tsx` — used at `/dashboard` route:
-- Call `supabase.auth.getUser()`; if no user → `/login`
-- Query `listener_profiles` for `user_id`; if found → `/dashboard/listener`
-- Query `seeker_profiles` for `user_id`; if found → `/dashboard/seeker`
-- If neither found → `/login` (with sign-out to clear stale session)
-- Show a loading state while checking
+3. Hacer que login y callback se “autorreparen”
+   - En `AuthCallback.tsx`:
+     - si no existe perfil, crear el correcto según el signup original;
+     - si es listener, crear también `formation_progress` si falta.
+   - En `Login.tsx`:
+     - después de autenticar, resolver rol desde tablas;
+     - si no hay perfil, intentar reconstruirlo desde metadata/email;
+     - si hay ambos perfiles, bloquear acceso y forzar reparación segura;
+     - si no hay ninguno y no se puede reconstruir, cerrar sesión y mostrar error claro.
 
-### 2. Fix ListenerDashboard redirect logic
+4. Eliminar cualquier redirect cruzado restante
+   - Revisar y corregir guards en:
+     - `RoleRedirect.tsx`
+     - `ListenerDashboard.tsx`
+     - `SeekerDashboard.tsx`
+     - `ListenQueue.tsx`
+     - `Settings.tsx`
+     - `ChatRoom.tsx`
+     - `Formation.tsx`
+   - Ninguna pantalla debe “adivinar” que el usuario es del otro rol.
+   - Si el rol no coincide, siempre debe redirigir al resolvedor central o a login, nunca al dashboard opuesto.
 
-Line 56-58: Change `navigate("/dashboard/seeker")` to `navigate("/login")` — if no listener profile exists, don't assume they're a seeker. Send to login, which will properly route them.
+5. Enforzar la regla de negocio: exactamente un perfil por usuario
+   - Agregar validación en base de datos para impedir que el mismo `user_id` exista en ambas tablas.
+   - Corregir defaults inconsistentes, por ejemplo `listener_profiles.role` no debería tener default `seeker`.
+   - Mantener la arquitectura separada: listener y seeker son mutuamente excluyentes.
 
-### 3. Fix SeekerDashboard redirect logic
+6. Reparar datos existentes
+   - Ejecutar una reparación única para cuentas ya creadas:
+     - si el usuario tiene auth pero no perfil, crear el perfil correcto;
+     - si tiene ambos perfiles, conservar solo uno siguiendo una regla determinística:
+       - priorizar el rol explícito del signup;
+       - si falta, priorizar listener solo si tiene progreso/formación;
+       - si no, dejar seeker.
+   - Después de esta reparación, ningún usuario debe quedar en estado `both` o `none`.
 
-Line 52-55: Change `navigate("/dashboard/listener")` to `navigate("/login")` — same principle.
+7. QA de extremo a extremo
+   - Probar estos flujos completos:
+     - signup seeker → confirmación → callback → dashboard seeker
+     - signup listener → confirmación → callback → dashboard listener
+     - login de cuentas viejas sin perfil → autorreparación
+     - acceso a `/dashboard` con cada rol
+     - acceso indebido a rutas protegidas (`/listen`, `/formation`, `/settings`, `/chat/:id`)
+   - Verificar también que las tablas del backend ya no queden vacías tras registros válidos.
 
-### 4. Update App.tsx routes
+Detalles técnicos
 
-- Replace `<Navigate to="/dashboard/seeker" replace />` at `/dashboard` with the new `RoleRedirect` component
-- Remove or keep `Dashboard.tsx` as dead code (it won't be routed to)
+Archivos principales a tocar:
+- `src/pages/SeekerSignup.tsx`
+- `src/pages/Login.tsx`
+- `src/pages/AuthCallback.tsx`
+- `src/components/echo/RoleRedirect.tsx`
+- `src/pages/ListenerDashboard.tsx`
+- `src/pages/SeekerDashboard.tsx`
+- `src/pages/ListenQueue.tsx`
+- `src/pages/Settings.tsx`
+- `src/pages/ChatRoom.tsx`
+- `src/pages/Formation.tsx`
 
-### 5. Fix EchoLogo navigation
+Cambios de backend:
+- migración para reforzar integridad entre `listener_profiles` y `seeker_profiles`
+- ajuste de defaults/policies necesarios
+- reparación única de datos existentes para cuentas huérfanas o duplicadas
 
-Instead of using `user_metadata.role` (unreliable), route to `/dashboard` which will use the `RoleRedirect` component to figure out the correct destination.
+Resultado esperado
 
-### 6. Fix Login fallback
-
-Lines 67-73: The fallback `user_metadata.role` logic sends users to a dashboard even when no profile exists. Change fallback to navigate to `/dashboard` (which uses RoleRedirect to do the proper check).
-
-### Files Changed
-
-| File | Change |
-|------|--------|
-| `src/components/echo/RoleRedirect.tsx` | New — auth check + profile query + redirect |
-| `src/pages/ListenerDashboard.tsx` | Line 57: redirect to `/login` not `/dashboard/seeker` |
-| `src/pages/SeekerDashboard.tsx` | Line 54: redirect to `/login` not `/dashboard/listener` |
-| `src/App.tsx` | `/dashboard` route uses `RoleRedirect` |
-| `src/components/echo/EchoLogo.tsx` | Navigate to `/dashboard` instead of role-based path |
-| `src/pages/Login.tsx` | Fallback navigates to `/dashboard` |
-
+Después de esto:
+- el botón de crear cuenta vuelve a funcionar,
+- las filas de perfil sí se crean,
+- cada usuario tendrá exactamente un rol válido,
+- desaparecen las redirecciones infinitas entre dashboards.
