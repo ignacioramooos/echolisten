@@ -54,7 +54,7 @@ const ListenerDashboard = () => {
         .maybeSingle();
 
       if (!profile) {
-        navigate("/dashboard/seeker");
+        navigate("/login", { replace: true });
         return;
       }
 
