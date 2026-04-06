@@ -1,45 +1,58 @@
 
 
-## Plan: Wire All Landing Page Buttons & Add Navigation
+## Problem
 
-### Summary
-Wire every button/link on the landing page to functional routes, add Login/Register buttons to the nav, make the Echo logo a home link, replace the "About"/"Safety" links with a working About page and a 3-dot menu for disclaimers/legal info.
+Infinite redirect loop between `/dashboard/seeker` and `/dashboard/listener`:
+- `ListenerDashboard`: no listener_profiles row found → redirects to `/dashboard/seeker`
+- `SeekerDashboard`: no seeker_profiles row found → redirects to `/dashboard/listener`
+- Result: endless bounce
 
-### Changes
+Additionally, there's a stale `Dashboard.tsx` (517 lines) that uses `user_metadata.role` and isn't part of the new architecture.
 
-#### 1. New page: `/about` (`src/pages/About.tsx`)
-- Stub page using the existing `PageShell` layout
-- Cormorant heading "About Echo." with placeholder body text sections (What is Echo, Our Mission, The Formation, Contact)
-- Empty content the user can fill later
+## Root Cause
 
-#### 2. Update `src/App.tsx`
-- Add route: `/about` → `<About />`
+The dashboards cross-redirect to each other when a profile isn't found, instead of falling back to login or doing a proper role check in one place.
 
-#### 3. Rewrite `src/pages/Index.tsx` nav header
-- **Echo logo** (`● Echo`): wrap in `<Link to="/">` so it acts as a home button
-- **Right side nav**: remove "About" and "Safety" text links, replace with:
-  - `<Link to="/about">About</Link>` (working link)
-  - `<Link to="/login">Log In</Link>` (DM Mono, uppercase, same style)
-  - A 3-dot menu button (`MoreVertical` from Lucide) that opens a dropdown (using the existing shadcn `DropdownMenu`) containing:
-    - "Safety & Disclaimers" (scrolls to or shows the Trust section content)
-    - "Privacy" (placeholder)
-    - "Terms" (placeholder)
-    - "Contact" (placeholder)
+## Plan
 
-#### 4. Wire all CTA buttons in `Index.tsx`
-- **"Find a Listener"** → already wired to `/chat/new` ✓
-- **"Become a Listener"** → already wired to `/formation` ✓
-- **"Begin Formation"** button in FormationSection → add `onClick={() => navigate("/formation")}`
+### 1. Create a single auth-aware redirect component
 
-#### 5. Update footer links
-- "About" → `<Link to="/about">`
-- "Safety" → `<Link to="/about">` (or anchor, since About page will have safety info)
-- "Become a Listener" → `<Link to="/formation">`
+Create `src/components/echo/RoleRedirect.tsx` — used at `/dashboard` route:
+- Call `supabase.auth.getUser()`; if no user → `/login`
+- Query `listener_profiles` for `user_id`; if found → `/dashboard/listener`
+- Query `seeker_profiles` for `user_id`; if found → `/dashboard/seeker`
+- If neither found → `/login` (with sign-out to clear stale session)
+- Show a loading state while checking
 
-### Technical Details
-- Uses existing `DropdownMenu` from shadcn (`src/components/ui/dropdown-menu.tsx`)
-- Uses `MoreVertical` icon from `lucide-react`
-- All links use `react-router-dom` `Link` / `useNavigate`
-- About page uses existing `PageShell` component for consistent layout
-- Design system maintained: DM Mono nav text, 1px borders, no border-radius, B&W
+### 2. Fix ListenerDashboard redirect logic
+
+Line 56-58: Change `navigate("/dashboard/seeker")` to `navigate("/login")` — if no listener profile exists, don't assume they're a seeker. Send to login, which will properly route them.
+
+### 3. Fix SeekerDashboard redirect logic
+
+Line 52-55: Change `navigate("/dashboard/listener")` to `navigate("/login")` — same principle.
+
+### 4. Update App.tsx routes
+
+- Replace `<Navigate to="/dashboard/seeker" replace />` at `/dashboard` with the new `RoleRedirect` component
+- Remove or keep `Dashboard.tsx` as dead code (it won't be routed to)
+
+### 5. Fix EchoLogo navigation
+
+Instead of using `user_metadata.role` (unreliable), route to `/dashboard` which will use the `RoleRedirect` component to figure out the correct destination.
+
+### 6. Fix Login fallback
+
+Lines 67-73: The fallback `user_metadata.role` logic sends users to a dashboard even when no profile exists. Change fallback to navigate to `/dashboard` (which uses RoleRedirect to do the proper check).
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `src/components/echo/RoleRedirect.tsx` | New — auth check + profile query + redirect |
+| `src/pages/ListenerDashboard.tsx` | Line 57: redirect to `/login` not `/dashboard/seeker` |
+| `src/pages/SeekerDashboard.tsx` | Line 54: redirect to `/login` not `/dashboard/listener` |
+| `src/App.tsx` | `/dashboard` route uses `RoleRedirect` |
+| `src/components/echo/EchoLogo.tsx` | Navigate to `/dashboard` instead of role-based path |
+| `src/pages/Login.tsx` | Fallback navigates to `/dashboard` |
 
