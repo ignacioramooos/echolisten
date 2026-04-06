@@ -48,7 +48,7 @@ const ListenQueue = () => {
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (!profile) { navigate("/dashboard/seeker"); return; }
+      if (!profile) { navigate("/login", { replace: true }); return; }
 
       const { data: progress } = await supabase
         .from("formation_progress")

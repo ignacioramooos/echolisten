@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
+import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,6 @@ const Login = () => {
       return;
     }
 
-    // Smart routing: check which profile table has this user
     const userId = data.user?.id;
     if (!userId) {
       setError("Authentication failed.");
@@ -40,31 +40,15 @@ const Login = () => {
       return;
     }
 
-    // Check listener_profiles first
-    const { data: listenerProfile } = await (supabase as any)
-      .from("listener_profiles")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
+    // Use centralized role resolver — never trust user_metadata
+    const role = await resolveUserRole(userId);
 
-    if (listenerProfile) {
-      navigate("/dashboard/listener");
+    if (role === "listener" || role === "seeker") {
+      navigate(dashboardForRole(role));
       return;
     }
 
-    // Check seeker_profiles
-    const { data: seekerProfile } = await (supabase as any)
-      .from("seeker_profiles")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (seekerProfile) {
-      navigate("/dashboard/seeker");
-      return;
-    }
-
-    // Fallback: let RoleRedirect figure it out
+    // No profile found — redirect to central resolver which will attempt auto-repair
     navigate("/dashboard");
   };
 

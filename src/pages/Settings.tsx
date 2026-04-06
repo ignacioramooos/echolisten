@@ -56,17 +56,18 @@ const Settings = () => {
       setUserId(user.id);
       setSupportName(user.email || "");
 
-      const role = user.user_metadata?.role || "seeker";
-      setUserRole(role);
+      // Resolve role from profile tables, not metadata
+      const { data: listenerProfile } = await (supabase as any)
+        .from("listener_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-      if (role === "listener") {
-        const { data: profile } = await (supabase as any)
-          .from("listener_profiles")
-          .select("*")
-          .eq("user_id", user.id)
-          .maybeSingle();
+      if (listenerProfile) {
+        setUserRole("listener");
+        const profile = listenerProfile;
 
-        if (profile) {
+        if (true) {
           setBio(profile.bio || "");
           setTopicsComfortable(profile.topics_comfortable || []);
           setTopicsAvoid(profile.topics_avoid || []);
@@ -78,6 +79,19 @@ const Settings = () => {
           setPreferredLang(profile.preferred_language || "en");
           setChatBgUrl(profile.chat_bg_url || null);
           setChatBgIntensity(profile.chat_bg_intensity || 20);
+        }
+      } else {
+        // Check if seeker
+        const { data: seekerProfile } = await (supabase as any)
+          .from("seeker_profiles")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (seekerProfile) {
+          setUserRole("seeker");
+        } else {
+          navigate("/login", { replace: true });
+          return;
         }
       }
       setLoading(false);

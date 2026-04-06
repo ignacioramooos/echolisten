@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
@@ -7,11 +7,13 @@ import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { allTopics } from "@/data/topics";
+
+const HCAPTCHA_SITE_KEY = "b522d150-2c12-4678-bbc6-82bee8fce844";
 
 const SeekerSignup = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const captchaRef = useRef<HCaptcha>(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,6 +58,8 @@ const SeekerSignup = () => {
     if (signUpError) {
       setError(signUpError.message);
       setLoading(false);
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
       return;
     }
 
@@ -133,12 +137,14 @@ const SeekerSignup = () => {
           </div>
 
           <div className="mt-1">
+            <span className="font-body text-[12px] text-muted-foreground block mb-1">Verify you're human</span>
             <HCaptcha
-              sitekey="b522d150-2c12-4678-bbc6-82bee8fce844"
-              theme="dark"
-              size="invisible"
+              ref={captchaRef}
+              sitekey={HCAPTCHA_SITE_KEY}
+              theme="light"
               onVerify={(token) => setCaptchaToken(token)}
               onExpire={() => setCaptchaToken(null)}
+              onError={() => { setCaptchaToken(null); setError("Captcha verification failed. Please try again."); }}
             />
           </div>
 
