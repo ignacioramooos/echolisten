@@ -41,7 +41,9 @@ const ChatRoom = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate("/login"); return; }
       setUserId(user.id);
-      setUserRole(user.user_metadata?.role || "seeker");
+      // Role determined by session participation, not metadata
+      const { data: lp } = await supabase.from("listener_profiles").select("id").eq("user_id", user.id).maybeSingle();
+      setUserRole(lp ? "listener" : "seeker");
     };
     getUser();
   }, [navigate]);
