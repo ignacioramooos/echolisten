@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
 
 const RoleRedirect = () => {
   const navigate = useNavigate();
@@ -10,22 +11,48 @@ const RoleRedirect = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate("/login", { replace: true }); return; }
 
-      const { data: listener } = await supabase
-        .from("listener_profiles")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (listener) { navigate("/dashboard/listener", { replace: true }); return; }
+      const role = await resolveUserRole(user.id);
 
-      const { data: seeker } = await supabase
-        .from("seeker_profiles")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (seeker) { navigate("/dashboard/seeker", { replace: true }); return; }
+      if (role === "both") {
+        // Conflict — sign out to prevent loops
+        console.error("User has both listener and seeker profiles");
+        await supabase.auth.signOut();
+        navigate("/login", { replace: true });
+        return;
+      }
 
-      await supabase.auth.signOut();
-      navigate("/login", { replace: true });
+      if (role === "none") {
+        // No profile — try to auto-repair from metadata
+        const meta = user.user_metadata || {};
+        if (meta.role === "listener") {
+          await (supabase as any).from("listener_profiles").insert({
+            user_id: user.id,
+            role: "listener",
+            email: user.email,
+            username: meta.username || null,
+            first_name: meta.first_name || null,
+            last_name: meta.last_name || null,
+          });
+          await supabase.from("formation_progress").insert({ user_id: user.id, steps_completed: [], bot_passed: false });
+          navigate("/dashboard/listener", { replace: true });
+          return;
+        }
+        if (meta.role === "seeker") {
+          await (supabase as any).from("seeker_profiles").insert({
+            user_id: user.id,
+            username: meta.username || null,
+            email: user.email,
+          });
+          navigate("/dashboard/seeker", { replace: true });
+          return;
+        }
+        // Can't determine role
+        await supabase.auth.signOut();
+        navigate("/login", { replace: true });
+        return;
+      }
+
+      navigate(dashboardForRole(role), { replace: true });
     };
     resolve();
   }, [navigate]);

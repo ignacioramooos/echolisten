@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -54,75 +55,69 @@ const AuthCallback = () => {
         return;
       }
 
+      // Check existing role from profile tables
+      const existingRole = await resolveUserRole(user.id);
+
+      if (existingRole === "listener" || existingRole === "seeker") {
+        navigate(dashboardForRole(existingRole));
+        return;
+      }
+
+      // No profile yet — create one based on signup metadata
       const meta = user.user_metadata || {};
       const role = meta.role;
+      setStatus("Setting up your profile...");
 
       if (role === "listener") {
-        // Check if listener profile already exists
-        const { data: existingProfile } = await (supabase as any)
-          .from("listener_profiles")
-          .select("id")
-          .eq("user_id", user.id)
-          .maybeSingle();
+        const { error: profileErr } = await (supabase as any).from("listener_profiles").insert({
+          user_id: user.id,
+          role: "listener",
+          first_name: meta.first_name || null,
+          last_name: meta.last_name || null,
+          country: meta.country || null,
+          gender: meta.gender || null,
+          username: meta.username || null,
+          email: user.email,
+          bio: meta.bio || null,
+          topics_comfortable: meta.topics_comfortable || [],
+          topics_avoid: meta.topics_avoid || [],
+          topics_lived_experience: meta.topics_lived_experience || [],
+          languages: meta.languages || [],
+          verified_agreements: true,
+        });
 
-        if (!existingProfile) {
-          setStatus("Setting up your profile...");
-
-          const { error: profileErr } = await (supabase as any).from("listener_profiles").insert({
-            user_id: user.id,
-            role: "listener",
-            first_name: meta.first_name || null,
-            last_name: meta.last_name || null,
-            country: meta.country || null,
-            gender: meta.gender || null,
-            username: meta.username || null,
-            email: user.email,
-            bio: meta.bio || null,
-            topics_comfortable: meta.topics_comfortable || [],
-            topics_avoid: meta.topics_avoid || [],
-            topics_lived_experience: meta.topics_lived_experience || [],
-            languages: meta.languages || [],
-            verified_agreements: true,
-          });
-
-          if (profileErr) {
-            console.error("Listener profile creation error:", profileErr);
-            navigate("/login");
-            return;
-          }
-
-          // Init formation progress
-          await supabase.from("formation_progress").insert({
-            user_id: user.id,
-            steps_completed: [],
-            bot_passed: false,
-          });
+        if (profileErr) {
+          console.error("Listener profile creation error:", profileErr);
+          navigate("/login");
+          return;
         }
+
+        // Init formation progress
+        await supabase.from("formation_progress").insert({
+          user_id: user.id,
+          steps_completed: [],
+          bot_passed: false,
+        });
+
         navigate("/dashboard/listener");
-      } else {
-        // Seeker flow — check if seeker profile exists
-        const { data: existingSeeker } = await (supabase as any)
-          .from("seeker_profiles")
-          .select("id")
-          .eq("user_id", user.id)
-          .maybeSingle();
+      } else if (role === "seeker") {
+        const { error: profileErr } = await (supabase as any).from("seeker_profiles").insert({
+          user_id: user.id,
+          username: meta.username || null,
+          email: user.email,
+        });
 
-        if (!existingSeeker) {
-          setStatus("Setting up your profile...");
-
-          const { error: profileErr } = await (supabase as any).from("seeker_profiles").insert({
-            user_id: user.id,
-            username: meta.username || null,
-            email: user.email,
-          });
-
-          if (profileErr) {
-            console.error("Seeker profile creation error:", profileErr);
-            navigate("/login");
-            return;
-          }
+        if (profileErr) {
+          console.error("Seeker profile creation error:", profileErr);
+          navigate("/login");
+          return;
         }
         navigate("/dashboard/seeker");
+      } else {
+        // Unknown role — can't create profile
+        console.error("No role in user_metadata, cannot create profile");
+        await supabase.auth.signOut();
+        navigate("/login");
       }
     };
 
