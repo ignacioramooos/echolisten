@@ -6,15 +6,23 @@ import { EchoLogo } from "@/components/echo/EchoLogo";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoBadge } from "@/components/echo/EchoBadge";
 
-interface FullSession {
+interface BaseSession {
   id: string;
   created_at: string;
   status: string;
   timer_end_at: string | null;
   topic_snippet: string | null;
-  seeker_id: string;
-  listener_id: string | null;
 }
+
+type FullSession =
+  | (BaseSession & {
+      seeker_id: string;
+      listener_id: null;
+    })
+  | (BaseSession & {
+      seeker_id: null;
+      listener_id: string;
+    });
 
 interface RatingRow {
   session_id: string;
@@ -44,12 +52,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/login"); return; }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/login");
+        return;
+      }
 
       setUserId(user.id);
       setEmail(user.email || "");
-      const userRole = user.user_metadata?.role as "listener" | "seeker" || "seeker";
+      const userRole = (user.user_metadata?.role as "listener" | "seeker") || "seeker";
       setRole(userRole);
 
       if (userRole === "listener") {
@@ -87,7 +100,6 @@ const Dashboard = () => {
           .select("session_id, rating")
           .not("rating", "is", null);
         if (ratingData) setRatings(ratingData as RatingRow[]);
-
       } else {
         const { data: sessions } = await supabase
           .from("sessions")
@@ -134,7 +146,9 @@ const Dashboard = () => {
             </span>
             <span className="font-body text-[11px] text-muted-foreground">{email}</span>
             <Link to="/settings">
-              <EchoButton variant="outline" size="sm">{t("nav.settings")}</EchoButton>
+              <EchoButton variant="outline" size="sm">
+                {t("nav.settings")}
+              </EchoButton>
             </Link>
             <EchoButton variant="outline" size="sm" onClick={handleLogout}>
               {t("nav.logout")}
@@ -160,9 +174,7 @@ const Dashboard = () => {
 
       <div className="border-t border-foreground">
         <div className="mx-auto w-full max-w-echo px-2 py-1.5">
-          <p className="font-body text-[10px] text-muted-foreground">
-            {t("dashboard.bottomNotice")}
-          </p>
+          <p className="font-body text-[10px] text-muted-foreground">{t("dashboard.bottomNotice")}</p>
         </div>
       </div>
     </div>
@@ -237,9 +249,10 @@ function ListenerView({
   const thisWeek = sessions.filter((s) => isThisWeek(s.created_at)).length;
   const lastWeek = sessions.filter((s) => isLastWeek(s.created_at)).length;
   const weekDiff = thisWeek - lastWeek;
-  const weekSub = lastWeek > 0 || thisWeek > 0
-    ? `${t("dashboard.vsLastWeek", { count: lastWeek })} ${weekDiff > 0 ? "↑" : weekDiff < 0 ? "↓" : "—"}`
-    : undefined;
+  const weekSub =
+    lastWeek > 0 || thisWeek > 0
+      ? `${t("dashboard.vsLastWeek", { count: lastWeek })} ${weekDiff > 0 ? "↑" : weekDiff < 0 ? "↓" : "—"}`
+      : undefined;
 
   const totalSupported = sessions.length;
 
@@ -249,9 +262,7 @@ function ListenerView({
   const sessionIds = new Set(sessions.map((s) => s.id));
   const relevantRatings = ratings.filter((r) => sessionIds.has(r.session_id) && r.rating !== null);
   const positiveRatings = relevantRatings.filter((r) => (r.rating ?? 0) >= 4).length;
-  const positivePercent = relevantRatings.length > 0
-    ? Math.round((positiveRatings / relevantRatings.length) * 100)
-    : 0;
+  const positivePercent = relevantRatings.length > 0 ? Math.round((positiveRatings / relevantRatings.length) * 100) : 0;
 
   const ratingMap = new Map(ratings.map((r) => [r.session_id, r.rating]));
   const recentSessions = sessions.slice(0, 10);
@@ -277,9 +288,7 @@ function ListenerView({
         <div className="flex items-center gap-2">
           <EchoBadge label="Echo Listener" variant="earned" />
           {certifiedAt && (
-            <span className="font-body text-[11px] text-muted-foreground">
-              Certified {formatDate(certifiedAt)}
-            </span>
+            <span className="font-body text-[11px] text-muted-foreground">Certified {formatDate(certifiedAt)}</span>
           )}
         </div>
       )}
@@ -304,8 +313,8 @@ function ListenerView({
           {waitingCount === 0
             ? t("dashboard.noOneWaiting")
             : waitingCount === 1
-            ? t("dashboard.personWaiting")
-            : t("dashboard.peopleWaiting", { count: waitingCount })}
+              ? t("dashboard.personWaiting")
+              : t("dashboard.peopleWaiting", { count: waitingCount })}
         </p>
         <div className="mt-2">
           <Link to="/listen">
@@ -319,19 +328,22 @@ function ListenerView({
       <section className="border-t border-foreground pt-3">
         <h2 className="font-display text-[24px] leading-tight mb-2">{t("dashboard.recentSessions")}</h2>
         {recentSessions.length === 0 ? (
-          <p className="font-body text-[13px] text-muted-foreground">
-            {t("dashboard.noSessionsYet")}
-          </p>
+          <p className="font-body text-[13px] text-muted-foreground">{t("dashboard.noSessionsYet")}</p>
         ) : (
           <>
             <table className="w-full">
               <thead>
                 <tr className="border-b border-foreground">
-                  {[t("dashboard.date"), t("dashboard.duration"), t("dashboard.rating"), t("dashboard.topic")].map((h) => (
-                    <th key={h} className="font-body text-[10px] uppercase tracking-widest text-muted-foreground text-left py-1 pr-2">
-                      {h}
-                    </th>
-                  ))}
+                  {[t("dashboard.date"), t("dashboard.duration"), t("dashboard.rating"), t("dashboard.topic")].map(
+                    (h) => (
+                      <th
+                        key={h}
+                        className="font-body text-[10px] uppercase tracking-widest text-muted-foreground text-left py-1 pr-2"
+                      >
+                        {h}
+                      </th>
+                    ),
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -341,7 +353,9 @@ function ListenerView({
                   return (
                     <tr key={s.id} className="border-b border-secondary">
                       <td className="font-body text-[12px] text-foreground py-1 pr-2">{formatDate(s.created_at)}</td>
-                      <td className="font-body text-[12px] text-muted-foreground py-1 pr-2">{dur ? `${dur} min` : "—"}</td>
+                      <td className="font-body text-[12px] text-muted-foreground py-1 pr-2">
+                        {dur ? `${dur} min` : "—"}
+                      </td>
                       <td className="font-body text-[12px] py-1 pr-2">
                         {rat != null ? "●".repeat(rat) + "○".repeat(5 - rat) : "—"}
                       </td>
@@ -354,7 +368,9 @@ function ListenerView({
               </tbody>
             </table>
             {sessions.length > 10 && (
-              <p className="font-body text-[11px] text-muted-foreground mt-1 underline cursor-pointer">{t("dashboard.seeAll")}</p>
+              <p className="font-body text-[11px] text-muted-foreground mt-1 underline cursor-pointer">
+                {t("dashboard.seeAll")}
+              </p>
             )}
           </>
         )}
@@ -386,7 +402,9 @@ function ListenerView({
           )}
           <div className="mt-2">
             <Link to="/formation">
-              <EchoButton variant="outline" size="sm">{t("dashboard.continueFormation")}</EchoButton>
+              <EchoButton variant="outline" size="sm">
+                {t("dashboard.continueFormation")}
+              </EchoButton>
             </Link>
           </div>
         </section>
@@ -448,7 +466,10 @@ function SeekerView({ sessions, ratings, userId }: { sessions: FullSession[]; ra
             <thead>
               <tr className="border-b border-foreground">
                 {[t("dashboard.date"), t("dashboard.listener"), t("dashboard.yourRating")].map((h) => (
-                  <th key={h} className="font-body text-[10px] uppercase tracking-widest text-muted-foreground text-left py-1 pr-2">
+                  <th
+                    key={h}
+                    className="font-body text-[10px] uppercase tracking-widest text-muted-foreground text-left py-1 pr-2"
+                  >
                     {h}
                   </th>
                 ))}
@@ -457,9 +478,7 @@ function SeekerView({ sessions, ratings, userId }: { sessions: FullSession[]; ra
             <tbody>
               {recentSessions.map((s) => {
                 const rat = ratingMap.get(s.id);
-                const listenerLabel = s.listener_id
-                  ? `Echo Listener #${s.listener_id.slice(0, 4).toUpperCase()}`
-                  : "—";
+                const listenerLabel = s.listener_id ? `Echo Listener #${s.listener_id.slice(0, 4).toUpperCase()}` : "—";
                 return (
                   <tr key={s.id} className="border-b border-secondary">
                     <td className="font-body text-[12px] text-foreground py-1 pr-2">{formatDate(s.created_at)}</td>
@@ -484,7 +503,9 @@ function SeekerView({ sessions, ratings, userId }: { sessions: FullSession[]; ra
                 <p className="font-body text-[13px] text-foreground font-bold">{r.title}</p>
                 <p className="font-body text-[11px] text-muted-foreground mt-0.5">{r.desc}</p>
               </div>
-              <p className="font-body text-[11px] text-foreground mt-2 underline cursor-pointer">{t("dashboard.read")}</p>
+              <p className="font-body text-[11px] text-foreground mt-2 underline cursor-pointer">
+                {t("dashboard.read")}
+              </p>
             </div>
           ))}
         </div>
