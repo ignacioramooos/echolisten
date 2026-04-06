@@ -21,6 +21,7 @@ import AuraChat from "./pages/AuraChat.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
+import RoleRedirect from "./components/echo/RoleRedirect.tsx";
 
 const queryClient = new QueryClient();
 
@@ -47,7 +48,7 @@ const AppInner = () => {
           {/* Dashboards */}
           <Route path="/dashboard/seeker" element={<SeekerDashboard />} />
           <Route path="/dashboard/listener" element={<ListenerDashboard />} />
-          <Route path="/dashboard" element={<Navigate to="/dashboard/seeker" replace />} />
+          <Route path="/dashboard" element={<RoleRedirect />} />
 
           {/* Listener-only */}
           <Route path="/formation" element={<Formation />} />

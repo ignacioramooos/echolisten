@@ -64,13 +64,8 @@ const Login = () => {
       return;
     }
 
-    // Fallback: use metadata role
-    const role = data.user?.user_metadata?.role;
-    if (role === "listener") {
-      navigate("/dashboard/listener");
-    } else {
-      navigate("/dashboard/seeker");
-    }
+    // Fallback: let RoleRedirect figure it out
+    navigate("/dashboard");
   };
 
   return (
