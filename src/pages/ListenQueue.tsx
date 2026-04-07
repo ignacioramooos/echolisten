@@ -86,7 +86,12 @@ const ListenQueue = () => {
       .eq("id", sessionId)
       .eq("status", "waiting");
 
-    if (error) { setPicking(null); return; }
+    if (error) {
+      console.error("Failed to claim session:", error);
+      setPicking(null);
+      loadSessions();
+      return;
+    }
     navigate(`/chat/${sessionId}`);
   };
 
