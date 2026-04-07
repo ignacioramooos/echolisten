@@ -40,7 +40,6 @@ const Login = () => {
       return;
     }
 
-    // Use centralized role resolver — never trust user_metadata
     const role = await resolveUserRole(userId);
 
     if (role === "listener" || role === "seeker") {
@@ -48,8 +47,37 @@ const Login = () => {
       return;
     }
 
-    // No profile found — redirect to central resolver which will attempt auto-repair
-    navigate("/dashboard");
+    // No profile — try creating one from metadata
+    const meta = data.user?.user_metadata || {};
+    if (meta.role === "seeker") {
+      await (supabase as any).from("seeker_profiles").insert({
+        user_id: userId,
+        username: meta.username || null,
+        email: data.user?.email,
+      });
+      navigate("/dashboard/seeker");
+      return;
+    }
+    if (meta.role === "listener") {
+      await (supabase as any).from("listener_profiles").insert({
+        user_id: userId,
+        role: "listener",
+        email: data.user?.email,
+        username: meta.username || null,
+      });
+      await supabase.from("formation_progress").insert({
+        user_id: userId,
+        steps_completed: [],
+        bot_passed: false,
+      });
+      navigate("/dashboard/listener");
+      return;
+    }
+
+    // No metadata role — can't determine
+    setError("Account setup incomplete. Please sign up again.");
+    await supabase.auth.signOut();
+    setLoading(false);
   };
 
   return (

@@ -24,6 +24,8 @@ const SeekerSignup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
+  const [captchaFailed, setCaptchaFailed] = useState(false);
 
   const canSubmit = username.trim() && email && password.length >= 6 && captchaToken && crisisConfirm && termsAgreed && !loading;
 
@@ -142,10 +144,21 @@ const SeekerSignup = () => {
               ref={captchaRef}
               sitekey={HCAPTCHA_SITE_KEY}
               theme="light"
-              onVerify={(token) => setCaptchaToken(token)}
+              onVerify={(token) => { setCaptchaToken(token); setCaptchaFailed(false); }}
               onExpire={() => setCaptchaToken(null)}
-              onError={() => { setCaptchaToken(null); setError("Captcha verification failed. Please try again."); }}
+              onLoad={() => setCaptchaLoaded(true)}
+              onError={() => {
+                setCaptchaToken(null);
+                setCaptchaFailed(true);
+                setError("Captcha failed to load. Please refresh the page. If the issue persists, try disabling ad blockers.");
+              }}
             />
+            {!captchaLoaded && !captchaFailed && (
+              <p className="font-body text-[11px] text-muted-foreground">Loading verification…</p>
+            )}
+            {captchaFailed && (
+              <p className="font-body text-[11px] text-foreground">⚠ Captcha unavailable. Please refresh and try again.</p>
+            )}
           </div>
 
           <label className="flex items-start gap-1 cursor-pointer mt-1">

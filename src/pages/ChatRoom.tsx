@@ -265,8 +265,31 @@ const ChatRoom = () => {
       {/* Crisis banner */}
       {showCrisisBanner && <CrisisBanner />}
 
+      {/* Waiting state — role-specific */}
+      {isWaiting && (
+        <div className="flex-1 flex items-center justify-center px-4">
+          {isSeeker ? (
+            <div className="text-center">
+              <p className="font-display text-[24px] text-foreground">Waiting for a Listener…</p>
+              <p className="font-body text-[13px] text-muted-foreground mt-2">
+                A trained Listener will accept your session shortly. You'll be connected automatically.
+              </p>
+            </div>
+          ) : isListener ? (
+            <div className="text-center">
+              <p className="font-display text-[20px] text-foreground">Connecting…</p>
+              <p className="font-body text-[13px] text-muted-foreground mt-1">
+                Setting up the session. You'll be connected in a moment.
+              </p>
+            </div>
+          ) : (
+            <p className="font-body text-[13px] text-muted-foreground">Loading session…</p>
+          )}
+        </div>
+      )}
+
       {/* Input area */}
-      {!isWaiting && (
+      {!isWaiting ? (
         <ChatInput
           input={input}
           setInput={setInput}
@@ -274,7 +297,13 @@ const ChatRoom = () => {
           onSend={handleSend}
           isFocusMode={isFocusMode}
         />
-      )}
+      ) : isListener ? (
+        <div className="border-t border-foreground/10 px-2 py-3">
+          <p className="font-body text-[12px] text-muted-foreground text-center">
+            Establishing connection…
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 };
