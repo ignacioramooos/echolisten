@@ -7,6 +7,7 @@ import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import GoogleSignInButton from "@/components/echo/GoogleSignInButton";
 
 const HCAPTCHA_SITE_KEY = "b522d150-2c12-4678-bbc6-82bee8fce844";
 
@@ -199,6 +200,14 @@ const SeekerSignup = () => {
           >
             {loading ? "Creating account..." : "Create Seeker Account"}
           </EchoButton>
+
+          <div className="flex items-center gap-2 my-1">
+            <div className="flex-1 border-t border-muted" />
+            <span className="font-body text-[10px] text-muted-foreground uppercase tracking-widest">or</span>
+            <div className="flex-1 border-t border-muted" />
+          </div>
+
+          <GoogleSignInButton label="Sign up with Google" />
 
           <p className="font-body text-[11px] text-muted-foreground text-center mt-1">
             Already have an account?{" "}
