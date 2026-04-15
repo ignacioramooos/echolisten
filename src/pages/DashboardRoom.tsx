@@ -222,12 +222,20 @@ const DashboardRoom = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background border-b border-muted">
         <EchoLogo />
-        <button
-          onClick={() => setPaletteOpen(true)}
-          className="font-body text-[12px] border border-foreground px-4 py-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors duration-150"
-        >
-          + Add widget
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate("/dashboard/patterns")}
+            className="font-body text-[11px] text-muted-foreground hover:text-foreground transition-colors duration-150"
+          >
+            patterns
+          </button>
+          <button
+            onClick={() => setPaletteOpen(true)}
+            className="font-body text-[12px] border border-foreground px-4 py-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors duration-150"
+          >
+            + Add widget
+          </button>
+        </div>
       </header>
 
       {/* Content */}
