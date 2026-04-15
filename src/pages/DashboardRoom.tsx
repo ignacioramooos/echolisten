@@ -1,18 +1,15 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-// @ts-ignore
-import { Responsive, WidthProvider } from "react-grid-layout";
+import { ResponsiveGridLayout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-
-type LayoutItem = { i: string; x: number; y: number; w: number; h: number; minW?: number; maxW?: number; minH?: number; maxH?: number };
 import { supabase } from "@/integrations/supabase/client";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 import { WidgetPalette, type WidgetType } from "@/components/echo/room/WidgetPalette";
 import { RoomWidget } from "@/components/echo/room/RoomWidget";
 import { RoomEmptyState } from "@/components/echo/room/RoomEmptyState";
 
-const ResponsiveGridLayout = WidthProvider(Responsive);
+type LayoutItem = { i: string; x: number; y: number; w: number; h: number; minW?: number; maxW?: number; minH?: number; maxH?: number };
 
 interface DashboardWidget {
   id: string;
@@ -45,10 +42,25 @@ const PRESET_LAYOUTS: Record<string, { type: WidgetType; x: number; y: number; w
 
 const DashboardRoom = () => {
   const navigate = useNavigate();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(1200);
   const [widgets, setWidgets] = useState<DashboardWidget[]>([]);
   const [loading, setLoading] = useState(true);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+    obs.observe(el);
+    setContainerWidth(el.clientWidth);
+    return () => obs.disconnect();
+  }, [loading]);
 
   const loadWidgets = useCallback(async (uid: string) => {
     const { data } = await supabase
@@ -151,7 +163,7 @@ const DashboardRoom = () => {
   };
 
   const onLayoutChange = useCallback(
-    (layout: LayoutItem[]) => {
+    (layout: readonly LayoutItem[], _layouts: any) => {
       layout.forEach((item) => {
         const widget = widgets.find((w) => w.id === item.i);
         if (
@@ -219,7 +231,7 @@ const DashboardRoom = () => {
       </header>
 
       {/* Content */}
-      <main className="flex-1 pt-[65px] px-4">
+      <main ref={containerRef} className="flex-1 pt-[65px] px-4">
         {widgets.length === 0 ? (
           <div className="h-[calc(100vh-65px)]">
             <RoomEmptyState onSelectPreset={applyPreset} />
@@ -227,15 +239,13 @@ const DashboardRoom = () => {
         ) : (
           <ResponsiveGridLayout
             className="mt-4"
+            width={containerWidth}
             breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
             rowHeight={120}
             margin={[16, 16]}
             layouts={{ lg: gridLayout }}
             onLayoutChange={onLayoutChange}
-            draggableHandle=".react-grid-item"
-            isResizable={true}
-            isDraggable={true}
           >
             {widgets.map((w) => (
               <div
