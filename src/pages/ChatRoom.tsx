@@ -12,6 +12,7 @@ import { ChatInput } from "@/components/echo/chat/ChatInput";
 import { ChatTimer } from "@/components/echo/chat/ChatTimer";
 import { EchoAdvisor } from "@/components/echo/chat/EchoAdvisor";
 import { CrisisInfoOverlay } from "@/components/echo/chat/CrisisInfoOverlay";
+import { SharedJournalCard } from "@/components/echo/chat/SharedJournalCard";
 import { toast } from "sonner";
 import { EchoButton } from "@/components/echo/EchoButton";
 
@@ -32,6 +33,7 @@ const ChatRoom = () => {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [kicked, setKicked] = useState(false);
   const [showCrisisInfo, setShowCrisisInfo] = useState(false);
+  const [showSharedCard, setShowSharedCard] = useState(true);
 
   const isSeeker = session?.seeker_id === userId;
   const isListener = session?.listener_id === userId;
