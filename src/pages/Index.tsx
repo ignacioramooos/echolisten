@@ -9,52 +9,138 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/* ── Hero ── */
 const HeroSection = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center px-2">
-      <h1 className="font-display text-[72px] leading-none text-foreground text-center md:text-[80px]">
-        {t("landing.hero")}
+    <section className="flex min-h-[90vh] flex-col items-center justify-center px-4 text-center">
+      <h1 className="font-display italic text-[56px] md:text-[72px] leading-[1.05] text-foreground max-w-[680px]">
+        A space to write what you carry.
       </h1>
-      <p className="mt-2 font-body text-[14px] text-muted-foreground text-center max-w-[480px]">
-        {t("landing.heroSub")}
+      <p className="mt-4 font-body text-[13px] text-muted-foreground max-w-[520px] leading-relaxed">
+        Echo helps you process difficult moments through writing, reflection,
+        and real human listening — privately and at your own pace.
       </p>
-      <div className="mt-4 flex gap-1">
+
+      <div className="mt-8 flex gap-3">
         <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")}>
-          {t("landing.findListener")}
+          Enter Echo
         </EchoButton>
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/signup/listener")}>
-          {t("landing.becomeListener")}
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")}>
+          Become a Listener
         </EchoButton>
       </div>
+
+      <p className="mt-4 font-body text-[11px] text-muted-foreground tracking-wider">
+        Anonymous. Free. Human.
+      </p>
+      <p className="mt-6 font-display italic text-[15px] text-muted-foreground">
+        Some come to be heard. Others come to listen.
+      </p>
     </section>
   );
 };
 
-const HowItWorksSection = () => {
-  const { t } = useTranslation();
-  const steps = [
-    { num: "01", heading: t("landing.step01"), desc: t("landing.step01Desc") },
-    { num: "02", heading: t("landing.step02"), desc: t("landing.step02Desc") },
-    { num: "03", heading: t("landing.step03"), desc: t("landing.step03Desc") },
+/* ── Dual Role ── */
+const DualRoleSection = () => (
+  <section className="py-16 border-t border-muted">
+    <div className="grid grid-cols-1 md:grid-cols-2">
+      {/* Left — Seeker */}
+      <div className="pr-0 md:pr-8 pb-10 md:pb-0 md:border-r border-muted">
+        <h2 className="font-display italic text-[28px] text-foreground mb-4">
+          You need to talk
+        </h2>
+        <ul className="flex flex-col gap-2">
+          {[
+            "Write freely or just one sentence",
+            "Use guided prompts if you don't know what to say",
+            "Share only if you want",
+            "Someone can be there",
+          ].map((line) => (
+            <li key={line} className="font-body text-[12px] text-muted-foreground">
+              — {line}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Right — Listener */}
+      <div className="pl-0 md:pl-8 pt-10 md:pt-0 border-t md:border-t-0 border-muted">
+        <h2 className="font-display italic text-[28px] text-foreground mb-4">
+          You want to listen
+        </h2>
+        <ul className="flex flex-col gap-2">
+          {[
+            "Be present for someone else",
+            "No pressure to fix anything",
+            "Just listen and respond as a human",
+            "Make a real difference",
+          ].map((line) => (
+            <li key={line} className="font-body text-[12px] text-muted-foreground">
+              — {line}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+);
+
+/* ── Three Pillars ── */
+const PillarsSection = () => {
+  const pillars = [
+    { title: "Write", desc: "Put your thoughts somewhere real." },
+    { title: "Reflect", desc: "Understand what you feel over time." },
+    { title: "Connect", desc: "Talk to someone when writing is not enough." },
   ];
+
   return (
-    <section className="py-6">
-      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
-        {t("landing.forSeekers")}
-      </p>
+    <section className="py-16 border-t border-muted">
       <div className="grid grid-cols-1 md:grid-cols-3">
-        {steps.map((step, i) => (
+        {pillars.map((p, i) => (
           <div
-            key={step.num}
-            className={`py-2 md:py-0 md:px-2 ${
-              i > 0 ? "border-t md:border-t-0 md:border-l border-foreground" : ""
+            key={p.title}
+            className={`py-6 md:py-0 md:px-6 ${
+              i > 0 ? "border-t md:border-t-0 md:border-l border-muted" : ""
             } ${i === 0 ? "md:pl-0" : ""}`}
           >
-            <span className="font-body text-[12px] text-muted-foreground">{step.num}</span>
-            <h3 className="font-display text-[24px] leading-tight mt-0.5">{step.heading}</h3>
-            <p className="font-body text-[12px] text-muted-foreground mt-0.5">{step.desc}</p>
+            <h3 className="font-display italic text-[24px] text-foreground">
+              {p.title}
+            </h3>
+            <p className="font-body text-[12px] text-muted-foreground mt-2">
+              {p.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+      <p className="font-body text-[11px] text-muted-foreground mt-8">
+        Connection is not an add-on. It is the core.
+      </p>
+    </section>
+  );
+};
+
+/* ── How It Works ── */
+const HowItWorksSection = () => {
+  const steps = [
+    { num: "01", text: "Write or check in" },
+    { num: "02", text: "Organize what you feel" },
+    { num: "03", text: "Choose to share — or not" },
+    { num: "04", text: "Connect with a listener" },
+  ];
+
+  return (
+    <section className="py-16 border-t border-muted">
+      <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-6">
+        How it works
+      </p>
+      <div className="flex flex-col gap-4">
+        {steps.map((s) => (
+          <div key={s.num} className="flex items-baseline gap-4">
+            <span className="font-body text-[11px] text-muted-foreground w-[24px] shrink-0">
+              {s.num}
+            </span>
+            <p className="font-display text-[20px] text-foreground">{s.text}</p>
           </div>
         ))}
       </div>
@@ -62,76 +148,106 @@ const HowItWorksSection = () => {
   );
 };
 
-const formationSteps = [
-  { num: "1", label: "Foundations" },
-  { num: "2", label: "Techniques" },
-  { num: "3", label: "Crisis Protocol" },
-  { num: "4", label: "Bot Simulation ●", gate: true },
-];
+/* ── Personal Space Preview ── */
+const PersonalSpaceSection = () => (
+  <section className="py-16 border-t border-muted">
+    <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-4">
+      Your personal space
+    </p>
+    <h2 className="font-display italic text-[28px] text-foreground mb-6">
+      More than a chat.
+    </h2>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-px border border-muted">
+      {[
+        { label: "Journal", sub: "Write freely, guided, or just one sentence" },
+        { label: "Mood", sub: "Track how you feel over time" },
+        { label: "Room", sub: "A personal dashboard — notes, music, counters" },
+        { label: "Shelf", sub: "Save the lines that matter" },
+      ].map((item) => (
+        <div key={item.label} className="p-4 border border-muted">
+          <p className="font-body text-[12px] text-foreground mb-1">{item.label}</p>
+          <p className="font-body text-[10px] text-muted-foreground leading-snug">
+            {item.sub}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+);
 
-const FormationSection = () => {
+/* ── Peer Support Core ── */
+const PeerSupportSection = () => (
+  <section className="py-16 border-t border-muted">
+    <h2 className="font-display italic text-[28px] text-foreground mb-6">
+      Real people. Not algorithms.
+    </h2>
+    <div className="flex flex-col gap-3 max-w-[480px]">
+      <p className="font-body text-[12px] text-muted-foreground">
+        — No judgment. No pressure.
+      </p>
+      <p className="font-body text-[12px] text-muted-foreground">
+        — You don't need the right words.
+      </p>
+    </div>
+    <div className="mt-8 border-t border-muted pt-6 max-w-[480px]">
+      <p className="font-display italic text-[16px] text-foreground leading-relaxed">
+        For some, this is a place to be heard.
+      </p>
+      <p className="font-display italic text-[16px] text-foreground leading-relaxed">
+        For others, it's a place to be there.
+      </p>
+    </div>
+  </section>
+);
+
+/* ── Values / Safety ── */
+const ValuesSection = () => (
+  <section id="safety" className="py-16 border-t border-muted">
+    <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-6">
+      How we think about this
+    </p>
+    <div className="flex flex-col gap-4 max-w-[480px]">
+      {[
+        "You don't have to explain everything perfectly.",
+        "You can take your time.",
+        "You decide what to share.",
+      ].map((line) => (
+        <p key={line} className="font-body text-[13px] text-foreground">
+          {line}
+        </p>
+      ))}
+    </div>
+  </section>
+);
+
+/* ── Final CTA ── */
+const FinalCTA = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   return (
-    <section className="py-6 border-t border-foreground">
-      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-        {t("landing.forListeners")}
+    <section className="py-20 border-t border-muted text-center">
+      <p className="font-display italic text-[20px] text-foreground mb-8">
+        A two-sided system: those who need to be heard,
+        <br />
+        and those willing to listen.
       </p>
-      <h2 className="font-display text-[36px] leading-tight">{t("landing.formationHeading")}</h2>
-      <p className="font-body text-[13px] text-muted-foreground mt-1 max-w-[600px]">
-        {t("landing.formationDesc")}
-      </p>
-
-      <div className="mt-4 flex flex-col md:flex-row items-stretch">
-        {formationSteps.map((step, i) => (
-          <div key={step.num} className="flex items-center">
-            {i > 0 && <div className="hidden md:block w-3 h-px bg-foreground" />}
-            {i > 0 && <div className="block md:hidden h-2 w-px bg-foreground mx-auto" />}
-            <div
-              className={`border border-foreground px-2 py-1 font-body text-[12px] text-foreground whitespace-nowrap ${
-                step.gate ? "font-medium" : ""
-              }`}
-            >
-              {step.num}. {step.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-3">
-        <EchoButton variant="outline" size="md" onClick={() => navigate("/signup/listener")}>
-          {t("landing.beginFormation")}
+      <div className="flex gap-3 justify-center">
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")}>
+          Enter Echo
+        </EchoButton>
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")}>
+          Become a Listener
         </EchoButton>
       </div>
     </section>
   );
 };
 
-const TrustSection = () => {
-  const { t } = useTranslation();
-  const trustItems = [
-    t("landing.trust1"),
-    t("landing.trust2"),
-    t("landing.trust3"),
-  ];
-  return (
-    <section id="safety" className="py-6 border-t border-foreground">
-      <h2 className="font-display text-[36px] leading-tight">{t("landing.trustHeading")}</h2>
-      <ul className="mt-2 flex flex-col gap-1">
-        {trustItems.map((item) => (
-          <li key={item} className="font-body text-[13px] text-foreground">
-            — {item}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-};
-
+/* ── Page ── */
 const Index = () => {
   const { t } = useTranslation();
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-10 border-b border-foreground bg-background">
         <div className="mx-auto flex w-full max-w-echo items-center justify-between px-2 py-1">
           <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
@@ -169,18 +285,19 @@ const Index = () => {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-echo px-2">
+      {/* Content */}
+      <div className="mx-auto w-full max-w-echo px-4">
         <HeroSection />
-      </div>
-
-      <div className="w-full border-t border-foreground" />
-
-      <div className="mx-auto w-full max-w-echo px-2">
+        <DualRoleSection />
+        <PillarsSection />
         <HowItWorksSection />
-        <FormationSection />
-        <TrustSection />
+        <PersonalSpaceSection />
+        <PeerSupportSection />
+        <ValuesSection />
+        <FinalCTA />
       </div>
 
+      {/* Footer */}
       <footer className="mt-auto border-t border-foreground">
         <div className="mx-auto w-full max-w-echo flex items-center justify-between px-2 py-1">
           <p className="font-body text-[11px] text-muted-foreground">
@@ -188,8 +305,8 @@ const Index = () => {
           </p>
           <nav className="flex gap-2">
             <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.about")}</Link>
-            <Link to="/about#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.safety")}</Link>
-            <Link to="/signup/listener" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("landing.becomeListener")}</Link>
+            <a href="#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.safety")}</a>
+            <Link to="/signup/listener" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
           </nav>
         </div>
       </footer>
