@@ -7,6 +7,7 @@ import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
 import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
+import GoogleSignInButton from "@/components/echo/GoogleSignInButton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -130,6 +131,14 @@ const Login = () => {
           <EchoButton type="submit" variant="solid" size="md">
             {loading ? t("auth.loggingIn") : t("auth.loginButton")}
           </EchoButton>
+
+          <div className="flex items-center gap-2 my-1">
+            <div className="flex-1 border-t border-muted" />
+            <span className="font-body text-[10px] text-muted-foreground uppercase tracking-widest">or</span>
+            <div className="flex-1 border-t border-muted" />
+          </div>
+
+          <GoogleSignInButton />
 
           <div className="flex flex-col items-center gap-0.5 mt-1">
             <p className="font-body text-[11px] text-muted-foreground">

@@ -114,10 +114,8 @@ const AuthCallback = () => {
         }
         navigate("/dashboard/seeker");
       } else {
-        // Unknown role — can't create profile
-        console.error("No role in user_metadata, cannot create profile");
-        await supabase.auth.signOut();
-        navigate("/login");
+        // No role in metadata (e.g. Google OAuth user) — send to role selection
+        navigate("/signup");
       }
     };
 
