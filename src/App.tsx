@@ -48,6 +48,7 @@ const AppInner = () => {
           {/* Dashboards */}
           <Route path="/dashboard/seeker" element={<SeekerDashboard />} />
           <Route path="/dashboard/listener" element={<ListenerDashboard />} />
+          <Route path="/dashboard/room" element={<DashboardRoom />} />
           <Route path="/dashboard" element={<RoleRedirect />} />
 
           {/* Listener-only */}
