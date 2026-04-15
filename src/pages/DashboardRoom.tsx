@@ -148,7 +148,7 @@ const DashboardRoom = () => {
   };
 
   const onLayoutChange = useCallback(
-    (layout: LayoutItem[]) => {
+    (layout: readonly LayoutItem[], _layouts: any) => {
       layout.forEach((item) => {
         const widget = widgets.find((w) => w.id === item.i);
         if (
@@ -230,9 +230,6 @@ const DashboardRoom = () => {
             margin={[16, 16]}
             layouts={{ lg: gridLayout }}
             onLayoutChange={onLayoutChange}
-            isResizable={true}
-            isResizable={true}
-            isDraggable={true}
           >
             {widgets.map((w) => (
               <div
