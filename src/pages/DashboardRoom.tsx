@@ -1,17 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import GridLayout, { WidthProvider } from "react-grid-layout";
+import { ResponsiveGridLayout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 type LayoutItem = { i: string; x: number; y: number; w: number; h: number; minW?: number; maxW?: number; minH?: number; maxH?: number };
-import { supabase } from "@/integrations/supabase/client";
-import { EchoLogo } from "@/components/echo/EchoLogo";
-import { WidgetPalette, type WidgetType } from "@/components/echo/room/WidgetPalette";
-import { RoomWidget } from "@/components/echo/room/RoomWidget";
-import { RoomEmptyState } from "@/components/echo/room/RoomEmptyState";
-
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 interface DashboardWidget {
   id: string;
