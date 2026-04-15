@@ -78,6 +78,18 @@ const SeekerSignup = () => {
           <p className="font-body text-[13px] text-muted-foreground mt-2">
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
           </p>
+          <p className="font-body text-[11px] text-muted-foreground mt-3">
+            Didn't receive it? Check your spam folder or{" "}
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.resend({ type: "signup", email });
+              }}
+              className="text-foreground underline echo-fade"
+            >
+              resend the email
+            </button>
+          </p>
         </div>
       </AuthShell>
     );
