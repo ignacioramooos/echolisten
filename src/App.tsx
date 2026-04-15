@@ -18,6 +18,7 @@ import About from "./pages/About.tsx";
 import ListenerSignup from "./pages/ListenerSignup.tsx";
 import SeekerSignup from "./pages/SeekerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
+import DashboardRoom from "./pages/DashboardRoom.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";

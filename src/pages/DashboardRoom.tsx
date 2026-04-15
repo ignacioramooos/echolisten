@@ -1,8 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Responsive, WidthProvider, Layout } from "react-grid-layout";
+import { Responsive, WidthProvider } from "react-grid-layout";
+import type ReactGridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+
+type LayoutItem = ReactGridLayout.Layout;
 import { supabase } from "@/integrations/supabase/client";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 import { WidgetPalette, type WidgetType } from "@/components/echo/room/WidgetPalette";
