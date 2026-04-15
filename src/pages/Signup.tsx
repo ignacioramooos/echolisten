@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
+import GoogleSignInButton from "@/components/echo/GoogleSignInButton";
 
 type Role = "listener" | "seeker";
 
@@ -159,6 +160,14 @@ const Signup = () => {
           >
             {loading ? t("auth.signingUp") : t("auth.signUp")}
           </EchoButton>
+
+          <div className="flex items-center gap-2 my-1">
+            <div className="flex-1 border-t border-muted" />
+            <span className="font-body text-[10px] text-muted-foreground uppercase tracking-widest">or</span>
+            <div className="flex-1 border-t border-muted" />
+          </div>
+
+          <GoogleSignInButton label="Sign up with Google" />
 
           <p className="font-body text-[11px] text-muted-foreground text-center mt-1">
             {t("auth.alreadyHave")}{" "}
