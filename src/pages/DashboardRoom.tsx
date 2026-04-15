@@ -231,7 +231,7 @@ const DashboardRoom = () => {
       </header>
 
       {/* Content */}
-      <main className="flex-1 pt-[65px] px-4">
+      <main ref={containerRef} className="flex-1 pt-[65px] px-4">
         {widgets.length === 0 ? (
           <div className="h-[calc(100vh-65px)]">
             <RoomEmptyState onSelectPreset={applyPreset} />
@@ -239,6 +239,7 @@ const DashboardRoom = () => {
         ) : (
           <ResponsiveGridLayout
             className="mt-4"
+            width={containerWidth}
             breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
             rowHeight={120}
