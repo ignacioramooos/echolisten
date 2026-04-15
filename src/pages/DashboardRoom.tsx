@@ -42,10 +42,25 @@ const PRESET_LAYOUTS: Record<string, { type: WidgetType; x: number; y: number; w
 
 const DashboardRoom = () => {
   const navigate = useNavigate();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(1200);
   const [widgets, setWidgets] = useState<DashboardWidget[]>([]);
   const [loading, setLoading] = useState(true);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+    obs.observe(el);
+    setContainerWidth(el.clientWidth);
+    return () => obs.disconnect();
+  }, [loading]);
 
   const loadWidgets = useCallback(async (uid: string) => {
     const { data } = await supabase
