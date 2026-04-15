@@ -13,20 +13,20 @@ import {
 const HeroSection = () => {
   const navigate = useNavigate();
   return (
-    <section className="flex min-h-[90vh] flex-col items-center justify-center px-4 text-center">
-      <h1 className="font-display italic text-[56px] md:text-[72px] leading-[1.05] text-foreground max-w-[680px]">
+    <section className="flex flex-col items-center justify-center px-2 py-10 md:py-20 text-center">
+      <h1 className="font-display italic text-[40px] sm:text-[56px] md:text-[72px] leading-[1.05] text-foreground max-w-[680px] break-words">
         A space to write what you carry.
       </h1>
-      <p className="mt-4 font-body text-[13px] text-muted-foreground max-w-[520px] leading-relaxed">
+      <p className="mt-4 font-body text-[12px] sm:text-[13px] text-muted-foreground max-w-[520px] leading-relaxed px-2">
         Echo helps you process difficult moments through writing, reflection,
         and real human listening — privately and at your own pace.
       </p>
 
-      <div className="mt-8 flex gap-3">
-        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")}>
+      <div className="mt-8 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto px-2 sm:px-0">
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")} className="w-full sm:w-auto">
           Enter Echo
         </EchoButton>
-        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")}>
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")} className="w-full sm:w-auto">
           Become a Listener
         </EchoButton>
       </div>
@@ -34,7 +34,7 @@ const HeroSection = () => {
       <p className="mt-4 font-body text-[11px] text-muted-foreground tracking-wider">
         Anonymous. Free. Human.
       </p>
-      <p className="mt-6 font-display italic text-[15px] text-muted-foreground">
+      <p className="mt-6 font-display italic text-[14px] sm:text-[15px] text-muted-foreground">
         Some come to be heard. Others come to listen.
       </p>
     </section>
@@ -43,11 +43,10 @@ const HeroSection = () => {
 
 /* ── Dual Role ── */
 const DualRoleSection = () => (
-  <section className="py-16 border-t border-muted">
+  <section className="py-10 md:py-16 border-t border-muted">
     <div className="grid grid-cols-1 md:grid-cols-2">
-      {/* Left — Seeker */}
-      <div className="pr-0 md:pr-8 pb-10 md:pb-0 md:border-r border-muted">
-        <h2 className="font-display italic text-[28px] text-foreground mb-4">
+      <div className="pr-0 md:pr-8 pb-8 md:pb-0 md:border-r border-muted">
+        <h2 className="font-display italic text-[24px] sm:text-[28px] text-foreground mb-4">
           You need to talk
         </h2>
         <ul className="flex flex-col gap-2">
@@ -63,10 +62,8 @@ const DualRoleSection = () => (
           ))}
         </ul>
       </div>
-
-      {/* Right — Listener */}
-      <div className="pl-0 md:pl-8 pt-10 md:pt-0 border-t md:border-t-0 border-muted">
-        <h2 className="font-display italic text-[28px] text-foreground mb-4">
+      <div className="pl-0 md:pl-8 pt-8 md:pt-0 border-t md:border-t-0 border-muted">
+        <h2 className="font-display italic text-[24px] sm:text-[28px] text-foreground mb-4">
           You want to listen
         </h2>
         <ul className="flex flex-col gap-2">
@@ -95,16 +92,16 @@ const PillarsSection = () => {
   ];
 
   return (
-    <section className="py-16 border-t border-muted">
+    <section className="py-10 md:py-16 border-t border-muted">
       <div className="grid grid-cols-1 md:grid-cols-3">
         {pillars.map((p, i) => (
           <div
             key={p.title}
-            className={`py-6 md:py-0 md:px-6 ${
+            className={`py-4 md:py-0 md:px-6 ${
               i > 0 ? "border-t md:border-t-0 md:border-l border-muted" : ""
             } ${i === 0 ? "md:pl-0" : ""}`}
           >
-            <h3 className="font-display italic text-[24px] text-foreground">
+            <h3 className="font-display italic text-[22px] sm:text-[24px] text-foreground">
               {p.title}
             </h3>
             <p className="font-body text-[12px] text-muted-foreground mt-2">
@@ -113,7 +110,7 @@ const PillarsSection = () => {
           </div>
         ))}
       </div>
-      <p className="font-body text-[11px] text-muted-foreground mt-8">
+      <p className="font-body text-[11px] text-muted-foreground mt-6 md:mt-8">
         Connection is not an add-on. It is the core.
       </p>
     </section>
@@ -130,17 +127,17 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="py-16 border-t border-muted">
-      <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-6">
+    <section className="py-10 md:py-16 border-t border-muted">
+      <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-4 md:mb-6">
         How it works
       </p>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 md:gap-4">
         {steps.map((s) => (
-          <div key={s.num} className="flex items-baseline gap-4">
+          <div key={s.num} className="flex items-baseline gap-3 md:gap-4">
             <span className="font-body text-[11px] text-muted-foreground w-[24px] shrink-0">
               {s.num}
             </span>
-            <p className="font-display text-[20px] text-foreground">{s.text}</p>
+            <p className="font-display text-[18px] sm:text-[20px] text-foreground">{s.text}</p>
           </div>
         ))}
       </div>
@@ -150,21 +147,21 @@ const HowItWorksSection = () => {
 
 /* ── Personal Space Preview ── */
 const PersonalSpaceSection = () => (
-  <section className="py-16 border-t border-muted">
+  <section className="py-10 md:py-16 border-t border-muted">
     <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-4">
       Your personal space
     </p>
-    <h2 className="font-display italic text-[28px] text-foreground mb-6">
+    <h2 className="font-display italic text-[24px] sm:text-[28px] text-foreground mb-4 md:mb-6">
       More than a chat.
     </h2>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-px border border-muted">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px border border-muted">
       {[
         { label: "Journal", sub: "Write freely, guided, or just one sentence" },
         { label: "Mood", sub: "Track how you feel over time" },
         { label: "Room", sub: "A personal dashboard — notes, music, counters" },
         { label: "Shelf", sub: "Save the lines that matter" },
       ].map((item) => (
-        <div key={item.label} className="p-4 border border-muted">
+        <div key={item.label} className="p-3 md:p-4 border border-muted">
           <p className="font-body text-[12px] text-foreground mb-1">{item.label}</p>
           <p className="font-body text-[10px] text-muted-foreground leading-snug">
             {item.sub}
@@ -177,8 +174,8 @@ const PersonalSpaceSection = () => (
 
 /* ── Peer Support Core ── */
 const PeerSupportSection = () => (
-  <section className="py-16 border-t border-muted">
-    <h2 className="font-display italic text-[28px] text-foreground mb-6">
+  <section className="py-10 md:py-16 border-t border-muted">
+    <h2 className="font-display italic text-[24px] sm:text-[28px] text-foreground mb-4 md:mb-6">
       Real people. Not algorithms.
     </h2>
     <div className="flex flex-col gap-3 max-w-[480px]">
@@ -189,11 +186,11 @@ const PeerSupportSection = () => (
         — You don't need the right words.
       </p>
     </div>
-    <div className="mt-8 border-t border-muted pt-6 max-w-[480px]">
-      <p className="font-display italic text-[16px] text-foreground leading-relaxed">
+    <div className="mt-6 md:mt-8 border-t border-muted pt-4 md:pt-6 max-w-[480px]">
+      <p className="font-display italic text-[15px] sm:text-[16px] text-foreground leading-relaxed">
         For some, this is a place to be heard.
       </p>
-      <p className="font-display italic text-[16px] text-foreground leading-relaxed">
+      <p className="font-display italic text-[15px] sm:text-[16px] text-foreground leading-relaxed">
         For others, it's a place to be there.
       </p>
     </div>
@@ -202,11 +199,11 @@ const PeerSupportSection = () => (
 
 /* ── Values / Safety ── */
 const ValuesSection = () => (
-  <section id="safety" className="py-16 border-t border-muted">
-    <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-6">
+  <section id="safety" className="py-10 md:py-16 border-t border-muted">
+    <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-4 md:mb-6">
       How we think about this
     </p>
-    <div className="flex flex-col gap-4 max-w-[480px]">
+    <div className="flex flex-col gap-3 md:gap-4 max-w-[480px]">
       {[
         "You don't have to explain everything perfectly.",
         "You can take your time.",
@@ -224,17 +221,18 @@ const ValuesSection = () => (
 const FinalCTA = () => {
   const navigate = useNavigate();
   return (
-    <section className="py-20 border-t border-muted text-center">
-      <p className="font-display italic text-[20px] text-foreground mb-8">
+    <section className="py-10 md:py-20 border-t border-muted text-center">
+      <p className="font-display italic text-[16px] sm:text-[20px] text-foreground mb-6 md:mb-8 px-2">
         A two-sided system: those who need to be heard,
-        <br />
+        <br className="hidden sm:block" />
+        <span className="sm:hidden"> </span>
         and those willing to listen.
       </p>
-      <div className="flex gap-3 justify-center">
-        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")}>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center px-2 sm:px-0">
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")} className="w-full sm:w-auto">
           Enter Echo
         </EchoButton>
-        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")}>
+        <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")} className="w-full sm:w-auto">
           Become a Listener
         </EchoButton>
       </div>
@@ -246,18 +244,18 @@ const FinalCTA = () => {
 const Index = () => {
   const { t } = useTranslation();
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground overflow-x-hidden">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-10 border-b border-foreground bg-background">
         <div className="mx-auto flex w-full max-w-echo items-center justify-between px-2 py-1">
-          <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
+          <Link to="/" className="font-display italic text-[20px] sm:text-[24px] text-foreground select-none no-underline">
             <span className="mr-0.5">●</span> Echo
           </Link>
           <nav className="flex items-center gap-2">
-            <Link to="/about" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
+            <Link to="/about" className="font-body text-[11px] sm:text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
               {t("nav.about")}
             </Link>
-            <Link to="/login" className="font-body text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
+            <Link to="/login" className="font-body text-[11px] sm:text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
               {t("nav.login")}
             </Link>
             <DropdownMenu>
@@ -285,8 +283,8 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Content */}
-      <div className="mx-auto w-full max-w-echo px-4">
+      {/* Content — pt accounts for fixed header */}
+      <div className="mx-auto w-full max-w-echo px-2 sm:px-4 pt-[48px]">
         <HeroSection />
         <DualRoleSection />
         <PillarsSection />
@@ -299,11 +297,11 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="mt-auto border-t border-foreground">
-        <div className="mx-auto w-full max-w-echo flex items-center justify-between px-2 py-1">
-          <p className="font-body text-[11px] text-muted-foreground">
+        <div className="mx-auto w-full max-w-echo flex flex-col sm:flex-row items-center justify-between px-2 py-1 gap-1 sm:gap-0">
+          <p className="font-body text-[11px] text-muted-foreground text-center sm:text-left">
             {t("landing.footer")}
           </p>
-          <nav className="flex gap-2">
+          <nav className="flex gap-2 flex-wrap justify-center">
             <Link to="/about" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.about")}</Link>
             <a href="#safety" className="font-body text-[11px] text-foreground echo-fade no-underline">{t("nav.safety")}</a>
             <Link to="/signup/listener" className="font-body text-[11px] text-foreground echo-fade no-underline">Become a Listener</Link>
