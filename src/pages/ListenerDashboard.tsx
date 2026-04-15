@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoBadge } from "@/components/echo/EchoBadge";
+import SharedFeatureNav from "@/components/echo/SharedFeatureNav";
 
 interface FullSession {
   id: string;
@@ -289,6 +290,9 @@ const ListenerDashboard = () => {
               </div>
             </section>
           )}
+
+          {/* Shared features */}
+          <SharedFeatureNav />
         </div>
       </main>
 
