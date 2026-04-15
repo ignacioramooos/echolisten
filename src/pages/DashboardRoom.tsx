@@ -230,7 +230,7 @@ const DashboardRoom = () => {
             margin={[16, 16]}
             layouts={{ lg: gridLayout }}
             onLayoutChange={onLayoutChange}
-            draggableHandle=".react-grid-item"
+            isResizable={true}
             isResizable={true}
             isDraggable={true}
           >
