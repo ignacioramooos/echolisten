@@ -231,6 +231,16 @@ const ChatRoom = () => {
         />
       )}
 
+      {/* Pre-session shared journal card (listener only) */}
+      {isListener && showSharedCard && session.seeker_id && userId && (
+        <SharedJournalCard
+          seekerId={session.seeker_id}
+          seekerName="This person"
+          listenerId={userId}
+          onContinue={() => setShowSharedCard(false)}
+        />
+      )}
+
       {/* Main chat area: messages + optional advisor */}
       <div
         className="flex flex-1 min-h-0 relative"
