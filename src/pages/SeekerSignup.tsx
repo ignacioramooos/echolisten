@@ -7,6 +7,7 @@ import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import GoogleSignInButton from "@/components/echo/GoogleSignInButton";
 
 const HCAPTCHA_SITE_KEY = "b522d150-2c12-4678-bbc6-82bee8fce844";
 
@@ -76,6 +77,18 @@ const SeekerSignup = () => {
           <h1 className="font-display text-[32px] leading-tight text-foreground">Check your email</h1>
           <p className="font-body text-[13px] text-muted-foreground mt-2">
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+          </p>
+          <p className="font-body text-[11px] text-muted-foreground mt-3">
+            Didn't receive it? Check your spam folder or{" "}
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.resend({ type: "signup", email });
+              }}
+              className="text-foreground underline echo-fade"
+            >
+              resend the email
+            </button>
           </p>
         </div>
       </AuthShell>
@@ -199,6 +212,14 @@ const SeekerSignup = () => {
           >
             {loading ? "Creating account..." : "Create Seeker Account"}
           </EchoButton>
+
+          <div className="flex items-center gap-2 my-1">
+            <div className="flex-1 border-t border-muted" />
+            <span className="font-body text-[10px] text-muted-foreground uppercase tracking-widest">or</span>
+            <div className="flex-1 border-t border-muted" />
+          </div>
+
+          <GoogleSignInButton label="Sign up with Google" />
 
           <p className="font-body text-[11px] text-muted-foreground text-center mt-1">
             Already have an account?{" "}

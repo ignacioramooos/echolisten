@@ -65,7 +65,24 @@ const ListenerSignup = () => {
   if (done) {
     return (
       <Shell>
-        <WelcomeScreen />
+        <div className="flex flex-col gap-3">
+          <h1 className="font-display text-[32px] leading-tight text-foreground">Check your email</h1>
+          <p className="font-body text-[13px] text-muted-foreground">
+            We sent a confirmation link to <strong>{data.email}</strong>. Click it to activate your Listener account and begin your formation.
+          </p>
+          <p className="font-body text-[11px] text-muted-foreground">
+            Didn't receive it? Check your spam folder or{" "}
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.resend({ type: "signup", email: data.email });
+              }}
+              className="text-foreground underline echo-fade"
+            >
+              resend the email
+            </button>
+          </p>
+        </div>
       </Shell>
     );
   }
