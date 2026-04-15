@@ -337,6 +337,7 @@ const Journal = () => {
             onOpenChange={setShareOpen}
             entryId={savedEntryId}
             entryContent={savedContent}
+            onShared={() => setShowPostSave(false)}
           />
         </>
       )}
