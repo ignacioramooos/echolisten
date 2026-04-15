@@ -41,6 +41,75 @@ export type Database = {
         }
         Relationships: []
       }
+      counters: {
+        Row: {
+          count: number | null
+          counter_type: string
+          created_at: string | null
+          id: string
+          label: string
+          last_reset: string | null
+          start_date: string | null
+          user_id: string
+        }
+        Insert: {
+          count?: number | null
+          counter_type: string
+          created_at?: string | null
+          id?: string
+          label: string
+          last_reset?: string | null
+          start_date?: string | null
+          user_id: string
+        }
+        Update: {
+          count?: number | null
+          counter_type?: string
+          created_at?: string | null
+          id?: string
+          label?: string
+          last_reset?: string | null
+          start_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dashboard_widgets: {
+        Row: {
+          config: Json | null
+          created_at: string | null
+          height: number
+          id: string
+          position_x: number
+          position_y: number
+          type: string
+          user_id: string
+          width: number
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string | null
+          height?: number
+          id?: string
+          position_x?: number
+          position_y?: number
+          type: string
+          user_id: string
+          width?: number
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string | null
+          height?: number
+          id?: string
+          position_x?: number
+          position_y?: number
+          type?: string
+          user_id?: string
+          width?: number
+        }
+        Relationships: []
+      }
       evaluations: {
         Row: {
           flags_checked: string[]
@@ -109,6 +178,48 @@ export type Database = {
           steps_completed?: string[]
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          listener_id: string | null
+          mode: string
+          mood_after: string | null
+          mood_before: string | null
+          shared_fragment: string | null
+          updated_at: string | null
+          user_id: string
+          visibility: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          listener_id?: string | null
+          mode: string
+          mood_after?: string | null
+          mood_before?: string | null
+          shared_fragment?: string | null
+          updated_at?: string | null
+          user_id: string
+          visibility?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          listener_id?: string | null
+          mode?: string
+          mood_after?: string | null
+          mood_before?: string | null
+          shared_fragment?: string | null
+          updated_at?: string | null
+          user_id?: string
+          visibility?: string | null
         }
         Relationships: []
       }
@@ -187,6 +298,41 @@ export type Database = {
         }
         Relationships: []
       }
+      memory_shelf: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          label: string | null
+          source_entry_id: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          label?: string | null
+          source_entry_id?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          label?: string | null
+          source_entry_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_shelf_source_entry_id_fkey"
+            columns: ["source_entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -221,6 +367,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mood_logs: {
+        Row: {
+          created_at: string | null
+          emotional_weather: string | null
+          id: string
+          need_now: string | null
+          primary_feeling: string | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          emotional_weather?: string | null
+          id?: string
+          need_now?: string | null
+          primary_feeling?: string | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          emotional_weather?: string | null
+          id?: string
+          need_now?: string | null
+          primary_feeling?: string | null
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       seeker_profiles: {
         Row: {
