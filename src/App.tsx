@@ -19,6 +19,7 @@ import ListenerSignup from "./pages/ListenerSignup.tsx";
 import SeekerSignup from "./pages/SeekerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
 import DashboardRoom from "./pages/DashboardRoom.tsx";
+import Journal from "./pages/Journal.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
@@ -50,6 +51,7 @@ const AppInner = () => {
           <Route path="/dashboard/seeker" element={<SeekerDashboard />} />
           <Route path="/dashboard/listener" element={<ListenerDashboard />} />
           <Route path="/dashboard/room" element={<DashboardRoom />} />
+          <Route path="/dashboard/journal" element={<Journal />} />
           <Route path="/dashboard" element={<RoleRedirect />} />
 
           {/* Listener-only */}
