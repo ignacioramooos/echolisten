@@ -151,7 +151,7 @@ const DashboardRoom = () => {
   };
 
   const onLayoutChange = useCallback(
-    (layout: Layout[]) => {
+    (layout: LayoutItem[]) => {
       layout.forEach((item) => {
         const widget = widgets.find((w) => w.id === item.i);
         if (
@@ -185,7 +185,7 @@ const DashboardRoom = () => {
     [widgets]
   );
 
-  const gridLayout: Layout[] = widgets.map((w) => ({
+  const gridLayout: LayoutItem[] = widgets.map((w) => ({
     i: w.id,
     x: w.position_x,
     y: w.position_y,
