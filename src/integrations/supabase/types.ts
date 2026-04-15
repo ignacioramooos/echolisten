@@ -190,6 +190,7 @@ export type Database = {
           mode: string
           mood_after: string | null
           mood_before: string | null
+          read_at: string | null
           shared_fragment: string | null
           updated_at: string | null
           user_id: string
@@ -203,6 +204,7 @@ export type Database = {
           mode: string
           mood_after?: string | null
           mood_before?: string | null
+          read_at?: string | null
           shared_fragment?: string | null
           updated_at?: string | null
           user_id: string
@@ -216,6 +218,7 @@ export type Database = {
           mode?: string
           mood_after?: string | null
           mood_before?: string | null
+          read_at?: string | null
           shared_fragment?: string | null
           updated_at?: string | null
           user_id?: string
