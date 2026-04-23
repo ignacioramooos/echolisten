@@ -255,6 +255,9 @@ const SeekerDashboard = () => {
             </div>
           </section>
 
+          {/* Shared features */}
+          <SharedFeatureNav />
+
           {/* Past Sessions */}
           <section className="border-t border-foreground pt-3">
             <h2 className="font-display text-[24px] leading-tight mb-2">Past Sessions</h2>
@@ -309,8 +312,6 @@ const SeekerDashboard = () => {
             </div>
           </section>
 
-          {/* Shared features */}
-          <SharedFeatureNav />
         </div>
       </main>
 

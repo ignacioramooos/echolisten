@@ -198,6 +198,9 @@ const ListenerDashboard = () => {
             </div>
           )}
 
+          {/* Shared features */}
+          <SharedFeatureNav />
+
           {/* Stats */}
           <section>
             <h2 className="font-display text-[24px] leading-tight mb-2">{t("dashboard.thisWeek")}</h2>
@@ -291,8 +294,6 @@ const ListenerDashboard = () => {
             </section>
           )}
 
-          {/* Shared features */}
-          <SharedFeatureNav />
         </div>
       </main>
 
