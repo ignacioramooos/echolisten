@@ -15,13 +15,14 @@ interface WaitingSession {
 const ListenQueue = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const db = supabase as any;
   const [sessions, setSessions] = useState<WaitingSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [picking, setPicking] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
 
   const loadSessions = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("chat_requests")
       .select("id, title, topic, created_at")
       .eq("status", "pending")
@@ -75,7 +76,7 @@ const ListenQueue = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate("/login"); return; }
 
-    const { data, error } = await supabase.rpc("accept_chat_request", {
+    const { data, error } = await db.rpc("accept_chat_request", {
       request_id: sessionId,
     });
 

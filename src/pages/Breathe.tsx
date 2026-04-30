@@ -15,6 +15,7 @@ const WEATHER = [
 
 const Breathe = () => {
   const navigate = useNavigate();
+  const db = supabase as any;
   const [pattern, setPattern] = useState<BreathePatternId>("calm");
   const [duration, setDuration] = useState(60);
   const [tick, setTick] = useState(false);
@@ -30,7 +31,7 @@ const Breathe = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data } = await supabase
+      const { data } = await db
         .from("breathing_sessions")
         .insert({
           user_id: user.id,
@@ -79,7 +80,7 @@ const Breathe = () => {
   const chooseMood = async (weather: string) => {
     setMoodAfter(weather);
     if (!recordId) return;
-    await supabase
+    await db
       .from("breathing_sessions")
       .update({ mood_after: weather })
       .eq("id", recordId);
