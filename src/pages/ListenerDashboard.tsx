@@ -309,7 +309,7 @@ const ListenerDashboard = () => {
       <div className="border-t border-foreground">
         <div className="mx-auto w-full max-w-echo px-2 py-1.5">
           <p className="font-body text-[10px] text-muted-foreground">
-            ● Echo is peer support only. Listeners are trained volunteers, not clinicians.
+            ● Cor Ad Cor is peer support only. Listeners are trained volunteers, not clinicians.
             For emergencies, contact your local crisis services.
           </p>
         </div>

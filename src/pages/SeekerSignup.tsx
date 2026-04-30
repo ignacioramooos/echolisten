@@ -223,7 +223,7 @@ const SeekerSignup = () => {
               className="mt-[3px] accent-foreground"
             />
             <span className="font-body text-[11px] text-foreground leading-tight">
-              I agree to Echo's Terms of Service and Privacy Policy.
+              I agree to Cor Ad Cor's Terms of Service and Privacy Policy.
             </span>
           </label>
 

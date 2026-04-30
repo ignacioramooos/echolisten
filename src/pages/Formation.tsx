@@ -157,7 +157,7 @@ const Formation = () => {
       <div className="min-h-screen bg-background text-foreground flex flex-col">
         <div className="border-b border-foreground px-2 py-1">
           <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
-            <span className="mr-0.5">●</span> Echo
+            <span className="mr-0.5">●</span> Cor ad Cor
           </Link>
         </div>
         <div className="flex-1 flex items-center justify-center px-2">
@@ -165,7 +165,7 @@ const Formation = () => {
             <h1 className="font-display text-[48px] leading-tight text-foreground">Welcome.</h1>
             <div className="mt-3 flex flex-col gap-2">
               <p className="font-body text-[13px] text-foreground leading-relaxed">
-                There are many people with no one to talk to. As an Echo Listener, you will help create a safe space for people to share what's happening in their lives, anonymously and for free.
+                There are many people with no one to talk to. As a Cor Ad Cor Listener, you will help create a safe space for people to share what's happening in their lives, anonymously and for free.
               </p>
               <p className="font-body text-[13px] text-foreground leading-relaxed">
                 This formation takes approximately 60 minutes. Your progress is saved automatically.
@@ -197,7 +197,7 @@ const Formation = () => {
       <div className="min-h-screen bg-background text-foreground flex flex-col">
         <div className="border-b border-foreground px-2 py-1">
           <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
-            <span className="mr-0.5">●</span> Echo
+            <span className="mr-0.5">●</span> Cor ad Cor
           </Link>
         </div>
         <div className="flex-1 flex items-center justify-center px-2">
@@ -213,7 +213,7 @@ const Formation = () => {
       <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-2">
         <h1 className="font-display text-[56px] leading-tight text-foreground text-center">You're a Listener.</h1>
         <div className="mt-3 border border-foreground px-4 py-2 text-center">
-          <span className="font-display italic text-[24px] text-foreground">● Echo</span>
+          <span className="font-display italic text-[24px] text-foreground">● Cor ad Cor</span>
           <p className="font-body text-[11px] uppercase tracking-widest text-muted-foreground mt-0.5">Certified Listener</p>
         </div>
         <p className="font-body text-[13px] text-muted-foreground mt-3">
@@ -245,7 +245,7 @@ const Formation = () => {
       {/* Top bar */}
       <div className="border-b border-foreground px-2 py-1 flex items-center justify-between">
         <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
-          <span className="mr-0.5">●</span> Echo — Formation
+          <span className="mr-0.5">●</span> Cor ad Cor — Formation
         </Link>
         <span className="font-body text-[12px] text-foreground">
           {score} / {MAX_POINTS} pts

@@ -18,13 +18,13 @@ const HeroSection = () => {
         A space to write what you carry.
       </h1>
       <p className="mt-4 font-body text-[12px] sm:text-[13px] text-muted-foreground max-w-[520px] leading-relaxed px-2">
-        Echo helps you process difficult moments through writing, reflection,
+        Cor Ad Cor helps you process difficult moments through writing, reflection,
         and real human listening — privately and at your own pace.
       </p>
 
       <div className="mt-8 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto px-2 sm:px-0">
         <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")} className="w-full sm:w-auto">
-          Enter Echo
+          Enter Cor Ad Cor
         </EchoButton>
         <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")} className="w-full sm:w-auto">
           Become a Listener
@@ -230,7 +230,7 @@ const FinalCTA = () => {
       </p>
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center px-2 sm:px-0">
         <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/seeker")} className="w-full sm:w-auto">
-          Enter Echo
+          Enter Cor Ad Cor
         </EchoButton>
         <EchoButton variant="solid" size="md" onClick={() => navigate("/signup/listener")} className="w-full sm:w-auto">
           Become a Listener
@@ -249,7 +249,7 @@ const Index = () => {
       <header className="fixed top-0 left-0 right-0 z-10 border-b border-foreground bg-background">
         <div className="mx-auto flex w-full max-w-echo items-center justify-between px-2 py-1">
           <Link to="/" className="font-display italic text-[20px] sm:text-[24px] text-foreground select-none no-underline">
-            <span className="mr-0.5">●</span> Echo
+            <span className="mr-0.5">●</span> Cor ad Cor
           </Link>
           <nav className="flex items-center gap-2">
             <Link to="/about" className="font-body text-[11px] sm:text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">

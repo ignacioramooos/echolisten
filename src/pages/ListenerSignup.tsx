@@ -147,7 +147,7 @@ const Shell = ({ children }: { children: React.ReactNode }) => (
     <div className="w-full border border-foreground bg-background" style={{ maxWidth: 480 }}>
       <div className="px-3 pt-3 pb-1">
         <Link to="/" className="font-display italic text-[24px] text-foreground select-none no-underline">
-          <span className="mr-0.5">●</span> Echo
+          <span className="mr-0.5">●</span> Cor ad Cor
         </Link>
       </div>
       <div className="border-t border-foreground" />

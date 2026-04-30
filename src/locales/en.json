@@ -11,25 +11,25 @@
   },
   "landing": {
     "hero": "Someone will listen.",
-    "heroSub": "Echo connects you with trained peer listeners — anonymously, for free.",
+    "heroSub": "Cor Ad Cor connects you with trained peer listeners — anonymously, for free.",
     "findListener": "Find a Listener",
     "becomeListener": "Become a Listener",
     "forSeekers": "For Seekers",
     "step01": "Write what's on your mind.",
     "step01Desc": "Share as much or as little as you need. No forms, no intake.",
     "step02": "Get matched with a trained Listener.",
-    "step02Desc": "Echo pairs you based on availability and training level.",
+    "step02Desc": "Cor Ad Cor pairs you based on availability and training level.",
     "step03": "Talk. No advice. Just presence.",
     "step03Desc": "Your Listener is there to hear you — nothing more, nothing less.",
     "forListeners": "For Listeners",
     "formationHeading": "Not everyone becomes a Listener.",
-    "formationDesc": "Echo Listeners complete a rigorous training called The Formation — a multi-step program including readings, quizzes, and a live simulation with an AI test conversation.",
+    "formationDesc": "Cor Ad Cor Listeners complete a rigorous training called The Formation — a multi-step program including readings, quizzes, and a live simulation with an AI test conversation.",
     "beginFormation": "Begin Formation",
-    "trustHeading": "What Echo is not.",
+    "trustHeading": "What Cor Ad Cor is not.",
     "trust1": "Not a crisis line. For emergencies, call your local services.",
     "trust2": "Not therapy. Listeners are trained volunteers, not clinicians.",
     "trust3": "Not a social network. Sessions are private and do not persist.",
-    "footer": "● Echo — Peer support. No noise."
+    "footer": "● Cor Ad Cor — Peer support. No noise."
   },
   "dashboard": {
     "listenerBadge": "LISTENER ●",
@@ -66,17 +66,17 @@
     "listener": "Listener",
     "yourRating": "Your Rating",
     "read": "Read →",
-    "bottomNotice": "● Echo is peer support only. Listeners are trained volunteers, not clinicians. For emergencies, contact your local crisis services."
+    "bottomNotice": "● Cor Ad Cor is peer support only. Listeners are trained volunteers, not clinicians. For emergencies, contact your local crisis services."
   },
   "chat": {
-    "findingEcho": "Finding an Echo...",
+    "findingEcho": "Finding a Cor Ad Cor...",
     "listenerShortly": "A trained Listener will be with you shortly.",
     "talkToAuraWhileWaiting": "While you wait, you can talk to Aura.",
     "communityGuidelines": "Community Guidelines",
     "guideline1": "Be honest, but kind. This is a safe space.",
     "guideline2": "Listeners don't give advice. They listen.",
     "guideline3": "Sessions are private and not stored.",
-    "guideline4": "Echo is not a crisis service. For emergencies, contact local services.",
+    "guideline4": "Cor Ad Cor is not a crisis service. For emergencies, contact local services.",
     "typeMessage": "Type a message...",
     "send": "Send",
     "endSession": "End Session",
@@ -87,7 +87,7 @@
     "optional200": "Optional — 200 characters",
     "done": "Done",
     "thankYouSharing": "Thank you for sharing.",
-    "backToEcho": "Back to Echo",
+    "backToEcho": "Back to Cor Ad Cor",
     "thankYouListening": "Thank you for listening. Take a moment for yourself.",
     "backToQueue": "Back to Queue",
     "extend5min": "Extend +5 min?",
@@ -104,7 +104,7 @@
     "flagReason": "Flag Reason",
     "focusMode": "Focus Mode",
     "exitFocusMode": "Exit Focus Mode",
-    "languageBanner": "This Seeker may be writing in {{language}}. Echo Advisor can help you respond.",
+    "languageBanner": "This Seeker may be writing in {{language}}. Cor Ad Cor Advisor can help you respond.",
     "askAuraTranslation": "Ask Aura for translation assistance"
   },
   "aura": {
@@ -114,14 +114,14 @@
     "disclaimer2": "Aura can listen and reflect — nothing more. If you are in danger, call emergency services now.",
     "understand": "I understand — continue",
     "thinking": "Aura is thinking...",
-    "connectPrompt": "We've talked for a while. Would you like to connect with a human Echo Listener? Sometimes talking to another person makes all the difference.",
+    "connectPrompt": "We've talked for a while. Would you like to connect with a huma Cor Ad Cor Listener? Sometimes talking to another person makes all the difference.",
     "connectListener": "Connect with Listener →",
     "crisisPaused": "Aura has paused this conversation. Please contact a crisis service.",
     "end": "End",
     "errorResponse": "I'm having trouble responding right now. Please try again."
   },
   "advisor": {
-    "title": "● Echo Advisor",
+    "title": "● Cor Ad Cor Advisor",
     "getHelp": "Get an AI-powered suggestion for your next response.",
     "thinking": "Thinking...",
     "getSuggestion": "Get Suggestion",
@@ -145,7 +145,7 @@
   "formation": {
     "title": "Formation",
     "welcome": "Welcome.",
-    "welcomeBody1": "There are many people with no one to talk to. As an Echo Listener, you will help create a safe space for people to share what's happening in their lives, anonymously and for free.",
+    "welcomeBody1": "There are many people with no one to talk to. As a Cor Ad Cor Listener, you will help create a safe space for people to share what's happening in their lives, anonymously and for free.",
     "welcomeBody2": "This formation takes approximately 60 minutes. Your progress is saved automatically.",
     "welcomeScoring": "There are 23 questions. You have 2 attempts per question. You need at least 33 of 46 points to unlock the Simulation.",
     "begin": "Begin Formation →",
@@ -248,14 +248,14 @@
       "heading": "Almost there.",
       "captchaLabel": "Complete the CAPTCHA to continue.",
       "checkSafety": "I confirm I am not homicidal, suicidal, or an abuser of others.",
-      "checkPeerSupport": "I understand Echo is peer support, not therapy. I will not provide medical or clinical advice.",
-      "checkTerms": "I agree to Echo's Terms of Service and Privacy Policy.",
+      "checkPeerSupport": "I understand Cor Ad Cor is peer support, not therapy. I will not provide medical or clinical advice.",
+      "checkTerms": "I agree to Cor Ad Cor's Terms of Service and Privacy Policy.",
       "submit": "Complete Registration",
       "submitting": "Creating account..."
     },
     "welcome": {
-      "heading": "Welcome to Echo.",
-      "body": "You're almost ready. Before your first session, you must complete The Formation — Echo's listener training. It takes approximately 60 minutes. Your progress is saved. You can stop and return anytime.",
+      "heading": "Welcome to Cor Ad Cor.",
+      "body": "You're almost ready. Before your first session, you must complete The Formation — Cor Ad Cor's listener training. It takes approximately 60 minutes. Your progress is saved. You can stop and return anytime.",
       "registration": "Registration",
       "formation": "Formation",
       "firstSession": "First Session",
@@ -263,7 +263,7 @@
     }
   },
   "auth": {
-    "joinEcho": "Join Echo.",
+    "joinEcho": "Join Cor Ad Cor.",
     "email": "Email address",
     "password": "Password",
     "signUp": "Create Account",
@@ -273,7 +273,7 @@
     "welcomeBack": "Welcome back.",
     "loginButton": "Sign In",
     "loggingIn": "Signing in...",
-    "newToEcho": "New to Echo?",
+    "newToEcho": "New to Cor Ad Cor?",
     "createAccount": "Create an account →",
     "forgotPassword": "Forgot password →",
     "resetPassword": "Reset Password",
@@ -289,7 +289,7 @@
     "roleListenerDesc": "Help others by lending your ear and empathy."
   },
   "about": {
-    "heading": "About Echo",
+    "heading": "About Cor Ad Cor",
     "placeholder": "Content coming soon.",
     "backHome": "← Back to home"
   },

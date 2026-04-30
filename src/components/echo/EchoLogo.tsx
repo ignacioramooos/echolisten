@@ -23,7 +23,7 @@ const EchoLogo = () => {
       onClick={() => navigate(href)}
       className="font-display italic text-[24px] text-foreground select-none bg-transparent border-none cursor-pointer p-0"
     >
-      <span className="mr-0.5">●</span> Echo
+      <span className="mr-0.5">●</span> Cor ad Cor
     </button>
   );
 };

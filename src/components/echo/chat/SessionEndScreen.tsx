@@ -81,7 +81,7 @@ const SessionEndScreen = ({ isSeeker, sessionId, userId }: SessionEndScreenProps
                 </p>
                 <div className="mt-2">
                   <EchoButton variant="outline" size="md" onClick={() => navigate("/")}>
-                    Back to Echo
+                    Back to Cor Ad Cor
                   </EchoButton>
                 </div>
               </div>
