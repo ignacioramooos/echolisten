@@ -1,112 +1,60 @@
 
-Diagnóstico
+# Plan: Fix font inconsistency in Dashboard / Room
 
-Sí, ya sé cuál es el problema real. No es una sola falla, son tres que se combinan:
+## What's wrong
 
-1. El registro de Seeker está roto:
-   - `src/pages/SeekerSignup.tsx` usa hCaptcha con `size="invisible"`, pero no llama `execute()`.
-   - Resultado: nunca se genera `captchaToken`, `canSubmit` queda falso y el botón parece no hacer nada.
-   - Por eso no se crean cuentas nuevas y la base queda vacía.
+The landing page renders cleanly in **DM Mono** (loaded via `@import` in `src/index.css`). The Dashboard and Room *also* use the right Tailwind classes (`font-body`, `font-display`), so on paper they should match — but in practice they look different. After auditing, there are three real causes:
 
-2. La creación de perfiles depende de `/auth/callback`:
-   - `src/pages/AuthCallback.tsx` recién inserta en `listener_profiles` o `seeker_profiles` después de confirmar email y completar el callback.
-   - Si una cuenta quedó creada en auth pero nunca pasó bien por el callback, el usuario existe pero no tiene fila de perfil.
-   - Eso explica cuentas “rotas” y tablas vacías o incompletas.
+1. **DM Mono is loaded only via CSS `@import`** in `src/index.css`. CSS `@import` is render-blocking and parsed *after* the stylesheet itself loads, so on heavier authenticated pages (Dashboard, Room with `react-grid-layout`, Aura, etc.) the browser flashes/falls back to the system serif/sans before swapping in DM Mono. The landing page is light enough that you don't notice; the Room is not.
+2. **`react-grid-layout/css/styles.css`** (imported in `DashboardRoom.tsx`) ships its own `font-family` reset on `.react-grid-item` children, which can override our `body` font on widgets.
+3. The Tailwind config only registers `font-display` and `font-body` (both DM Mono) — there's **no `font-sans` / `font-mono` / `font-serif`** mapped to DM Mono. Any third-party component (shadcn dialogs, sheets, react-grid-layout content, etc.) that uses Tailwind's default `font-sans` ends up rendering in the browser default sans-serif. This is the main visible inconsistency inside the Room.
 
-3. La app todavía mezcla varias fuentes de verdad para el rol:
-   - unas pantallas usan tablas de perfil,
-   - otras usan `user_metadata.role`,
-   - otras hacen redirects parciales.
-   - Eso deja cuentas en estado ambiguo y puede disparar redirecciones incorrectas.
+The memory note mentioning "Cormorant Garamond" is stale — the codebase only ships DM Mono. The plan keeps DM Mono as the single typeface, matching the landing page exactly.
 
-Plan de implementación
+## Fix (minimal, no redesign)
 
-1. Reparar el signup de Seeker para que vuelva a funcionar
-   - Cambiar el captcha de Seeker a widget visible normal.
-   - Elegir tema `light`, porque encaja mejor con el look blanco/negro del sitio y es más confiable que el badge flotante/invisible.
-   - Mantener el submit bloqueado hasta tener token válido.
-   - Verificar el token en backend antes de crear la cuenta, usando el secreto ya configurado.
-   - Mostrar error visible si captcha falla o expira.
+### 1. Load DM Mono properly in `index.html`
+Add real `<link rel="preconnect">` + `<link rel="stylesheet">` tags for DM Mono in `<head>` so the font is fetched before React mounts. This eliminates the FOUT on Dashboard/Room.
 
-2. Unificar la resolución de rol en un solo helper
-   - Crear una utilidad compartida que consulte:
-     - `listener_profiles`
-     - `seeker_profiles`
-   - Esa utilidad debe devolver solo 4 estados:
-     - `listener`
-     - `seeker`
-     - `none`
-     - `both`
-   - Desde ese momento, la app dejará de usar `user_metadata.role` para navegación, guards y settings.
+### 2. Remove the duplicate `@import` from `src/index.css`
+Once `index.html` loads the font, remove the top `@import url(...DM+Mono...)` line so the font isn't requested twice and isn't render-blocking inside the CSS bundle.
 
-3. Hacer que login y callback se “autorreparen”
-   - En `AuthCallback.tsx`:
-     - si no existe perfil, crear el correcto según el signup original;
-     - si es listener, crear también `formation_progress` si falta.
-   - En `Login.tsx`:
-     - después de autenticar, resolver rol desde tablas;
-     - si no hay perfil, intentar reconstruirlo desde metadata/email;
-     - si hay ambos perfiles, bloquear acceso y forzar reparación segura;
-     - si no hay ninguno y no se puede reconstruir, cerrar sesión y mostrar error claro.
+### 3. Make `font-sans`, `font-mono`, `font-serif` all map to DM Mono in `tailwind.config.ts`
+```ts
+fontFamily: {
+  display: ["DM Mono", "monospace"],
+  body:    ["DM Mono", "monospace"],
+  sans:    ["DM Mono", "monospace"],
+  mono:    ["DM Mono", "monospace"],
+  serif:   ["DM Mono", "monospace"],
+}
+```
+This guarantees that any shadcn/Radix/react-grid-layout subtree that doesn't explicitly use `font-body` still renders in DM Mono.
 
-4. Eliminar cualquier redirect cruzado restante
-   - Revisar y corregir guards en:
-     - `RoleRedirect.tsx`
-     - `ListenerDashboard.tsx`
-     - `SeekerDashboard.tsx`
-     - `ListenQueue.tsx`
-     - `Settings.tsx`
-     - `ChatRoom.tsx`
-     - `Formation.tsx`
-   - Ninguna pantalla debe “adivinar” que el usuario es del otro rol.
-   - Si el rol no coincide, siempre debe redirigir al resolvedor central o a login, nunca al dashboard opuesto.
+### 4. Force DM Mono on the Room grid in `src/index.css`
+Add a single targeted rule so `react-grid-layout`'s injected styles don't win:
+```css
+.react-grid-item, .react-grid-item * {
+  font-family: var(--font-body);
+}
+```
 
-5. Enforzar la regla de negocio: exactamente un perfil por usuario
-   - Agregar validación en base de datos para impedir que el mismo `user_id` exista en ambas tablas.
-   - Corregir defaults inconsistentes, por ejemplo `listener_profiles.role` no debería tener default `seeker`.
-   - Mantener la arquitectura separada: listener y seeker son mutuamente excluyentes.
+### 5. Sanity sweep (read-only verification, no edits unless needed)
+- Confirm `Dashboard.tsx`, `SeekerDashboard.tsx`, `ListenerDashboard.tsx`, `DashboardRoom.tsx`, all `room/widgets/*` already use `font-body`/`font-display` (they do — verified).
+- Confirm no page imports a competing Google Font (verified — only DM Mono).
 
-6. Reparar datos existentes
-   - Ejecutar una reparación única para cuentas ya creadas:
-     - si el usuario tiene auth pero no perfil, crear el perfil correcto;
-     - si tiene ambos perfiles, conservar solo uno siguiendo una regla determinística:
-       - priorizar el rol explícito del signup;
-       - si falta, priorizar listener solo si tiene progreso/formación;
-       - si no, dejar seeker.
-   - Después de esta reparación, ningún usuario debe quedar en estado `both` o `none`.
+## Out of scope (per your instructions)
 
-7. QA de extremo a extremo
-   - Probar estos flujos completos:
-     - signup seeker → confirmación → callback → dashboard seeker
-     - signup listener → confirmación → callback → dashboard listener
-     - login de cuentas viejas sin perfil → autorreparación
-     - acceso a `/dashboard` con cada rol
-     - acceso indebido a rutas protegidas (`/listen`, `/formation`, `/settings`, `/chat/:id`)
-   - Verificar también que las tablas del backend ya no queden vacías tras registros válidos.
+- No changes to chat-room routing.
+- No redesign of Dashboard or Room layouts.
+- No new typefaces (Cormorant Garamond stays unused; landing system is preserved exactly).
 
-Detalles técnicos
+## Files touched
 
-Archivos principales a tocar:
-- `src/pages/SeekerSignup.tsx`
-- `src/pages/Login.tsx`
-- `src/pages/AuthCallback.tsx`
-- `src/components/echo/RoleRedirect.tsx`
-- `src/pages/ListenerDashboard.tsx`
-- `src/pages/SeekerDashboard.tsx`
-- `src/pages/ListenQueue.tsx`
-- `src/pages/Settings.tsx`
-- `src/pages/ChatRoom.tsx`
-- `src/pages/Formation.tsx`
+- `index.html` — add font preconnect + stylesheet links
+- `src/index.css` — remove `@import`, add `.react-grid-item` font rule
+- `tailwind.config.ts` — extend `fontFamily` with `sans`/`mono`/`serif` aliases to DM Mono
 
-Cambios de backend:
-- migración para reforzar integridad entre `listener_profiles` y `seeker_profiles`
-- ajuste de defaults/policies necesarios
-- reparación única de datos existentes para cuentas huérfanas o duplicadas
+## Verification after implementation
 
-Resultado esperado
-
-Después de esto:
-- el botón de crear cuenta vuelve a funcionar,
-- las filas de perfil sí se crean,
-- cada usuario tendrá exactamente un rol válido,
-- desaparecen las redirecciones infinitas entre dashboards.
+Open `/dashboard` and `/dashboard/room` in the preview, screenshot, and confirm headings and widget text render in DM Mono identical to the landing hero.
