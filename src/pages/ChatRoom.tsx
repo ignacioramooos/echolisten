@@ -213,11 +213,10 @@ const ChatRoom = () => {
       {/* Background image layer */}
       {bgUrl && !isFocusMode && (
         <div
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          className="fixed inset-0 pointer-events-none -z-10 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${bgUrl})`, opacity: bgIntensity / 100 }}
         />
       )}
-      <div className={`relative z-10 flex flex-col ${isFocusMode ? "fixed inset-0" : "min-h-screen"}`}>
       <ChatHeader
         isWaiting={isWaiting}
         isFocusMode={isFocusMode}
@@ -326,7 +325,6 @@ const ChatRoom = () => {
           </p>
         </div>
       ) : null}
-      </div>
     </div>
   );
 };

@@ -228,7 +228,7 @@ const DashboardRoom = () => {
       {/* Background image layer */}
       {bgUrl && (
         <div
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          className="fixed inset-0 pointer-events-none -z-10 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${bgUrl})`, opacity: bgIntensity / 100 }}
         />
       )}
@@ -253,7 +253,7 @@ const DashboardRoom = () => {
       </header>
 
       {/* Content */}
-      <main ref={containerRef} className="relative z-10 flex-1 pt-[65px] px-4">
+      <main ref={containerRef} className="flex-1 pt-[65px] px-4">
         {widgets.length === 0 ? (
           <div className="h-[calc(100vh-65px)]">
             <RoomEmptyState onSelectPreset={applyPreset} />
