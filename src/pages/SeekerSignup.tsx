@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
@@ -28,6 +28,15 @@ const SeekerSignup = () => {
   const [done, setDone] = useState(false);
   const [captchaLoaded, setCaptchaLoaded] = useState(false);
   const [captchaFailed, setCaptchaFailed] = useState(false);
+
+  // Force Supabase auth on mount
+  useEffect(() => {
+    const confirmSupabaseIsActive = async () => {
+      const session = await supabase.auth.getSession();
+      console.log('[SeekerSignup] Supabase session check:', session.data.session ? 'authenticated' : 'not authenticated');
+    };
+    confirmSupabaseIsActive();
+  }, []);
 
   const canSubmit = username.trim() && email && password.length >= 6 && captchaToken && crisisConfirm && termsAgreed && !loading;
 
@@ -60,6 +69,8 @@ const SeekerSignup = () => {
       },
     });
 
+    console.log('[SeekerSignup] SignUp response:', { user: signUpData.user?.id, error: signUpError });
+
     if (signUpError) {
       setError(signUpError.message);
       setLoading(false);
@@ -70,10 +81,13 @@ const SeekerSignup = () => {
 
     if (signUpData.user && signUpData.session) {
       try {
+        console.log('[SeekerSignup] Creating seeker profile for user:', signUpData.user.id);
         await createProfileForRole(signUpData.user, "seeker", { username: username.trim() });
+        console.log('[SeekerSignup] Profile created, redirecting to dashboard');
         navigate("/dashboard/seeker", { replace: true });
         return;
       } catch (profileError) {
+        console.error('[SeekerSignup] Profile creation failed:', profileError);
         setError(profileError instanceof Error ? profileError.message : "Could not create seeker profile.");
         setLoading(false);
         return;

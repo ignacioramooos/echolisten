@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,9 +30,20 @@ const ListenerSignup = () => {
 
   const titles = stepTitles(t);
 
+  // Force Supabase auth on mount
+  useEffect(() => {
+    const confirmSupabaseIsActive = async () => {
+      const session = await supabase.auth.getSession();
+      console.log('[ListenerSignup] Supabase session check:', session.data.session ? 'authenticated' : 'not authenticated');
+    };
+    confirmSupabaseIsActive();
+  }, []);
+
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
+
+    console.log('[ListenerSignup] Starting signup with metadata:', { role: 'listener', username: data.username });
 
     // Store all profile data in user_metadata — profile will be created in AuthCallback after email confirmation
     const { data: signUpData, error: authErr } = await supabase.auth.signUp({
@@ -57,14 +68,19 @@ const ListenerSignup = () => {
       },
     });
 
+    console.log('[ListenerSignup] SignUp response:', { user: signUpData.user?.id, error: authErr });
+
     if (authErr) { setError(authErr.message); setLoading(false); return; }
 
     if (signUpData.user && signUpData.session) {
       try {
+        console.log('[ListenerSignup] Creating listener profile for user:', signUpData.user.id);
         await createProfileForRole(signUpData.user, "listener", data);
+        console.log('[ListenerSignup] Profile created, redirecting to dashboard');
         window.location.href = "/dashboard/listener";
         return;
       } catch (profileError) {
+        console.error('[ListenerSignup] Profile creation failed:', profileError);
         setError(profileError instanceof Error ? profileError.message : "Could not create listener profile.");
         setLoading(false);
         return;
