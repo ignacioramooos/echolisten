@@ -7,350 +7,609 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.4"
   }
   public: {
     Tables: {
-      chat_requests: {
+      aura_sessions: {
         Row: {
+          ended_at: string | null
+          flagged: boolean
           id: string
+          messages: Json
           seeker_id: string
-          listener_id: string | null
-          session_id: string | null
-          topic: string
-          title: string
-          status: "pending" | "active" | "cancelled"
+          started_at: string
+        }
+        Insert: {
+          ended_at?: string | null
+          flagged?: boolean
+          id?: string
+          messages?: Json
+          seeker_id: string
+          started_at?: string
+        }
+        Update: {
+          ended_at?: string | null
+          flagged?: boolean
+          id?: string
+          messages?: Json
+          seeker_id?: string
+          started_at?: string
+        }
+        Relationships: []
+      }
+      counters: {
+        Row: {
+          count: number | null
+          counter_type: string
+          created_at: string | null
+          id: string
+          label: string
+          last_reset: string | null
+          start_date: string | null
+          user_id: string
+        }
+        Insert: {
+          count?: number | null
+          counter_type: string
+          created_at?: string | null
+          id?: string
+          label: string
+          last_reset?: string | null
+          start_date?: string | null
+          user_id: string
+        }
+        Update: {
+          count?: number | null
+          counter_type?: string
+          created_at?: string | null
+          id?: string
+          label?: string
+          last_reset?: string | null
+          start_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dashboard_widgets: {
+        Row: {
+          config: Json | null
+          created_at: string | null
+          height: number
+          id: string
+          position_x: number
+          position_y: number
+          type: string
+          user_id: string
+          width: number
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string | null
+          height?: number
+          id?: string
+          position_x?: number
+          position_y?: number
+          type: string
+          user_id: string
+          width?: number
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string | null
+          height?: number
+          id?: string
+          position_x?: number
+          position_y?: number
+          type?: string
+          user_id?: string
+          width?: number
+        }
+        Relationships: []
+      }
+      email_send_log: {
+        Row: {
           created_at: string
+          error_message: string | null
+          id: string
+          message_id: string | null
+          metadata: Json | null
+          recipient_email: string
+          status: string
+          template_name: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_id?: string | null
+          metadata?: Json | null
+          recipient_email: string
+          status: string
+          template_name: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_id?: string | null
+          metadata?: Json | null
+          recipient_email?: string
+          status?: string
+          template_name?: string
+        }
+        Relationships: []
+      }
+      email_send_state: {
+        Row: {
+          auth_email_ttl_minutes: number
+          batch_size: number
+          id: number
+          retry_after_until: string | null
+          send_delay_ms: number
+          transactional_email_ttl_minutes: number
           updated_at: string
         }
         Insert: {
-          id?: string
-          seeker_id: string
-          listener_id?: string | null
-          session_id?: string | null
-          topic: string
-          title: string
-          status?: "pending" | "active" | "cancelled"
-          created_at?: string
+          auth_email_ttl_minutes?: number
+          batch_size?: number
+          id?: number
+          retry_after_until?: string | null
+          send_delay_ms?: number
+          transactional_email_ttl_minutes?: number
           updated_at?: string
         }
         Update: {
-          id?: string
-          seeker_id?: string
-          listener_id?: string | null
-          session_id?: string | null
-          topic?: string
-          title?: string
-          status?: "pending" | "active" | "cancelled"
-          created_at?: string
+          auth_email_ttl_minutes?: number
+          batch_size?: number
+          id?: number
+          retry_after_until?: string | null
+          send_delay_ms?: number
+          transactional_email_ttl_minutes?: number
           updated_at?: string
         }
         Relationships: []
+      }
+      email_unsubscribe_tokens: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          token: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
+      evaluations: {
+        Row: {
+          flags_checked: string[]
+          id: string
+          moderator_id: string
+          notes: string | null
+          session_id: string
+          submitted_at: string
+        }
+        Insert: {
+          flags_checked?: string[]
+          id?: string
+          moderator_id: string
+          notes?: string | null
+          session_id: string
+          submitted_at?: string
+        }
+        Update: {
+          flags_checked?: string[]
+          id?: string
+          moderator_id?: string
+          notes?: string | null
+          session_id?: string
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       formation_progress: {
         Row: {
-          id: string
-          user_id: string
-          steps_completed: string[]
-          bot_passed: boolean
           badge_earned_at: string | null
+          bot_passed: boolean
           created_at: string
+          id: string
+          quiz_answers: Json | null
+          score: number | null
+          steps_completed: string[]
           updated_at: string
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          steps_completed?: string[]
-          bot_passed?: boolean
           badge_earned_at?: string | null
+          bot_passed?: boolean
           created_at?: string
+          id?: string
+          quiz_answers?: Json | null
+          score?: number | null
+          steps_completed?: string[]
           updated_at?: string
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          steps_completed?: string[]
-          bot_passed?: boolean
           badge_earned_at?: string | null
+          bot_passed?: boolean
           created_at?: string
+          id?: string
+          quiz_answers?: Json | null
+          score?: number | null
+          steps_completed?: string[]
           updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
-      sessions: {
+      journal_entries: {
         Row: {
+          content: string | null
+          created_at: string | null
           id: string
-          seeker_id: string
           listener_id: string | null
-          status: "waiting" | "active" | "ended"
-          topic_snippet: string | null
-          topics: string[] | null
-          requested_language: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          seeker_id: string
-          listener_id?: string | null
-          status?: "waiting" | "active" | "ended"
-          topic_snippet?: string | null
-          topics?: string[] | null
-          requested_language?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          seeker_id?: string
-          listener_id?: string | null
-          status?: "waiting" | "active" | "ended"
-          topic_snippet?: string | null
-          topics?: string[] | null
-          requested_language?: string | null
-          created_at?: string
-        }
-        Relationships: []
-      }
-      messages: {
-        Row: {
-          id: string
-          session_id: string
-          sender_id: string
-          content: string
-          sent_at: string
-          flagged: boolean
-        }
-        Insert: {
-          id?: string
-          session_id: string
-          sender_id: string
-          content: string
-          sent_at?: string
-          flagged?: boolean
-        }
-        Update: {
-          id?: string
-          session_id?: string
-          sender_id?: string
-          content?: string
-          sent_at?: string
-          flagged?: boolean
-        }
-        Relationships: []
-      }
-      session_ratings: {
-        Row: {
-          id: string
-          session_id: string
+          mode: string
+          mood_after: string | null
+          mood_before: string | null
+          read_at: string | null
+          shared_fragment: string | null
+          updated_at: string | null
           user_id: string
-          rating: number | null
-          feedback: string | null
-          created_at: string
+          visibility: string | null
         }
         Insert: {
+          content?: string | null
+          created_at?: string | null
           id?: string
-          session_id: string
+          listener_id?: string | null
+          mode: string
+          mood_after?: string | null
+          mood_before?: string | null
+          read_at?: string | null
+          shared_fragment?: string | null
+          updated_at?: string | null
           user_id: string
-          rating?: number | null
-          feedback?: string | null
-          created_at?: string
+          visibility?: string | null
         }
         Update: {
+          content?: string | null
+          created_at?: string | null
           id?: string
-          session_id?: string
+          listener_id?: string | null
+          mode?: string
+          mood_after?: string | null
+          mood_before?: string | null
+          read_at?: string | null
+          shared_fragment?: string | null
+          updated_at?: string | null
           user_id?: string
-          rating?: number | null
-          feedback?: string | null
-          created_at?: string
+          visibility?: string | null
         }
         Relationships: []
       }
       listener_profiles: {
         Row: {
+          avatar_url: string | null
+          bio: string | null
+          chat_bg_intensity: number | null
+          chat_bg_url: string | null
+          country: string | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          gender: string | null
           id: string
+          languages: string[] | null
+          last_name: string | null
+          preferred_language: string | null
+          role: string
+          theme: string | null
+          topics_avoid: string[] | null
+          topics_comfortable: string[] | null
+          topics_lived_experience: string[] | null
+          updated_at: string | null
           user_id: string
           username: string | null
-          email: string | null
-          role: string | null
-          first_name: string | null
-          last_name: string | null
-          country: string | null
-          gender: string | null
-          bio: string | null
-          topics_comfortable: string[] | null
-          topics_avoid: string[] | null
-          topics_lived_experience: string[] | null
-          languages: string[] | null
-          verified_agreements: boolean
-          created_at: string
-          updated_at: string
+          verified_agreements: boolean | null
         }
         Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          chat_bg_intensity?: number | null
+          chat_bg_url?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          gender?: string | null
           id?: string
+          languages?: string[] | null
+          last_name?: string | null
+          preferred_language?: string | null
+          role?: string
+          theme?: string | null
+          topics_avoid?: string[] | null
+          topics_comfortable?: string[] | null
+          topics_lived_experience?: string[] | null
+          updated_at?: string | null
           user_id: string
           username?: string | null
-          email?: string | null
-          role?: string | null
-          first_name?: string | null
-          last_name?: string | null
-          country?: string | null
-          gender?: string | null
-          bio?: string | null
-          topics_comfortable?: string[] | null
-          topics_avoid?: string[] | null
-          topics_lived_experience?: string[] | null
-          languages?: string[] | null
-          verified_agreements?: boolean
-          created_at?: string
-          updated_at?: string
+          verified_agreements?: boolean | null
         }
         Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          chat_bg_intensity?: number | null
+          chat_bg_url?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          gender?: string | null
           id?: string
+          languages?: string[] | null
+          last_name?: string | null
+          preferred_language?: string | null
+          role?: string
+          theme?: string | null
+          topics_avoid?: string[] | null
+          topics_comfortable?: string[] | null
+          topics_lived_experience?: string[] | null
+          updated_at?: string | null
           user_id?: string
           username?: string | null
-          email?: string | null
-          role?: string | null
-          first_name?: string | null
-          last_name?: string | null
-          country?: string | null
-          gender?: string | null
-          bio?: string | null
-          topics_comfortable?: string[] | null
-          topics_avoid?: string[] | null
-          topics_lived_experience?: string[] | null
-          languages?: string[] | null
-          verified_agreements?: boolean
-          created_at?: string
-          updated_at?: string
+          verified_agreements?: boolean | null
         }
         Relationships: []
       }
-      aura_sessions: {
+      memory_shelf: {
         Row: {
+          content: string
+          created_at: string | null
           id: string
-          seeker_id: string
-          messages: Json
-          started_at: string
-          ended_at: string | null
+          label: string | null
+          source_entry_id: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          label?: string | null
+          source_entry_id?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          label?: string | null
+          source_entry_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_shelf_source_entry_id_fkey"
+            columns: ["source_entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
           flagged: boolean
-        }
-        Insert: {
-          id?: string
-          seeker_id: string
-          messages?: Json
-          started_at?: string
-          ended_at?: string | null
-          flagged?: boolean
-        }
-        Update: {
-          id?: string
-          seeker_id?: string
-          messages?: Json
-          started_at?: string
-          ended_at?: string | null
-          flagged?: boolean
-        }
-        Relationships: []
-      }
-      call_sessions: {
-        Row: {
           id: string
+          sender_id: string
+          sent_at: string
           session_id: string
-          started_at: string
-          ended_at: string | null
-          duration_seconds: number | null
-          created_at: string
         }
         Insert: {
+          content: string
+          flagged?: boolean
           id?: string
+          sender_id: string
+          sent_at?: string
           session_id: string
-          started_at?: string
-          ended_at?: string | null
-          duration_seconds?: number | null
-          created_at?: string
         }
         Update: {
+          content?: string
+          flagged?: boolean
           id?: string
+          sender_id?: string
+          sent_at?: string
           session_id?: string
-          started_at?: string
-          ended_at?: string | null
-          duration_seconds?: number | null
-          created_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      activity_log: {
+      mood_logs: {
         Row: {
+          created_at: string | null
+          emotional_weather: string | null
           id: string
+          need_now: string | null
+          primary_feeling: string | null
+          reason: string | null
           user_id: string
-          action: string
-          resource_type: string | null
-          resource_id: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string | null
+          emotional_weather?: string | null
           id?: string
+          need_now?: string | null
+          primary_feeling?: string | null
+          reason?: string | null
           user_id: string
-          action: string
-          resource_type?: string | null
-          resource_id?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string | null
+          emotional_weather?: string | null
           id?: string
+          need_now?: string | null
+          primary_feeling?: string | null
+          reason?: string | null
           user_id?: string
-          action?: string
-          resource_type?: string | null
-          resource_id?: string | null
-          created_at?: string
         }
         Relationships: []
       }
       seeker_profiles: {
         Row: {
+          created_at: string | null
+          email: string | null
           id: string
           user_id: string
           username: string | null
-          email: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string | null
+          email?: string | null
           id?: string
           user_id: string
           username?: string | null
-          email?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string | null
+          email?: string | null
           id?: string
           user_id?: string
           username?: string | null
-          email?: string | null
-          created_at?: string
         }
         Relationships: []
       }
-      breathing_sessions: {
+      session_ratings: {
         Row: {
-          id: string
-          user_id: string
-          duration_seconds: number | null
-          completed: boolean
           created_at: string
+          feedback: string | null
+          id: string
+          rating: number | null
+          session_id: string
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          duration_seconds?: number | null
-          completed?: boolean
           created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          session_id: string
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          duration_seconds?: number | null
-          completed?: boolean
           created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_ratings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          extend_votes: string[]
+          extensions_used: number
+          id: string
+          listener_id: string | null
+          requested_language: string | null
+          seeker_id: string
+          status: Database["public"]["Enums"]["session_status"]
+          timer_end_at: string | null
+          topic_snippet: string | null
+          topics: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          extend_votes?: string[]
+          extensions_used?: number
+          id?: string
+          listener_id?: string | null
+          requested_language?: string | null
+          seeker_id: string
+          status?: Database["public"]["Enums"]["session_status"]
+          timer_end_at?: string | null
+          topic_snippet?: string | null
+          topics?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          extend_votes?: string[]
+          extensions_used?: number
+          id?: string
+          listener_id?: string | null
+          requested_language?: string | null
+          seeker_id?: string
+          status?: Database["public"]["Enums"]["session_status"]
+          timer_end_at?: string | null
+          topic_snippet?: string | null
+          topics?: string[] | null
+        }
+        Relationships: []
+      }
+      suppressed_emails: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          metadata: Json | null
+          reason: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          metadata?: Json | null
+          reason: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          metadata?: Json | null
+          reason?: string
         }
         Relationships: []
       }
@@ -359,25 +618,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      accept_chat_request: {
-        Args: { request_id: string }
-        Returns: string
-      }
       check_username_available: {
         Args: { desired_username: string }
         Returns: boolean
       }
-      is_moderator: {
-        Args: { _user_id: string }
+      delete_email: {
+        Args: { message_id: number; queue_name: string }
         Returns: boolean
       }
-      create_profile_from_signup_metadata: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
+      enqueue_email: {
+        Args: { payload: Json; queue_name: string }
+        Returns: number
       }
-      update_updated_at_column: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
+      is_moderator: { Args: { _user_id: string }; Returns: boolean }
+      move_to_dlq: {
+        Args: {
+          dlq_name: string
+          message_id: number
+          payload: Json
+          source_queue: string
+        }
+        Returns: number
+      }
+      read_email_batch: {
+        Args: { batch_size: number; queue_name: string; vt: number }
+        Returns: {
+          message: Json
+          msg_id: number
+          read_ct: number
+        }[]
       }
     }
     Enums: {
