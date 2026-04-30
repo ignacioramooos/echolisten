@@ -220,7 +220,7 @@ const AuraChat = () => {
           {sending && (
             <div className="flex flex-col items-start">
               <div className="font-body text-[13px] text-muted-foreground border-l border-foreground pl-3">
-                <span className="echo-pulse">●</span> {t("aura.thinking")}
+                <span className="">●</span> {t("aura.thinking")}
               </div>
             </div>
           )}

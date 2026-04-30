@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
 
@@ -18,18 +17,20 @@ const GoogleSignInButton = ({ label = "Continue with Google" }: Props) => {
     setError("");
 
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
 
-      if (result.error) {
+      if (oauthError) {
         setError("Google sign-in failed. Please try again.");
         setLoading(false);
         return;
       }
 
-      if (result.redirected) {
-        // Browser will redirect to Google — just return
+      if (data.url) {
         return;
       }
 

@@ -22,10 +22,13 @@ import DashboardRoom from "./pages/DashboardRoom.tsx";
 import Journal from "./pages/Journal.tsx";
 import MemoryShelfPage from "./pages/MemoryShelf.tsx";
 import PatternsPage from "./pages/Patterns.tsx";
+import Breathe from "./pages/Breathe.tsx";
 import Settings from "./pages/Settings.tsx";
 import Moderation from "./pages/Moderation.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
 import RoleRedirect from "./components/echo/RoleRedirect.tsx";
+import ProtectedRoute from "./components/echo/ProtectedRoute.tsx";
+import Onboarding from "./pages/Onboarding.tsx";
 
 const queryClient = new QueryClient();
 
@@ -48,26 +51,28 @@ const AppInner = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/onboarding" element={<Onboarding />} />
 
           {/* Dashboards */}
-          <Route path="/dashboard/seeker" element={<SeekerDashboard />} />
-          <Route path="/dashboard/listener" element={<ListenerDashboard />} />
-          <Route path="/dashboard/room" element={<DashboardRoom />} />
-          <Route path="/dashboard/journal" element={<Journal />} />
-          <Route path="/dashboard/shelf" element={<MemoryShelfPage />} />
-          <Route path="/dashboard/patterns" element={<PatternsPage />} />
-          <Route path="/dashboard" element={<RoleRedirect />} />
+          <Route path="/dashboard/seeker" element={<ProtectedRoute allow={["seeker"]}><SeekerDashboard /></ProtectedRoute>} />
+          <Route path="/dashboard/listener" element={<ProtectedRoute allow={["listener"]}><ListenerDashboard /></ProtectedRoute>} />
+          <Route path="/dashboard/room" element={<ProtectedRoute allow={["seeker"]}><DashboardRoom /></ProtectedRoute>} />
+          <Route path="/dashboard/journal" element={<ProtectedRoute allow={["seeker"]}><Journal /></ProtectedRoute>} />
+          <Route path="/dashboard/shelf" element={<ProtectedRoute allow={["seeker"]}><MemoryShelfPage /></ProtectedRoute>} />
+          <Route path="/dashboard/patterns" element={<ProtectedRoute allow={["seeker"]}><PatternsPage /></ProtectedRoute>} />
+          <Route path="/dashboard/breathe" element={<ProtectedRoute><Breathe /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><RoleRedirect /></ProtectedRoute>} />
 
           {/* Listener-only */}
-          <Route path="/formation" element={<Formation />} />
-          <Route path="/listen" element={<ListenQueue />} />
+          <Route path="/formation" element={<ProtectedRoute allow={["listener"]}><Formation /></ProtectedRoute>} />
+          <Route path="/listen" element={<ProtectedRoute allow={["listener"]}><ListenQueue /></ProtectedRoute>} />
 
           {/* Shared */}
-          <Route path="/chat/new" element={<ChatNew />} />
-          <Route path="/chat/:sessionId" element={<ChatRoom />} />
-          <Route path="/aura" element={<AuraChat />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/mod" element={<Moderation />} />
+          <Route path="/chat/new" element={<ProtectedRoute><ChatNew /></ProtectedRoute>} />
+          <Route path="/chat/:sessionId" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
+          <Route path="/aura" element={<ProtectedRoute allow={["seeker"]}><AuraChat /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/mod" element={<ProtectedRoute allow={["listener"]}><Moderation /></ProtectedRoute>} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

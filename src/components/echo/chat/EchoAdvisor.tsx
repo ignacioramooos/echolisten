@@ -83,7 +83,7 @@ export const EchoAdvisor = ({ messages, listenerId, seekerId }: EchoAdvisorProps
 
         {loading && (
           <p className="font-body text-[11px] text-muted-foreground">
-            <span className="echo-pulse">●</span> Thinking...
+            <span className="">●</span> Thinking...
           </p>
         )}
 

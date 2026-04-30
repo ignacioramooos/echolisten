@@ -56,7 +56,7 @@ export default {
       },
     },
     fontFamily: {
-      display: ["Cormorant Garamond", "serif"],
+      display: ["DM Mono", "monospace"],
       body: ["DM Mono", "monospace"],
     },
     spacing: {

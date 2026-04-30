@@ -1,52 +1,130 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveUserRole } from "@/lib/resolve-role";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 
-const NewSession = () => {
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const maxChars = 500;
+interface ActiveRequest {
+  id: string;
+  session_id: string | null;
+  status: string;
+}
 
-  const handleSubmit = async () => {
-    if (!message.trim() || loading) return;
-    setLoading(true);
+const ChatNew = () => {
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [role, setRole] = useState<"seeker" | "listener" | null>(null);
+  const [title, setTitle] = useState("");
+  const [topic, setTopic] = useState("");
+  const [request, setRequest] = useState<ActiveRequest | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/login", { replace: true });
+        return;
+      }
+
+      const resolvedRole = await resolveUserRole(user.id);
+      if (resolvedRole === "listener") {
+        navigate("/listen", { replace: true });
+        return;
+      }
+      if (resolvedRole !== "seeker") {
+        navigate("/onboarding", { replace: true });
+        return;
+      }
+
+      setUserId(user.id);
+      setRole("seeker");
+      const requestId = new URLSearchParams(window.location.search).get("request");
+      if (requestId) {
+        const { data } = await supabase
+          .from("chat_requests")
+          .select("id, session_id, status")
+          .eq("id", requestId)
+          .eq("seeker_id", user.id)
+          .maybeSingle();
+        if (data?.status === "active" && data.session_id) {
+          navigate(`/chat/${data.session_id}`, { replace: true });
+          return;
+        }
+        if (data) setRequest(data as ActiveRequest);
+      }
+      setLoading(false);
+    };
+
+    init();
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!request?.id) return;
+
+    const channel = supabase
+      .channel(`chat-request:${request.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "chat_requests",
+          filter: `id=eq.${request.id}`,
+        },
+        (payload) => {
+          const next = payload.new as ActiveRequest;
+          setRequest(next);
+          if (next.status === "active" && next.session_id) {
+            navigate(`/chat/${next.session_id}`, { replace: true });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [request?.id, navigate]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!userId || !title.trim() || !topic.trim() || submitting) return;
+
+    setSubmitting(true);
     setError("");
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const snippet = message.trim().slice(0, 100);
-
-    const { data: session, error: sessionError } = await supabase
-      .from("sessions")
+    const { data, error: insertError } = await supabase
+      .from("chat_requests")
       .insert({
-        seeker_id: user.id,
-        status: "waiting" as const,
-        topic_snippet: snippet,
+        seeker_id: userId,
+        title: title.trim(),
+        topic: topic.trim(),
+        status: "pending",
       })
-      .select()
+      .select("id, session_id, status")
       .single();
 
-    if (sessionError || !session) {
-      setError(sessionError?.message || "Failed to create session");
-      setLoading(false);
+    if (insertError || !data) {
+      setError(insertError?.message || "Could not create request.");
+      setSubmitting(false);
       return;
     }
 
-    sessionStorage.setItem(`echo-opening-${session.id}`, message.trim());
-    navigate(`/chat/${session.id}`);
+    setRequest(data as ActiveRequest);
+    setSubmitting(false);
   };
+
+  if (loading || !role) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="font-body text-[13px] text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -54,42 +132,58 @@ const NewSession = () => {
         <EchoLogo />
       </header>
 
-      <div className="flex-1 flex items-center justify-center px-2">
-        <div className="w-full max-w-echo">
-          <div className="relative">
-            <textarea
-              value={message}
-              onChange={(e) => {
-                if (e.target.value.length <= maxChars) setMessage(e.target.value);
-              }}
-              placeholder={t("chat.typeMessage")}
-              className="w-full border border-foreground bg-background px-2 py-2 font-body text-[14px] text-foreground placeholder:text-muted-foreground placeholder:italic outline-none resize-none"
-              rows={6}
-            />
-            <span className="absolute bottom-1 right-1 font-body text-[11px] text-muted-foreground">
-              {message.length}/{maxChars}
-            </span>
-          </div>
+      <main className="flex-1 flex items-center justify-center px-3">
+        <div className="w-full max-w-[520px]">
+          {request ? (
+            <div className="border border-foreground p-5 text-center">
+              <h1 className="font-body text-[20px] font-medium">Your request is live.</h1>
+              <p className="font-body text-[12px] text-muted-foreground mt-3">
+                A Listener will arrive when they accept it. This page will move you into the room automatically.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="border border-foreground p-5">
+              <h1 className="font-body text-[20px] font-medium">Request a Listener</h1>
+              <div className="mt-4 flex flex-col gap-3">
+                <label className="flex flex-col gap-1">
+                  <span className="font-body text-[11px] uppercase tracking-widest">Brief title</span>
+                  <input
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value.slice(0, 80))}
+                    className="border border-foreground bg-background px-2 py-1 font-body text-[13px] outline-none"
+                    placeholder="What this is about"
+                    required
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="font-body text-[11px] uppercase tracking-widest">Topic</span>
+                  <textarea
+                    value={topic}
+                    onChange={(event) => setTopic(event.target.value.slice(0, 500))}
+                    className="min-h-[120px] resize-none border border-foreground bg-background px-2 py-1 font-body text-[13px] outline-none"
+                    placeholder="A few words are enough."
+                    required
+                  />
+                </label>
+              </div>
 
-          {error && (
-            <p className="font-body text-[11px] text-foreground mt-1">⚠ {error}</p>
+              {error && <p className="font-body text-[11px] text-foreground mt-3">{error}</p>}
+
+              <EchoButton
+                type="submit"
+                variant="solid"
+                size="md"
+                disabled={!title.trim() || !topic.trim() || submitting}
+                className="mt-4 disabled:opacity-40"
+              >
+                {submitting ? "Sending..." : "Send request"}
+              </EchoButton>
+            </form>
           )}
-
-          <div className="mt-2">
-            <EchoButton
-              variant="solid"
-              size="md"
-              onClick={handleSubmit}
-              disabled={!message.trim() || loading}
-              className={!message.trim() || loading ? "opacity-40 cursor-not-allowed" : ""}
-            >
-              {loading ? t("chat.findingEcho") : t("landing.findListener")}
-            </EchoButton>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
 
-export default NewSession;
+export default ChatNew;

@@ -1,5 +1,5 @@
 interface RoomEmptyStateProps {
-  onSelectPreset: (preset: "calm" | "focused" | "expressive") => void;
+  onSelectPreset: (preset: "calm" | "focused" | "expressive" | "steady") => void;
 }
 
 const presets = [
@@ -17,6 +17,11 @@ const presets = [
     id: "expressive" as const,
     label: "Expressive",
     desc: "Today I Am, mood reflection, memory shelf, and quick journal.",
+  },
+  {
+    id: "steady" as const,
+    label: "Steady",
+    desc: "Breathe, mood reflection, and emotional weather.",
   },
 ];
 

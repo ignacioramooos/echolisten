@@ -18,14 +18,9 @@ export interface EvalResult {
   };
 }
 
-// MODERATION HOOK: Insert moderation API call here before processing user message
-
-// FUTURE: Replace or augment with additional safety APIs here
-
 /**
  * Send messages to the Formation bot simulation.
- * Currently wired to Lovable AI (Gemini) via edge function.
- * Swap the edge function internals to change models.
+ * Model/provider details live inside the Supabase edge function.
  */
 export async function sendToFormationBot(messages: Message[]): Promise<string> {
   const { data, error } = await supabase.functions.invoke("formation-chat", {

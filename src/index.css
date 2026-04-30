@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -45,7 +45,7 @@
     --sidebar-border: 0 0% 0%;
     --sidebar-ring: 0 0% 0%;
 
-    --font-display: 'Cormorant Garamond', serif;
+    --font-display: 'DM Mono', monospace;
     --font-body: 'DM Mono', monospace;
   }
 
@@ -116,12 +116,4 @@
   .echo-fade:hover {
     opacity: 0.7;
   }
-  .echo-pulse {
-    animation: echo-pulse 2s ease-in-out infinite;
-  }
-}
-
-@keyframes echo-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
 }

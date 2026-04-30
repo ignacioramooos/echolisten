@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
+import { createProfileForRole } from "@/lib/profiles";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -69,45 +70,19 @@ const AuthCallback = () => {
       setStatus("Setting up your profile...");
 
       if (role === "listener") {
-        const { error: profileErr } = await (supabase as any).from("listener_profiles").insert({
-          user_id: user.id,
-          role: "listener",
-          first_name: meta.first_name || null,
-          last_name: meta.last_name || null,
-          country: meta.country || null,
-          gender: meta.gender || null,
-          username: meta.username || null,
-          email: user.email,
-          bio: meta.bio || null,
-          topics_comfortable: meta.topics_comfortable || [],
-          topics_avoid: meta.topics_avoid || [],
-          topics_lived_experience: meta.topics_lived_experience || [],
-          languages: meta.languages || [],
-          verified_agreements: true,
-        });
-
-        if (profileErr) {
+        try {
+          await createProfileForRole(user, "listener", meta);
+        } catch (profileErr) {
           console.error("Listener profile creation error:", profileErr);
           navigate("/login");
           return;
         }
 
-        // Init formation progress
-        await supabase.from("formation_progress").insert({
-          user_id: user.id,
-          steps_completed: [],
-          bot_passed: false,
-        });
-
         navigate("/dashboard/listener");
       } else if (role === "seeker") {
-        const { error: profileErr } = await (supabase as any).from("seeker_profiles").insert({
-          user_id: user.id,
-          username: meta.username || null,
-          email: user.email,
-        });
-
-        if (profileErr) {
+        try {
+          await createProfileForRole(user, "seeker", meta);
+        } catch (profileErr) {
           console.error("Seeker profile creation error:", profileErr);
           navigate("/login");
           return;
@@ -115,7 +90,7 @@ const AuthCallback = () => {
         navigate("/dashboard/seeker");
       } else {
         // No role in metadata (e.g. Google OAuth user) — send to role selection
-        navigate("/signup");
+        navigate("/onboarding");
       }
     };
 

@@ -44,7 +44,7 @@ const SeekerDashboard = () => {
       if (!user) { navigate("/login"); return; }
 
       // Verify seeker profile exists
-      const { data: profile } = await (supabase as any)
+      const { data: profile } = await supabase
         .from("seeker_profiles")
         .select("id")
         .eq("user_id", user.id)
@@ -94,27 +94,23 @@ const SeekerDashboard = () => {
     if (!canCreate || !userId || creating) return;
     setCreating(true);
 
-    const snippet = firstMessage.trim().slice(0, 100);
-
-    const { data: session, error } = await supabase
-      .from("sessions")
+    const { data: request, error } = await supabase
+      .from("chat_requests")
       .insert({
         seeker_id: userId,
-        status: "waiting" as const,
-        topic_snippet: snippet,
-        topics: selectedTopics,
-        requested_language: selectedLang,
-      } as any)
+        status: "pending",
+        title: selectedTopics.slice(0, 2).join(", "),
+        topic: firstMessage.trim(),
+      })
       .select()
       .single();
 
-    if (error || !session) {
+    if (error || !request) {
       setCreating(false);
       return;
     }
 
-    sessionStorage.setItem(`echo-opening-${(session as any).id}`, firstMessage.trim());
-    navigate(`/chat/${(session as any).id}`);
+    navigate(`/chat/new?request=${request.id}`);
   };
 
   const formatDate = (ts: string) =>

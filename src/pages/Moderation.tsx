@@ -625,16 +625,9 @@ const Moderation = () => {
                 </div>
               )}
 
-              <div className="flex gap-2 mt-3">
-                {/* TODO: Implement warning email system */}
-                <EchoButton variant="outline" size="sm" disabled className="opacity-40 cursor-not-allowed">
-                  Issue Warning (TODO)
-                </EchoButton>
-                {/* TODO: Implement listener suspension */}
-                <EchoButton variant="outline" size="sm" disabled className="opacity-40 cursor-not-allowed">
-                  Suspend Listener (TODO)
-                </EchoButton>
-              </div>
+              <p className="font-body text-[11px] text-muted-foreground mt-3">
+                Administrative actions are handled outside this console.
+              </p>
             </div>
           </section>
         )}

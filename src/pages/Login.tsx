@@ -7,6 +7,7 @@ import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
 import { resolveUserRole, dashboardForRole } from "@/lib/resolve-role";
+import { createProfileForRole } from "@/lib/profiles";
 import GoogleSignInButton from "@/components/echo/GoogleSignInButton";
 
 const Login = () => {
@@ -51,34 +52,17 @@ const Login = () => {
     // No profile — try creating one from metadata
     const meta = data.user?.user_metadata || {};
     if (meta.role === "seeker") {
-      await (supabase as any).from("seeker_profiles").insert({
-        user_id: userId,
-        username: meta.username || null,
-        email: data.user?.email,
-      });
+      await createProfileForRole(data.user, "seeker", meta);
       navigate("/dashboard/seeker");
       return;
     }
     if (meta.role === "listener") {
-      await (supabase as any).from("listener_profiles").insert({
-        user_id: userId,
-        role: "listener",
-        email: data.user?.email,
-        username: meta.username || null,
-      });
-      await supabase.from("formation_progress").insert({
-        user_id: userId,
-        steps_completed: [],
-        bot_passed: false,
-      });
+      await createProfileForRole(data.user, "listener", meta);
       navigate("/dashboard/listener");
       return;
     }
 
-    // No metadata role — can't determine
-    setError("Account setup incomplete. Please sign up again.");
-    await supabase.auth.signOut();
-    setLoading(false);
+    navigate("/onboarding", { replace: true });
   };
 
   return (

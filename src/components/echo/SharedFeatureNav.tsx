@@ -34,6 +34,12 @@ const SharedFeatureNav = () => (
         >
           patterns
         </Link>
+        <Link
+          to="/dashboard/breathe"
+          className="font-body text-[11px] border border-foreground px-2 py-1 text-foreground echo-fade"
+        >
+          breathe
+        </Link>
         <Link to="/aura" className="font-body text-[11px] border border-foreground px-2 py-1 text-foreground echo-fade">
           aura
         </Link>

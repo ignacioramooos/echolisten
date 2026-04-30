@@ -38,6 +38,11 @@ const PRESET_LAYOUTS: Record<string, { type: WidgetType; x: number; y: number; w
     { type: "memory_shelf", x: 5, y: 0, w: 2, h: 3 },
     { type: "journal_quick", x: 0, y: 2, w: 3, h: 2 },
   ],
+  steady: [
+    { type: "breathe", x: 0, y: 0, w: 3, h: 2 },
+    { type: "mood_reflection", x: 3, y: 0, w: 2, h: 2 },
+    { type: "emotional_weather", x: 5, y: 0, w: 2, h: 2 },
+  ],
 };
 
 const DashboardRoom = () => {
@@ -129,7 +134,7 @@ const DashboardRoom = () => {
     setPaletteOpen(false);
   };
 
-  const applyPreset = async (preset: "calm" | "focused" | "expressive") => {
+  const applyPreset = async (preset: "calm" | "focused" | "expressive" | "steady") => {
     if (!userId) return;
     const items = PRESET_LAYOUTS[preset];
     const inserts = items.map((item) => ({

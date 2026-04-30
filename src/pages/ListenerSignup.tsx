@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { createProfileForRole } from "@/lib/profiles";
 import Step1BasicInfo from "@/components/echo/signup/Step1BasicInfo";
 import Step2Profile from "@/components/echo/signup/Step2Profile";
 import Step3Topics from "@/components/echo/signup/Step3Topics";
@@ -34,7 +35,7 @@ const ListenerSignup = () => {
     setError("");
 
     // Store all profile data in user_metadata — profile will be created in AuthCallback after email confirmation
-    const { error: authErr } = await supabase.auth.signUp({
+    const { data: signUpData, error: authErr } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
@@ -57,6 +58,18 @@ const ListenerSignup = () => {
     });
 
     if (authErr) { setError(authErr.message); setLoading(false); return; }
+
+    if (signUpData.user && signUpData.session) {
+      try {
+        await createProfileForRole(signUpData.user, "listener", data);
+        window.location.href = "/dashboard/listener";
+        return;
+      } catch (profileError) {
+        setError(profileError instanceof Error ? profileError.message : "Could not create listener profile.");
+        setLoading(false);
+        return;
+      }
+    }
 
     setLoading(false);
     setDone(true);

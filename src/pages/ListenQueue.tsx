@@ -7,10 +7,9 @@ import { EchoLogo } from "@/components/echo/EchoLogo";
 
 interface WaitingSession {
   id: string;
-  topic_snippet: string | null;
+  title: string;
+  topic: string;
   created_at: string;
-  topics: string[];
-  requested_language: string | null;
 }
 
 const ListenQueue = () => {
@@ -23,16 +22,12 @@ const ListenQueue = () => {
 
   const loadSessions = async () => {
     const { data } = await supabase
-      .from("sessions")
-      .select("id, topic_snippet, created_at")
-      .eq("status", "waiting")
+      .from("chat_requests")
+      .select("id, title, topic, created_at")
+      .eq("status", "pending")
       .order("created_at", { ascending: true });
 
-    if (data) setSessions(data.map((s: any) => ({
-      ...s,
-      topics: s.topics || [],
-      requested_language: s.requested_language || null,
-    })));
+    if (data) setSessions(data as WaitingSession[]);
     setLoading(false);
   };
 
@@ -42,7 +37,7 @@ const ListenQueue = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate("/login"); return; }
 
-      const { data: profile } = await (supabase as any)
+      const { data: profile } = await supabase
         .from("listener_profiles")
         .select("id")
         .eq("user_id", user.id)
@@ -64,7 +59,7 @@ const ListenQueue = () => {
 
     const channel = supabase
       .channel("waiting-sessions")
-      .on("postgres_changes", { event: "*", schema: "public", table: "sessions" }, () => loadSessions())
+      .on("postgres_changes", { event: "*", schema: "public", table: "chat_requests" }, () => loadSessions())
       .subscribe();
 
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -80,19 +75,17 @@ const ListenQueue = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate("/login"); return; }
 
-    const { error } = await supabase
-      .from("sessions")
-      .update({ listener_id: user.id, status: "active" as const })
-      .eq("id", sessionId)
-      .eq("status", "waiting");
+    const { data, error } = await supabase.rpc("accept_chat_request", {
+      request_id: sessionId,
+    });
 
-    if (error) {
+    if (error || !data) {
       console.error("Failed to claim session:", error);
       setPicking(null);
       loadSessions();
       return;
     }
-    navigate(`/chat/${sessionId}`);
+    navigate(`/chat/${data}`);
   };
 
   const getWaitTime = (createdAt: string) => {
@@ -143,7 +136,7 @@ const ListenQueue = () => {
             </p>
           )}
 
-          {sessions.map((s) => (
+              {sessions.map((s) => (
             <div
               key={s.id}
               className={`${getBorderWeight(s.created_at)} border-foreground py-2 px-2 flex items-center justify-between gap-2`}
@@ -153,25 +146,11 @@ const ListenQueue = () => {
                   <span className="font-body text-[11px] bg-foreground text-background px-1.5 py-0.5 inline-block">
                     Waiting {getWaitTime(s.created_at)}
                   </span>
-                  {s.requested_language && (
-                    <span className="font-body text-[10px] text-muted-foreground">
-                      {s.requested_language}
-                    </span>
-                  )}
+                  <span className="font-body text-[10px] text-muted-foreground">pending</span>
                 </div>
-                {/* Topics as outlined labels */}
-                {s.topics.length > 0 && (
-                  <div className="flex flex-wrap gap-0.5 mb-0.5">
-                    {s.topics.map((topic) => (
-                      <span key={topic} className="font-body text-[10px] border border-foreground px-1 py-0">
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {/* Topic snippet — first message NOT shown until accepted */}
-                <p className="font-body text-[12px] text-muted-foreground truncate italic">
-                  {s.topic_snippet ? s.topic_snippet.slice(0, 80) : "No preview"}
+                <p className="font-body text-[13px] text-foreground truncate">{s.title}</p>
+                <p className="font-body text-[12px] text-muted-foreground truncate">
+                  {s.topic}
                 </p>
               </div>
               <EchoButton

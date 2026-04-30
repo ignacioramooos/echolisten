@@ -41,6 +41,80 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_requests: {
+        Row: {
+          created_at: string
+          id: string
+          listener_id: string | null
+          seeker_id: string
+          session_id: string | null
+          status: string
+          title: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listener_id?: string | null
+          seeker_id: string
+          session_id?: string | null
+          status?: string
+          title: string
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listener_id?: string | null
+          seeker_id?: string
+          session_id?: string | null
+          status?: string
+          title?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_requests_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breathing_sessions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          duration_seconds: number
+          id: string
+          mood_after: string | null
+          pattern: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          duration_seconds: number
+          id?: string
+          mood_after?: string | null
+          pattern: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          mood_after?: string | null
+          pattern?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       counters: {
         Row: {
           count: number | null
@@ -511,6 +585,7 @@ export type Database = {
         Args: { desired_username: string }
         Returns: boolean
       }
+      accept_chat_request: { Args: { request_id: string }; Returns: string }
       is_moderator: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {

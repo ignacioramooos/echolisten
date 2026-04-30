@@ -137,7 +137,7 @@ const Formation = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="font-body text-[14px] text-muted-foreground echo-pulse">●</span>
+        <span className="font-body text-[14px] text-muted-foreground">●</span>
       </div>
     );
   }

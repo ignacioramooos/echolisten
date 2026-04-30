@@ -237,7 +237,7 @@ const Simulation = ({ onComplete }: SimulationProps) => {
       {phase === "loading" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <span className="font-body text-[14px] echo-pulse">●</span>
+            <span className="font-body text-[14px]">●</span>
             <p className="font-body text-[12px] text-muted-foreground mt-1">Generating simulation...</p>
           </div>
         </div>
@@ -285,7 +285,7 @@ const Simulation = ({ onComplete }: SimulationProps) => {
       {phase === "final-evaluating" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <span className="font-body text-[14px] echo-pulse">●</span>
+            <span className="font-body text-[14px]">●</span>
             <p className="font-body text-[12px] text-muted-foreground mt-1">Evaluating your performance...</p>
           </div>
         </div>
@@ -295,7 +295,7 @@ const Simulation = ({ onComplete }: SimulationProps) => {
       {phase === "evaluating-free-text" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <span className="font-body text-[14px] echo-pulse">●</span>
+            <span className="font-body text-[14px]">●</span>
             <p className="font-body text-[12px] text-muted-foreground mt-1">Evaluating response...</p>
           </div>
         </div>

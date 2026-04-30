@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { createProfileForRole } from "@/lib/profiles";
 import { AuthShell } from "@/components/echo/AuthShell";
 import { EchoButton } from "@/components/echo/EchoButton";
 import { EchoInput } from "@/components/echo/EchoInput";
@@ -46,10 +47,11 @@ const SeekerSignup = () => {
       return;
     }
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        captchaToken,
         data: {
           role: "seeker",
           username: username.trim(),
@@ -64,6 +66,18 @@ const SeekerSignup = () => {
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
       return;
+    }
+
+    if (signUpData.user && signUpData.session) {
+      try {
+        await createProfileForRole(signUpData.user, "seeker", { username: username.trim() });
+        navigate("/dashboard/seeker", { replace: true });
+        return;
+      } catch (profileError) {
+        setError(profileError instanceof Error ? profileError.message : "Could not create seeker profile.");
+        setLoading(false);
+        return;
+      }
     }
 
     setLoading(false);

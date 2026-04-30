@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 import { EchoButton } from "@/components/echo/EchoButton";
-import { EchoBadge } from "@/components/echo/EchoBadge";
 import SharedFeatureNav from "@/components/echo/SharedFeatureNav";
 
 interface FullSession {
@@ -48,7 +47,7 @@ const ListenerDashboard = () => {
       if (!user) { navigate("/login"); return; }
 
       // Verify listener profile exists
-      const { data: profile } = await (supabase as any)
+      const { data: profile } = await supabase
         .from("listener_profiles")
         .select("id")
         .eq("user_id", user.id)
@@ -77,9 +76,9 @@ const ListenerDashboard = () => {
       }
 
       const { count } = await supabase
-        .from("sessions")
+        .from("chat_requests")
         .select("*", { count: "exact", head: true })
-        .eq("status", "waiting");
+        .eq("status", "pending");
       setWaitingCount(count || 0);
 
       const { data: sessData } = await supabase
@@ -189,7 +188,9 @@ const ListenerDashboard = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <EchoBadge label="Echo Listener" variant="earned" />
+              <span className="font-body text-[11px] uppercase tracking-widest text-foreground border border-foreground px-1 py-0.5">
+                Listener active
+              </span>
               {certifiedAt && (
                 <span className="font-body text-[11px] text-muted-foreground">
                   Certified {formatDate(certifiedAt)}
@@ -225,6 +226,13 @@ const ListenerDashboard = () => {
                 : `${waitingCount} ${waitingCount === 1 ? "person" : "people"} waiting.`}
             </p>
             <div className="mt-2">
+              <Link
+                to="/dashboard/breathe"
+                className="font-body text-[11px] text-muted-foreground underline echo-fade inline-block mb-2"
+              >
+                Take a minute first
+              </Link>
+              <br />
               <Link to="/listen">
                 <EchoButton variant="solid" size="md" disabled={!certified}>
                   {t("dashboard.openQueue")}

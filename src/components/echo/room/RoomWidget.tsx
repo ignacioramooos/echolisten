@@ -8,6 +8,7 @@ const EmotionalWeatherWidget = lazy(() => import("./widgets/EmotionalWeatherWidg
 const TodayIAmWidget = lazy(() => import("./widgets/TodayIAmWidget"));
 const MemoryShelfWidget = lazy(() => import("./widgets/MemoryShelfWidget"));
 const OneThingHelpedWidget = lazy(() => import("./widgets/OneThingHelpedWidget"));
+const BreatheWidget = lazy(() => import("./widgets/BreatheWidget"));
 
 interface RoomWidgetProps {
   id: string;
@@ -24,6 +25,7 @@ const widgetMap: Record<string, React.ComponentType<{ widgetId: string; config: 
   today_i_am: TodayIAmWidget,
   memory_shelf: MemoryShelfWidget,
   one_thing_helped: OneThingHelpedWidget,
+  breathe: BreatheWidget,
 };
 
 const RoomWidget = ({ id, type, config }: RoomWidgetProps) => {

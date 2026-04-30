@@ -45,7 +45,7 @@ export const ChatMessages = ({ messages, userId, isWaiting, isFocusMode }: ChatM
           <div className="flex-1 flex flex-col items-center justify-center py-12 gap-6">
             <div className="text-center">
               <p className={`font-body text-[16px] ${isFocusMode ? "text-background" : "text-foreground"}`}>
-                <span className="echo-pulse">●</span> Finding an Echo...
+                <span className="">●</span> Finding an Echo...
               </p>
               <p className={`font-body text-[11px] mt-1 ${isFocusMode ? "text-background/60" : "text-muted-foreground"}`}>
                 A trained Listener will be with you shortly.
