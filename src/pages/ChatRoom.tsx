@@ -15,6 +15,7 @@ import { CrisisInfoOverlay } from "@/components/echo/chat/CrisisInfoOverlay";
 import { SharedJournalCard } from "@/components/echo/chat/SharedJournalCard";
 import { toast } from "sonner";
 import { EchoButton } from "@/components/echo/EchoButton";
+import { useAppearance } from "@/hooks/use-appearance";
 
 const GRACEFUL_EXIT_MSG =
   "I've valued our 10 minutes, but I need to step away to recharge now. You did great sharing today.";
@@ -37,6 +38,7 @@ const ChatRoom = () => {
 
   const isSeeker = session?.seeker_id === userId;
   const isListener = session?.listener_id === userId;
+  const { bgUrl, bgIntensity } = useAppearance();
 
   useEffect(() => {
     const getUser = async () => {
@@ -202,12 +204,20 @@ const ChatRoom = () => {
 
   return (
     <div
-      className={`flex flex-col ${
+      className={`flex flex-col relative ${
         isFocusMode
           ? "fixed inset-0 z-50 bg-foreground text-background"
           : "min-h-screen bg-background text-foreground"
       }`}
     >
+      {/* Background image layer */}
+      {bgUrl && !isFocusMode && (
+        <div
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${bgUrl})`, opacity: bgIntensity / 100 }}
+        />
+      )}
+      <div className={`relative z-10 flex flex-col ${isFocusMode ? "fixed inset-0" : "min-h-screen"}`}>
       <ChatHeader
         isWaiting={isWaiting}
         isFocusMode={isFocusMode}
@@ -316,6 +326,7 @@ const ChatRoom = () => {
           </p>
         </div>
       ) : null}
+      </div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { EchoLogo } from "@/components/echo/EchoLogo";
 import { WidgetPalette, type WidgetType } from "@/components/echo/room/WidgetPalette";
 import { RoomWidget } from "@/components/echo/room/RoomWidget";
 import { RoomEmptyState } from "@/components/echo/room/RoomEmptyState";
+import { useAppearance } from "@/hooks/use-appearance";
 
 type LayoutItem = { i: string; x: number; y: number; w: number; h: number; minW?: number; maxW?: number; minH?: number; maxH?: number };
 
@@ -52,6 +53,7 @@ const DashboardRoom = () => {
   const [loading, setLoading] = useState(true);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const { bgUrl, bgIntensity } = useAppearance();
 
   useEffect(() => {
     const el = containerRef.current;
@@ -222,7 +224,15 @@ const DashboardRoom = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      {/* Background image layer */}
+      {bgUrl && (
+        <div
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${bgUrl})`, opacity: bgIntensity / 100 }}
+        />
+      )}
+
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background border-b border-muted">
         <EchoLogo />
@@ -243,7 +253,7 @@ const DashboardRoom = () => {
       </header>
 
       {/* Content */}
-      <main ref={containerRef} className="flex-1 pt-[65px] px-4">
+      <main ref={containerRef} className="relative z-10 flex-1 pt-[65px] px-4">
         {widgets.length === 0 ? (
           <div className="h-[calc(100vh-65px)]">
             <RoomEmptyState onSelectPreset={applyPreset} />
