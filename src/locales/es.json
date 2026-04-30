@@ -11,25 +11,25 @@
   },
   "landing": {
     "hero": "Alguien te escuchará.",
-    "heroSub": "Echo te conecta con oyentes pares capacitados — de forma anónima y gratuita.",
+    "heroSub": "Cor Ad Cor te conecta con oyentes pares capacitados — de forma anónima y gratuita.",
     "findListener": "Buscar un Oyente",
     "becomeListener": "Ser Oyente",
     "forSeekers": "Para Buscadores",
     "step01": "Escribe lo que tienes en mente.",
     "step01Desc": "Comparte lo que necesites. Sin formularios, sin registro.",
     "step02": "Conecta con un Oyente capacitado.",
-    "step02Desc": "Echo te empareja según disponibilidad y nivel de entrenamiento.",
+    "step02Desc": "Cor Ad Cor te empareja según disponibilidad y nivel de entrenamiento.",
     "step03": "Habla. Sin consejos. Solo presencia.",
     "step03Desc": "Tu Oyente está ahí para escucharte — nada más, nada menos.",
     "forListeners": "Para Oyentes",
     "formationHeading": "No todos se convierten en Oyentes.",
-    "formationDesc": "Los Oyentes de Echo completan un entrenamiento riguroso llamado La Formación — un programa de múltiples pasos que incluye lecturas, cuestionarios y una simulación con IA.",
+    "formationDesc": "Los Oyentes de Cor Ad Cor completan un entrenamiento riguroso llamado La Formación — un programa de múltiples pasos que incluye lecturas, cuestionarios y una simulación con IA.",
     "beginFormation": "Comenzar Formación",
-    "trustHeading": "Lo que Echo no es.",
+    "trustHeading": "Lo que Cor Ad Cor no es.",
     "trust1": "No es una línea de crisis. Para emergencias, llama a tus servicios locales.",
     "trust2": "No es terapia. Los Oyentes son voluntarios capacitados, no clínicos.",
     "trust3": "No es una red social. Las sesiones son privadas y no se guardan.",
-    "footer": "● Echo — Apoyo entre pares. Sin ruido."
+    "footer": "● Cor Ad Cor — Apoyo entre pares. Sin ruido."
   },
   "dashboard": {
     "listenerBadge": "OYENTE ●",
@@ -66,17 +66,17 @@
     "listener": "Oyente",
     "yourRating": "Tu Valoración",
     "read": "Leer →",
-    "bottomNotice": "● Echo es solo apoyo entre pares. Los Oyentes son voluntarios capacitados, no clínicos. Para emergencias, contacta tus servicios de crisis locales."
+    "bottomNotice": "● Cor Ad Cor es solo apoyo entre pares. Los Oyentes son voluntarios capacitados, no clínicos. Para emergencias, contacta tus servicios de crisis locales."
   },
   "chat": {
-    "findingEcho": "Buscando un Echo...",
+    "findingEcho": "Buscando un Cor Ad Cor...",
     "listenerShortly": "Un Oyente capacitado estará contigo pronto.",
     "talkToAuraWhileWaiting": "Mientras esperas, puedes hablar con Aura.",
     "communityGuidelines": "Normas de Comunidad",
     "guideline1": "Sé honesto, pero amable. Este es un espacio seguro.",
     "guideline2": "Los Oyentes no dan consejos. Escuchan.",
     "guideline3": "Las sesiones son privadas y no se almacenan.",
-    "guideline4": "Echo no es un servicio de crisis. Para emergencias, contacta servicios locales.",
+    "guideline4": "Cor Ad Cor no es un servicio de crisis. Para emergencias, contacta servicios locales.",
     "typeMessage": "Escribe un mensaje...",
     "send": "Enviar",
     "endSession": "Terminar Sesión",
@@ -87,7 +87,7 @@
     "optional200": "Opcional — 200 caracteres",
     "done": "Listo",
     "thankYouSharing": "Gracias por compartir.",
-    "backToEcho": "Volver a Echo",
+    "backToEcho": "Volver a Cor Ad Cor",
     "thankYouListening": "Gracias por escuchar. Tómate un momento para ti.",
     "backToQueue": "Volver a la Cola",
     "extend5min": "¿Extender +5 min?",
@@ -104,7 +104,7 @@
     "flagReason": "Razón del Reporte",
     "focusMode": "Modo Enfoque",
     "exitFocusMode": "Salir del Modo Enfoque",
-    "languageBanner": "Este Buscador puede estar escribiendo en {{language}}. Echo Advisor puede ayudarte a responder.",
+    "languageBanner": "Este Buscador puede estar escribiendo en {{language}}. Cor Ad Cor Advisor puede ayudarte a responder.",
     "askAuraTranslation": "Pedir ayuda de traducción a Aura"
   },
   "aura": {
@@ -114,14 +114,14 @@
     "disclaimer2": "Aura puede escuchar y reflexionar — nada más. Si estás en peligro, llama a servicios de emergencia ahora.",
     "understand": "Entiendo — continuar",
     "thinking": "Aura está pensando...",
-    "connectPrompt": "Hemos hablado un rato. ¿Te gustaría conectar con un Oyente humano de Echo? A veces hablar con otra persona marca la diferencia.",
+    "connectPrompt": "Hemos hablado un rato. ¿Te gustaría conectar con un Oyente humano de Cor Ad Cor? A veces hablar con otra persona marca la diferencia.",
     "connectListener": "Conectar con un Oyente →",
     "crisisPaused": "Aura ha pausado esta conversación. Por favor contacta un servicio de crisis.",
     "end": "Terminar",
     "errorResponse": "Tengo problemas para responder ahora. Intenta de nuevo."
   },
   "advisor": {
-    "title": "● Echo Advisor",
+    "title": "● Cor Ad Cor Advisor",
     "getHelp": "Obtén una sugerencia con IA para tu próxima respuesta.",
     "thinking": "Pensando...",
     "getSuggestion": "Obtener Sugerencia",
@@ -145,7 +145,7 @@
   "formation": {
     "title": "Formación",
     "welcome": "Bienvenido.",
-    "welcomeBody1": "Hay muchas personas sin nadie con quien hablar. Como Oyente de Echo, ayudarás a crear un espacio seguro para que las personas compartan lo que está pasando en sus vidas, de forma anónima y gratuita.",
+    "welcomeBody1": "Hay muchas personas sin nadie con quien hablar. Como Oyente de Cor Ad Cor, ayudarás a crear un espacio seguro para que las personas compartan lo que está pasando en sus vidas, de forma anónima y gratuita.",
     "welcomeBody2": "Esta formación toma aproximadamente 60 minutos. Tu progreso se guarda automáticamente.",
     "welcomeScoring": "Hay 23 preguntas. Tienes 2 intentos por pregunta. Necesitas al menos 33 de 46 puntos para desbloquear la Simulación.",
     "begin": "Comenzar Formación →",
@@ -248,14 +248,14 @@
       "heading": "Casi listo.",
       "captchaLabel": "Completa el CAPTCHA para continuar.",
       "checkSafety": "Confirmo que no soy homicida, suicida ni abusador de otros.",
-      "checkPeerSupport": "Entiendo que Echo es apoyo entre pares, no terapia. No proporcionaré consejos médicos o clínicos.",
-      "checkTerms": "Acepto los Términos de Servicio y la Política de Privacidad de Echo.",
+      "checkPeerSupport": "Entiendo que Cor Ad Cor es apoyo entre pares, no terapia. No proporcionaré consejos médicos o clínicos.",
+      "checkTerms": "Acepto los Términos de Servicio y la Política de Privacidad de Cor Ad Cor.",
       "submit": "Completar Registro",
       "submitting": "Creando cuenta..."
     },
     "welcome": {
-      "heading": "Bienvenido a Echo.",
-      "body": "Casi estás listo. Antes de tu primera sesión, debes completar La Formación — el entrenamiento para oyentes de Echo. Toma aproximadamente 60 minutos. Tu progreso se guarda. Puedes parar y volver en cualquier momento.",
+      "heading": "Bienvenido a Cor Ad Cor.",
+      "body": "Casi estás listo. Antes de tu primera sesión, debes completar La Formación — el entrenamiento para oyentes de Cor Ad Cor. Toma aproximadamente 60 minutos. Tu progreso se guarda. Puedes parar y volver en cualquier momento.",
       "registration": "Registro",
       "formation": "Formación",
       "firstSession": "Primera Sesión",
@@ -263,7 +263,7 @@
     }
   },
   "auth": {
-    "joinEcho": "Únete a Echo.",
+    "joinEcho": "Únete a Cor Ad Cor.",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "signUp": "Crear Cuenta",
@@ -273,7 +273,7 @@
     "welcomeBack": "Bienvenido de nuevo.",
     "loginButton": "Iniciar Sesión",
     "loggingIn": "Iniciando sesión...",
-    "newToEcho": "¿Nuevo en Echo?",
+    "newToEcho": "¿Nuevo en Cor Ad Cor?",
     "createAccount": "Crear una cuenta →",
     "forgotPassword": "¿Olvidaste tu contraseña? →",
     "resetPassword": "Restablecer Contraseña",
@@ -289,7 +289,7 @@
     "roleListenerDesc": "Ayuda a otros prestando tu oído y empatía."
   },
   "about": {
-    "heading": "Acerca de Echo",
+    "heading": "Acerca de Cor Ad Cor",
     "placeholder": "Contenido próximamente.",
     "backHome": "← Volver al inicio"
   },

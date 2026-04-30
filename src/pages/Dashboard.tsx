@@ -286,7 +286,7 @@ function ListenerView({
         </div>
       ) : (
         <div className="flex items-center gap-2">
-          <EchoBadge label="Echo Listener" variant="earned" />
+          <EchoBadge label="Cor Ad Cor Listener" variant="earned" />
           {certifiedAt && (
             <span className="font-body text-[11px] text-muted-foreground">Certified {formatDate(certifiedAt)}</span>
           )}
@@ -478,7 +478,7 @@ function SeekerView({ sessions, ratings, userId }: { sessions: FullSession[]; ra
             <tbody>
               {recentSessions.map((s) => {
                 const rat = ratingMap.get(s.id);
-                const listenerLabel = s.listener_id ? `Echo Listener #${s.listener_id.slice(0, 4).toUpperCase()}` : "—";
+                const listenerLabel = s.listener_id ? `Cor Ad Cor Listener #${s.listener_id.slice(0, 4).toUpperCase()}` : "—";
                 return (
                   <tr key={s.id} className="border-b border-secondary">
                     <td className="font-body text-[12px] text-foreground py-1 pr-2">{formatDate(s.created_at)}</td>

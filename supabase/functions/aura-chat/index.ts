@@ -7,7 +7,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are Aura, Echo's AI peer support assistant. Echo is a peer support platform, not therapy.
+const SYSTEM_PROMPT = `You are Aura, Cor Ad Cor's AI peer support assistant. Cor Ad Cor is a peer support platform, not therapy.
 
 Your role: listen, reflect, label emotions, ask open questions. You are warm but not saccharine.
 

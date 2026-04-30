@@ -11,7 +11,7 @@ interface AuraMessage {
   content: string;
 }
 
-const AURA_OPENING = "Hi. I'm Aura, Echo's AI listener. I'm here for you right now. What's on your mind?";
+const AURA_OPENING = "Hi. I'm Aura, Cor Ad Cor's AI listener. I'm here for you right now. What's on your mind?";
 const MAX_CHARS = 1000;
 const MAX_EXCHANGES = 40;
 const SESSION_MINUTES = 30;

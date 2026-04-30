@@ -6,7 +6,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const GENERATE_PROMPT = `You are running a peer support listener training simulation for Echo, a platform similar to 7 Cups.
+const GENERATE_PROMPT = `You are running a peer support listener training simulation for Cor Ad Cor, a platform similar to 7 Cups.
 
 Generate a realistic peer support practice session.
 

@@ -1,8 +1,8 @@
-# Echo Listen - Project Overview
+# Cor Ad Cor - Project Overview
 
 ## 🎯 Project Purpose
 
-**Echo** is a mental health and emotional wellness platform that facilitates peer-to-peer listening and reflection. It's designed as a **safe, anonymous space** where people can:
+**Cor Ad Cor** is a mental health and emotional wellness platform that facilitates peer-to-peer listening and reflection. It's designed as a **safe, anonymous space** where people can:
 - Write and process difficult moments through journaling in multiple modalities
 - Connect with trained listeners for real-time emotional support (10-minute sessions)
 - Practice conversations with an AI listener (Aura) before talking to real listeners
@@ -17,23 +17,23 @@ The platform operates on a **dual-role model**: users can be either **Seekers** 
 
 ---
 
-## ⚡ Why Echo Exists
+## ⚡ Why Cor Ad Cor Exists
 
-Echo addresses a critical gap in mental health support:
+Cor Ad Cor addresses a critical gap in mental health support:
 
-1. **Accessibility**: Professional mental health care is expensive, inaccessible, or simply unavailable in many regions. Echo provides **free, anonymous peer support**.
+1. **Accessibility**: Professional mental health care is expensive, inaccessible, or simply unavailable in many regions. Cor Ad Cor provides **free, anonymous peer support**.
 
-2. **Humanity Over Automation**: While therapy bots exist, they lack the therapeutic power of genuine human connection. Echo pairs seekers with **real trained listeners**.
+2. **Humanity Over Automation**: While therapy bots exist, they lack the therapeutic power of genuine human connection. Cor Ad Cor pairs seekers with **real trained listeners**.
 
-3. **Processing Through Writing**: Many people find writing therapeutic because it externalizes thoughts and creates distance for reflection. Echo provides **6 distinct journaling modes** to suit different needs.
+3. **Processing Through Writing**: Many people find writing therapeutic because it externalizes thoughts and creates distance for reflection. Cor Ad Cor provides **6 distinct journaling modes** to suit different needs.
 
-4. **Building Listener Capacity**: The world needs more people trained in active listening and empathy. Echo's **structured Formation program** trains and certifies listeners.
+4. **Building Listener Capacity**: The world needs more people trained in active listening and empathy. Cor Ad Cor's **structured Formation program** trains and certifies listeners.
 
 5. **Crisis Safety**: The platform includes **automatic crisis detection** with resource overlays to keep users safe.
 
-6. **Emotional Self-Knowledge**: Seekers often don't understand their patterns. Echo's **Patterns page** visualizes mood trends and emotional weather over time.
+6. **Emotional Self-Knowledge**: Seekers often don't understand their patterns. Cor Ad Cor's **Patterns page** visualizes mood trends and emotional weather over time.
 
-7. **Democratized Support**: By training peer listeners, Echo scales human support in a way that's economically sustainable and culturally appropriate.
+7. **Democratized Support**: By training peer listeners, Cor Ad Cor scales human support in a way that's economically sustainable and culturally appropriate.
 
 ---
 
@@ -92,7 +92,7 @@ echolisten/
 │   │
 │   ├── components/
 │   │   ├── ui/                  # shadcn/ui components (50+ reusable UI elements)
-│   │   ├── echo/                # Echo-specific components
+│   │   ├── echo/                # Cor Ad Cor-specific components
 │   │   │   ├── signup/          # Signup flow components (5 steps)
 │   │   │   ├── chat/            # Chat session UI
 │   │   │   │   ├── ChatMessages.tsx
@@ -331,7 +331,7 @@ Each mode serves a distinct emotional/cognitive need:
   - If seeker shared a journal entry to the session, it displays in chat
   - *Why:* Listener gets context; seeker doesn't have to re-type their struggle
 
-- **Echo Advisor Hints** (for Listeners)
+- **Cor Ad Cor Advisor Hints** (for Listeners)
   - Real-time suggestions for reflective responses
   - *Why:* Helps newer listeners stay on-model (validation, reflection vs. advice)
 
@@ -349,7 +349,7 @@ Each mode serves a distinct emotional/cognitive need:
 **Why it exists:** Some seekers are anxious about talking to real listeners. Practicing with AI lowers barriers.
 
 #### Aura Features
-- **Opening Line:** "Hi. I'm Aura, Echo's AI listener. I'm here for you right now. What's on your mind?"
+- **Opening Line:** "Hi. I'm Aura, Cor Ad Cor's AI listener. I'm here for you right now. What's on your mind?"
   - *Why:* Sets expectation that this is for practice, not professional care
 
 - **30-Minute Sessions with Auto-Timeout**
@@ -385,7 +385,7 @@ Each mode serves a distinct emotional/cognitive need:
 
 - **Manual Entries**
   - Widget or direct entry to Memory Shelf
-  - *Why:* Can save insights from therapy, books, conversations—not just Echo journal
+  - *Why:* Can save insights from therapy, books, conversations—not just Cor Ad Cor journal
 
 - **Four Shelf Categories**
   1. **Lessons** - Learning about yourself or life
@@ -453,7 +453,7 @@ Each mode serves a distinct emotional/cognitive need:
    - Quiz: Strength-spotting in difficult situations
    - *Why:* Counteracts despair, builds agency
 
-8. **Step 8: Chat Protocol & Echo Guidelines**
+8. **Step 8: Chat Protocol & Cor Ad Cor Guidelines**
    - Content: Platform mechanics, what counts as inappropriate, handling conflict
    - Quiz: Policy-based scenarios
    - *Why:* Ensures consistent, safe experience
@@ -499,7 +499,7 @@ Each mode serves a distinct emotional/cognitive need:
 
 3. **Emotional Weather**
    - Metaphor-based mood: "Stormy," "Heavy," "Foggy," "Cloudy," "Warming Up," "Clear"
-   - *Why:* More poetic than numeric scale; matches Echo's language
+   - *Why:* More poetic than numeric scale; matches Cor Ad Cor's language
 
 4. **Quick Journal**
    - Mini text input for ultra-short freewriting
@@ -658,7 +658,7 @@ Each mode serves a distinct emotional/cognitive need:
 ---
 
 ### 11. **Multi-Language Support**
-**Why it exists:** Mental health doesn't have borders; neither should Echo.
+**Why it exists:** Mental health doesn't have borders; neither should Cor Ad Cor.
 
 #### Primary Languages (Full UI + Content)
 - English, Spanish (Español), Portuguese (Português), French (Français), German (Deutsch), Chinese (中文), Arabic (العربية)
@@ -755,7 +755,7 @@ Each mode serves a distinct emotional/cognitive need:
 ---
 
 ### 16. **About & Help Pages**
-**Why it exists:** Users need to understand Echo's mission and how it works.
+**Why it exists:** Users need to understand Cor Ad Cor's mission and how it works.
 
 #### About Page
 - Project mission and values

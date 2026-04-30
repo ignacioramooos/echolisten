@@ -64,7 +64,7 @@ export const ChatMessages = ({ messages, userId, isWaiting, isFocusMode }: ChatM
                   "Be honest, but kind. This is a safe space.",
                   "Listeners don't give advice. They listen.",
                   "Sessions are private and not stored.",
-                  "Echo is not a crisis service. For emergencies, contact local services.",
+                  "Cor Ad Cor is not a crisis service. For emergencies, contact local services.",
                 ].map((g) => (
                   <li key={g} className={`font-body text-[12px] ${isFocusMode ? "text-background" : "text-foreground"}`}>
                     — {g}
