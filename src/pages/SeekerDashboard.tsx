@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { EchoLogo } from "@/components/echo/EchoLogo";
 import { EchoButton } from "@/components/echo/EchoButton";
@@ -95,23 +96,40 @@ const SeekerDashboard = () => {
     if (!canCreate || !userId || creating) return;
     setCreating(true);
 
-    const { data: request, error } = await db
-      .from("chat_requests")
-      .insert({
-        seeker_id: userId,
-        status: "pending",
-        title: selectedTopics.slice(0, 2).join(", "),
-        topic: firstMessage.trim(),
-      })
-      .select()
-      .single();
+    try {
+      const { data: request, error } = await db
+        .from("chat_requests")
+        .insert({
+          seeker_id: userId,
+          status: "pending",
+          title: selectedTopics.slice(0, 2).join(", "),
+          topic: firstMessage.trim(),
+        })
+        .select()
+        .single();
 
-    if (error || !request) {
+      if (error) {
+        console.error("Failed to create chat request:", error);
+        toast.error(`Failed to find a listener: ${error.message}`);
+        setCreating(false);
+        return;
+      }
+
+      if (!request) {
+        console.error("No request returned from insert");
+        toast.error("Failed to create your request. Please try again.");
+        setCreating(false);
+        return;
+      }
+
+      console.log("Chat request created successfully:", request.id);
+      toast.success("Your request is live. A listener will join soon.");
+      navigate(`/chat/new?request=${request.id}`);
+    } catch (err) {
+      console.error("Unexpected error in handleCreateSession:", err);
+      toast.error("An unexpected error occurred. Please try again.");
       setCreating(false);
-      return;
     }
-
-    navigate(`/chat/new?request=${request.id}`);
   };
 
   const formatDate = (ts: string) =>
