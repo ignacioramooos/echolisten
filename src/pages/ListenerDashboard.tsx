@@ -29,6 +29,7 @@ interface FormationStep {
 const ListenerDashboard = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const db = supabase as any;
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +76,7 @@ const ListenerDashboard = () => {
         setFormationProgress({ steps_completed: progress.steps_completed || [], score: progress.score });
       }
 
-      const { count } = await supabase
+      const { count } = await db
         .from("chat_requests")
         .select("*", { count: "exact", head: true })
         .eq("status", "pending");
