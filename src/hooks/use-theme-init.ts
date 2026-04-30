@@ -12,13 +12,8 @@ async function applyThemeForUser(userId: string) {
     document.documentElement.setAttribute("data-theme", lp.theme || "light");
     return;
   }
-  // Fall back to seeker_profiles
-  const { data: sp } = await (supabase as any)
-    .from("seeker_profiles")
-    .select("theme")
-    .eq("user_id", userId)
-    .maybeSingle();
-  document.documentElement.setAttribute("data-theme", sp?.theme || "light");
+  // seeker_profiles doesn't have a theme column, so default to light
+  document.documentElement.setAttribute("data-theme", "light");
 }
 
 export function useThemeInit() {
