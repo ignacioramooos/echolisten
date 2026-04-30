@@ -84,11 +84,16 @@ const Settings = () => {
         // Check if seeker
         const { data: seekerProfile } = await (supabase as any)
           .from("seeker_profiles")
-          .select("id")
+          .select("theme, chat_bg_url, chat_bg_intensity, preferred_language")
           .eq("user_id", user.id)
           .maybeSingle();
         if (seekerProfile) {
           setUserRole("seeker");
+          setTheme(seekerProfile.theme || "light");
+          document.documentElement.setAttribute("data-theme", seekerProfile.theme || "light");
+          setPreferredLang(seekerProfile.preferred_language || "en");
+          setChatBgUrl(seekerProfile.chat_bg_url || null);
+          setChatBgIntensity(seekerProfile.chat_bg_intensity || 20);
         } else {
           navigate("/login", { replace: true });
           return;
@@ -132,6 +137,15 @@ const Settings = () => {
           chat_bg_intensity: chatBgIntensity,
         })
         .eq("user_id", userId);
+    } else {
+      await (supabase as any)
+        .from("seeker_profiles")
+        .update({
+          theme,
+          preferred_language: preferredLang,
+          chat_bg_intensity: chatBgIntensity,
+        })
+        .eq("user_id", userId);
     }
     setSaving(false);
     toast.success(t("settings.saved"));
@@ -152,14 +166,16 @@ const Settings = () => {
     const url = data.publicUrl;
     setChatBgUrl(url);
 
-    await (supabase as any).from("listener_profiles").update({ chat_bg_url: url }).eq("user_id", userId);
+    const table = userRole === "listener" ? "listener_profiles" : "seeker_profiles";
+    await (supabase as any).from(table).update({ chat_bg_url: url }).eq("user_id", userId);
     toast.success("Background uploaded");
   };
 
   const removeBg = async () => {
     if (!userId) return;
     setChatBgUrl(null);
-    await (supabase as any).from("listener_profiles").update({ chat_bg_url: null }).eq("user_id", userId);
+    const table = userRole === "listener" ? "listener_profiles" : "seeker_profiles";
+    await (supabase as any).from(table).update({ chat_bg_url: null }).eq("user_id", userId);
     toast.success("Background removed");
   };
 
@@ -319,7 +335,7 @@ const Settings = () => {
               </div>
             </div>
 
-            {userRole === "listener" && (
+            {(
               <div>
                 <label className="font-body text-[11px] uppercase tracking-widest text-foreground">
                   {t("settings.chatBackground")}
