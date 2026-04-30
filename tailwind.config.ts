@@ -56,11 +56,11 @@ export default {
       },
     },
     fontFamily: {
-      display: ["DM Mono", "monospace"],
+      display: ["Cormorant Garamond", "serif"],
       body: ["DM Mono", "monospace"],
       sans: ["DM Mono", "monospace"],
       mono: ["DM Mono", "monospace"],
-      serif: ["DM Mono", "monospace"],
+      serif: ["Cormorant Garamond", "serif"],
     },
     spacing: {
       "0": "0px",

@@ -27,6 +27,7 @@ interface RatingRow {
 const SeekerDashboard = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const db = supabase as any;
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<FullSession[]>([]);
@@ -94,7 +95,7 @@ const SeekerDashboard = () => {
     if (!canCreate || !userId || creating) return;
     setCreating(true);
 
-    const { data: request, error } = await supabase
+    const { data: request, error } = await db
       .from("chat_requests")
       .insert({
         seeker_id: userId,

@@ -13,6 +13,7 @@ interface ActiveRequest {
 
 const ChatNew = () => {
   const navigate = useNavigate();
+  const db = supabase as any;
   const [userId, setUserId] = useState<string | null>(null);
   const [role, setRole] = useState<"seeker" | "listener" | null>(null);
   const [title, setTitle] = useState("");
@@ -44,7 +45,7 @@ const ChatNew = () => {
       setRole("seeker");
       const requestId = new URLSearchParams(window.location.search).get("request");
       if (requestId) {
-        const { data } = await supabase
+        const { data } = await db
           .from("chat_requests")
           .select("id, session_id, status")
           .eq("id", requestId)
@@ -97,7 +98,7 @@ const ChatNew = () => {
     setSubmitting(true);
     setError("");
 
-    const { data, error: insertError } = await supabase
+    const { data, error: insertError } = await db
       .from("chat_requests")
       .insert({
         seeker_id: userId,
