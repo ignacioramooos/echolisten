@@ -58,6 +58,9 @@ export default {
     fontFamily: {
       display: ["DM Mono", "monospace"],
       body: ["DM Mono", "monospace"],
+      sans: ["DM Mono", "monospace"],
+      mono: ["DM Mono", "monospace"],
+      serif: ["DM Mono", "monospace"],
     },
     spacing: {
       "0": "0px",
