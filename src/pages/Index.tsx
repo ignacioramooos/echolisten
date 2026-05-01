@@ -252,6 +252,9 @@ const Index = () => {
             <span className="mr-0.5">●</span> Cor ad Cor
           </Link>
           <nav className="flex items-center gap-2">
+            <Link to="/why" className="font-body text-[11px] sm:text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
+              Why
+            </Link>
             <Link to="/about" className="font-body text-[11px] sm:text-[12px] uppercase tracking-widest text-foreground echo-fade no-underline">
               {t("nav.about")}
             </Link>
