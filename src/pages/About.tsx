@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-/* ── Header (mirrors Index/Why for consistency) ── */
+/* ── Header ── */
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 z-10 border-b border-foreground bg-background">
     <div className="mx-auto flex w-full max-w-echo items-center justify-between px-2 py-1">
@@ -67,12 +67,12 @@ const Hero = () => (
       About Cor ad Cor
     </p>
     <h1 className="font-display italic text-[40px] sm:text-[56px] md:text-[72px] leading-[1.05] text-foreground max-w-[760px] break-words">
-      A quiet space, built by people who believe listening still matters.
+      A digital third place, built for the unspeakable.
     </h1>
     <p className="mt-6 font-body text-[13px] sm:text-[14px] text-muted-foreground max-w-[620px] leading-relaxed">
-      Cor ad Cor — Latin for <em>heart to heart</em> — is an anonymous,
-      free peer-support platform. No therapy. No advice. No noise. Just a real
-      person on the other side, trained to hear you.
+      Cor ad Cor — Latin for <em>heart to heart</em> — is anonymous, free
+      peer support. Not therapy. Not advice. Not a feed. A quiet, serious
+      space where one human listens to another, and that is the entire point.
     </p>
   </section>
 );
@@ -100,7 +100,7 @@ const Block = ({
   </section>
 );
 
-/* ── Principles ── */
+/* ── Principles grid ── */
 const Principle = ({ label, desc }: { label: string; desc: string }) => (
   <div className="p-4 border border-muted">
     <p className="font-display italic text-[20px] sm:text-[22px] text-foreground leading-tight">
@@ -118,10 +118,10 @@ const PrinciplesSection = () => (
       What we stand on
     </p>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px">
-      <Principle label="Anonymous" desc="No identities exchanged. No traces left behind." />
-      <Principle label="Free" desc="No paywalls. No subscriptions. No upsells." />
-      <Principle label="Human" desc="Real, trained people — never bots in disguise." />
-      <Principle label="Quiet" desc="No streaks, no metrics, no engagement traps." />
+      <Principle label="Anonymous" desc="A shield, not a gimmick. The condition for honesty." />
+      <Principle label="Free" desc="No paywalls. No premium tier. Connection is not a product." />
+      <Principle label="Non-directive" desc="Listeners are trained to be present, not to advise." />
+      <Principle label="Un-gamified" desc="No streaks, no points, no nudges. Emotional life is not a game." />
     </div>
   </section>
 );
@@ -142,7 +142,7 @@ const ContactSection = () => (
     <div className="flex flex-col gap-3 max-w-[480px]">
       <a
         href="mailto:cor@coradcor.org"
-        className="flex items-center gap-3 p-3 border border-foreground echo-fade no-underline group"
+        className="flex items-center gap-3 p-3 border border-foreground echo-fade no-underline"
       >
         <Mail size={16} strokeWidth={1.5} className="text-foreground shrink-0" />
         <div>
@@ -152,7 +152,7 @@ const ContactSection = () => (
       </a>
       <a
         href="tel:+59892667755"
-        className="flex items-center gap-3 p-3 border border-foreground echo-fade no-underline group"
+        className="flex items-center gap-3 p-3 border border-foreground echo-fade no-underline"
       >
         <Phone size={16} strokeWidth={1.5} className="text-foreground shrink-0" />
         <div>
@@ -198,43 +198,94 @@ const About = () => {
 
         <Block kicker="01 — Mission" title="To make being heard feel ordinary again.">
           <p>
-            We exist to rebuild a layer that modern life has quietly stripped
-            away: the simple, human experience of someone sitting with you while
-            you say what's on your mind.
+            We exist to rebuild a layer modern life has quietly stripped away:
+            the simple, human experience of someone sitting with you while you
+            say what's on your mind.
           </p>
           <p>
-            Not to fix you. Not to diagnose you. Not to optimize you. Just to be
-            present — anonymously, freely, and without an agenda.
-          </p>
-        </Block>
-
-        <Block kicker="02 — What we are" title="Peer support, taken seriously.">
-          <p>
-            Cor ad Cor connects two kinds of people: those who need to talk, and
-            those willing to listen. Every Listener completes <em>The Formation</em> — a
-            multi-step training that covers presence, boundaries, safety, and
-            the discipline of not advising.
-          </p>
-          <p>
-            Sessions are anonymous and ephemeral by design. Nothing is sold.
-            Nothing is gamified. The product is the conversation.
+            Not to fix you. Not to diagnose you. Not to optimize you. Just to
+            be present — anonymously, freely, and without an agenda.
           </p>
         </Block>
 
-        <Block kicker="03 — What we are not" title="A clear line, drawn on purpose.">
+        <Block kicker="02 — The missing middle" title="Between self-help and a clinic, almost nothing.">
           <p>
-            Cor ad Cor is <strong>not</strong> a crisis service, not therapy, not
-            medical care, and not a social network. Listeners are trained
-            volunteers — not clinicians.
+            The clinical system is built for diagnosis. It asks people to be
+            ill enough to qualify, articulate enough to describe it, and
+            resourced enough to afford it. Therapy is essential — and
+            irreplaceable for those who need it.
           </p>
           <p>
-            For emergencies, please contact your local crisis line or emergency
-            services. For ongoing clinical needs, please seek a qualified
-            professional. We sit beside those resources, not in place of them.
+            But most everyday distress — grief, transition, exhaustion, fear,
+            shame — does not look like a disorder. It looks like a person who
+            simply has nowhere to put what they feel. Cor ad Cor is built for
+            that gap. The "missing middle" between silence and a clinic.
+          </p>
+        </Block>
+
+        <Block kicker="03 — Presence, not advice" title="Trained to listen — not to fix.">
+          <p>
+            Drawing on the work of Carl Rogers, our Listeners practice
+            unconditional positive regard, empathy, and congruence. The goal
+            is <em>attunement</em>: a calm, non-judgmental container in which a
+            speaker's nervous system can settle and their own clarity can
+            surface.
+          </p>
+          <p>
+            The urge to give advice usually comes from the listener's
+            discomfort with another person's pain. We train past it. By
+            withholding solutions, the Listener returns agency to the speaker —
+            the ground where real insight is formed.
+          </p>
+          <p>
+            Every Listener completes <em>The Formation</em>: a multi-step
+            training including readings, quizzes, and a live AI simulation,
+            before they can ever take a real session.
+          </p>
+        </Block>
+
+        <Block kicker="04 — Why anonymous" title="A shield that makes honesty possible.">
+          <p>
+            Anonymity is not just a safety feature. It is a psychological tool.
+            People share their unspeakable thoughts — fears, shames, griefs —
+            far more honestly when their real-world identity is not on the
+            line. Sociologists call it the "stranger on a train" effect; we
+            built an entire infrastructure around it.
+          </p>
+          <p>
+            No identities are exchanged. Sessions are private and ephemeral by
+            design. What is said here, stays here.
+          </p>
+        </Block>
+
+        <Block kicker="05 — What we refuse" title="No streaks. No points. No noise.">
+          <p>
+            Most mental health apps gamify emotional life — turning grief into
+            a daily check-in streak and self-knowledge into a leaderboard. We
+            think that trivializes the work and exploits the user.
+          </p>
+          <p>
+            Cor ad Cor has no rewards, no notifications begging you back, no
+            stock imagery of smiling strangers, no engagement metrics dressed
+            up as care. The product is the conversation. Nothing else.
           </p>
         </Block>
 
         <PrinciplesSection />
+
+        <Block kicker="06 — What we are not" title="A clear line, drawn on purpose.">
+          <p>
+            Cor ad Cor is <strong>not</strong> a crisis service, not therapy,
+            not medical care, and not a social network. Listeners are trained
+            volunteers — not clinicians.
+          </p>
+          <p>
+            For emergencies, please contact your local crisis line or
+            emergency services. For ongoing clinical needs, please seek a
+            qualified professional. We sit beside those resources, never in
+            place of them.
+          </p>
+        </Block>
 
         <ContactSection />
 
