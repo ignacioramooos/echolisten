@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDailyQuote } from "@/hooks/use-quote";
 
 /* ── Hero ── */
 const HeroSection = () => {
@@ -243,6 +244,7 @@ const FinalCTA = () => {
 /* ── Page ── */
 const Index = () => {
   const { t } = useTranslation();
+  const { quote: dailyQuote, loading: dailyLoading } = useDailyQuote();
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground overflow-x-hidden">
       {/* Header */}
@@ -300,6 +302,19 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="mt-auto border-t border-foreground">
+        {!dailyLoading && dailyQuote && (
+          <div className="mx-auto w-full max-w-echo px-2 py-4 text-center border-b border-muted">
+            <p className="font-body text-[9px] text-muted-foreground uppercase tracking-widest mb-2">
+              quote of the day
+            </p>
+            <p className="font-display italic text-[15px] sm:text-[17px] text-foreground leading-relaxed">
+              "{dailyQuote.text}"
+            </p>
+            <p className="font-body text-[10px] text-muted-foreground mt-1.5">
+              — {dailyQuote.author}
+            </p>
+          </div>
+        )}
         <div className="mx-auto w-full max-w-echo flex flex-col sm:flex-row items-center justify-between px-2 py-1 gap-1 sm:gap-0">
           <p className="font-body text-[11px] text-muted-foreground text-center sm:text-left">
             {t("landing.footer")}

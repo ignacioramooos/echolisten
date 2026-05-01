@@ -9,6 +9,7 @@ const TodayIAmWidget = lazy(() => import("./widgets/TodayIAmWidget"));
 const MemoryShelfWidget = lazy(() => import("./widgets/MemoryShelfWidget"));
 const OneThingHelpedWidget = lazy(() => import("./widgets/OneThingHelpedWidget"));
 const BreatheWidget = lazy(() => import("./widgets/BreatheWidget"));
+const QuoteWidget = lazy(() => import("./widgets/QuoteWidget"));
 
 interface RoomWidgetProps {
   id: string;
@@ -26,6 +27,7 @@ const widgetMap: Record<string, React.ComponentType<{ widgetId: string; config: 
   memory_shelf: MemoryShelfWidget,
   one_thing_helped: OneThingHelpedWidget,
   breathe: BreatheWidget,
+  quote: QuoteWidget,
 };
 
 const RoomWidget = ({ id, type, config }: RoomWidgetProps) => {

@@ -10,6 +10,7 @@ const WIDGET_TYPES = [
   { type: "memory_shelf", label: "Memory Shelf", desc: "Things you want to keep." },
   { type: "one_thing_helped", label: "One Thing That Helped", desc: "Small victories." },
   { type: "breathe", label: "Breathe", desc: "A quiet breathing cycle." },
+  { type: "quote", label: "Quote", desc: "A thought to sit with. Refresh anytime." },
 ] as const;
 
 export type WidgetType = (typeof WIDGET_TYPES)[number]["type"];

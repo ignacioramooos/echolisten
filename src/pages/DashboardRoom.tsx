@@ -8,6 +8,8 @@ import { WidgetPalette, type WidgetType } from "@/components/echo/room/WidgetPal
 import { RoomWidget } from "@/components/echo/room/RoomWidget";
 import { RoomEmptyState } from "@/components/echo/room/RoomEmptyState";
 import { useAppearance } from "@/hooks/use-appearance";
+import { useRandomQuote, FALLBACK_QUOTES, type Quote } from "@/hooks/use-quote";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type LayoutItem = { i: string; x: number; y: number; w: number; h: number; minW?: number; maxW?: number; minH?: number; maxH?: number };
 
@@ -54,6 +56,18 @@ const DashboardRoom = () => {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const { bgUrl, bgIntensity } = useAppearance();
+
+  // Background quote state
+  const [showBgQuote, setShowBgQuote] = useState(false);
+  const [bgQuoteMode, setBgQuoteMode] = useState<"random" | "selected">("random");
+  const [selectedQuoteIdx, setSelectedQuoteIdx] = useState(0);
+  const { quote: randomQuote, loading: randomQuoteLoading, refresh: refreshRandomQuote } = useRandomQuote();
+
+  const activeBgQuote: Quote | null = showBgQuote
+    ? bgQuoteMode === "random"
+      ? randomQuote
+      : FALLBACK_QUOTES[selectedQuoteIdx]
+    : null;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -233,6 +247,20 @@ const DashboardRoom = () => {
         />
       )}
 
+      {/* Background quote overlay */}
+      {activeBgQuote && !randomQuoteLoading && (
+        <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center px-8">
+          <div className="text-center max-w-2xl">
+            <p className="font-display italic text-[28px] sm:text-[40px] md:text-[52px] text-foreground opacity-[0.08] leading-tight">
+              "{activeBgQuote.text}"
+            </p>
+            <p className="font-body text-[11px] sm:text-[13px] text-foreground opacity-[0.08] mt-3 tracking-wide">
+              — {activeBgQuote.author}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background border-b border-muted">
         <EchoLogo />
@@ -243,6 +271,106 @@ const DashboardRoom = () => {
           >
             patterns
           </button>
+
+          {/* Background quote control */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={`font-body text-[11px] transition-colors duration-150 ${
+                  showBgQuote
+                    ? "text-foreground border-b border-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                quote
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-[280px] bg-background border border-foreground p-0"
+            >
+              <div className="p-4 border-b border-muted">
+                <div className="flex items-center justify-between">
+                  <p className="font-display italic text-[15px] text-foreground">Background quote</p>
+                  <button
+                    onClick={() => setShowBgQuote((v) => !v)}
+                    className={`font-body text-[10px] px-2.5 py-1 border transition-colors duration-150 ${
+                      showBgQuote
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-muted text-muted-foreground hover:border-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {showBgQuote ? "on" : "off"}
+                  </button>
+                </div>
+                <p className="font-body text-[10px] text-muted-foreground mt-1">
+                  Displays a quote subtly behind your widgets.
+                </p>
+              </div>
+
+              {showBgQuote && (
+                <div className="p-4 flex flex-col gap-3">
+                  {/* Mode selector */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setBgQuoteMode("random")}
+                      className={`font-body text-[10px] px-3 py-1 border transition-colors duration-150 ${
+                        bgQuoteMode === "random"
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-muted text-muted-foreground hover:border-foreground hover:text-foreground"
+                      }`}
+                    >
+                      random
+                    </button>
+                    <button
+                      onClick={() => setBgQuoteMode("selected")}
+                      className={`font-body text-[10px] px-3 py-1 border transition-colors duration-150 ${
+                        bgQuoteMode === "selected"
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-muted text-muted-foreground hover:border-foreground hover:text-foreground"
+                      }`}
+                    >
+                      choose
+                    </button>
+                  </div>
+
+                  {bgQuoteMode === "random" ? (
+                    <div className="flex flex-col gap-2">
+                      {randomQuote && (
+                        <p className="font-display italic text-[13px] text-foreground leading-snug line-clamp-2">
+                          "{randomQuote.text}"
+                        </p>
+                      )}
+                      <button
+                        onClick={refreshRandomQuote}
+                        disabled={randomQuoteLoading}
+                        className="font-body text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-150 self-start disabled:opacity-40"
+                      >
+                        ↺ new quote
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1 max-h-[200px] overflow-y-auto">
+                      {FALLBACK_QUOTES.map((q, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedQuoteIdx(i)}
+                          className={`text-left px-2 py-1.5 font-body text-[10px] leading-snug transition-colors duration-100 ${
+                            selectedQuoteIdx === i
+                              ? "bg-foreground text-background"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          }`}
+                        >
+                          "{q.text}"
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+
           <button
             onClick={() => setPaletteOpen(true)}
             className="font-body text-[12px] border border-foreground px-4 py-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors duration-150"
