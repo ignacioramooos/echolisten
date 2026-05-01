@@ -12,9 +12,14 @@ const QuoteWidget = ({ widgetId }: Props) => {
   const { quote, loading, refresh } = useRandomQuote();
   const [hovered, setHovered] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
+  const [removeError, setRemoveError] = useState(false);
 
   const handleRemove = async () => {
-    await supabase.from("dashboard_widgets").delete().eq("id", widgetId);
+    const { error } = await supabase.from("dashboard_widgets").delete().eq("id", widgetId);
+    if (error) {
+      setRemoveError(true);
+      setTimeout(() => setRemoveError(false), 2000);
+    }
   };
 
   return (
@@ -44,6 +49,11 @@ const QuoteWidget = ({ widgetId }: Props) => {
           <p className="font-body text-[11px] text-foreground text-center mb-3">
             Remove this widget?
           </p>
+          {removeError && (
+            <p className="font-body text-[10px] text-muted-foreground mb-2">
+              Could not remove. Try again.
+            </p>
+          )}
           <div className="flex gap-3">
             <button
               onClick={handleRemove}

@@ -22,6 +22,12 @@ export const FALLBACK_QUOTES: Quote[] = [
 
 const DAILY_QUOTE_KEY = "echo_daily_quote";
 
+/** Returns the current local date as YYYY-MM-DD. */
+function localDateString(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 async function fetchFromAPI(): Promise<Quote> {
   const res = await fetch("https://zenquotes.io/api/random", {
     headers: { Accept: "application/json" },
@@ -50,7 +56,7 @@ export function useDailyQuote() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateString();
     try {
       const stored = localStorage.getItem(DAILY_QUOTE_KEY);
       if (stored) {
@@ -65,16 +71,21 @@ export function useDailyQuote() {
       // ignore parse errors
     }
 
-    fetchRandomQuote().then((q) => {
-      const date = new Date().toISOString().slice(0, 10);
-      try {
-        localStorage.setItem(DAILY_QUOTE_KEY, JSON.stringify({ date, quote: q }));
-      } catch {
-        // ignore storage errors (private browsing, full storage, etc.)
-      }
-      setQuote(q);
-      setLoading(false);
-    });
+    fetchRandomQuote()
+      .then((q) => {
+        const date = localDateString();
+        try {
+          localStorage.setItem(DAILY_QUOTE_KEY, JSON.stringify({ date, quote: q }));
+        } catch {
+          // ignore storage errors (private browsing, full storage, etc.)
+        }
+        setQuote(q);
+        setLoading(false);
+      })
+      .catch(() => {
+        setQuote(randomFallback());
+        setLoading(false);
+      });
   }, []);
 
   return { quote, loading };
