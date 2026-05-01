@@ -15,6 +15,7 @@ import ChatRoom from "./pages/ChatRoom.tsx";
 import ListenQueue from "./pages/ListenQueue.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import About from "./pages/About.tsx";
+import Why from "./pages/Why.tsx";
 import ListenerSignup from "./pages/ListenerSignup.tsx";
 import SeekerSignup from "./pages/SeekerSignup.tsx";
 import AuraChat from "./pages/AuraChat.tsx";
@@ -42,6 +43,7 @@ const AppInner = () => {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
+          <Route path="/why" element={<Why />} />
 
           {/* Auth */}
           <Route path="/signup/seeker" element={<SeekerSignup />} />
